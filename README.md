@@ -1,5 +1,7 @@
 # rf-plotter
 
+SPA for plotting Touchstone Files on Smith Charts and on Real/Imaginary Cartesian Axes
+
 ## Project setup
 ```
 npm install
