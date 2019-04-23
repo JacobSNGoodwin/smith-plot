@@ -16,7 +16,9 @@
       </v-btn>
     </v-toolbar>
     <v-content>
+      <v-container justify-space-around>
         <PlotSelection />
+      </v-container>
     </v-content>
   </v-app>
 </template>

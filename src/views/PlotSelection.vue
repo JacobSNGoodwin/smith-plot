@@ -1,5 +1,7 @@
 <template>
-  <h1>Plots Selected Here</h1>
+  <v-layout justify-space-around>
+    <h1>Plots Selected Here</h1>
+  </v-layout>
 </template>
 
 <script>
