@@ -135,4 +135,7 @@ export default {
 <style lang="stylus" scoped>
 .smith
   fill: currentColor
+
+path
+  stroke: currentColor
 </style>
