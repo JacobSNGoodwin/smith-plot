@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-layout justify-center align-center>
     <v-btn v-bind="$attrs" @click="$refs.file.click()">
       <slot></slot>
     </v-btn>
@@ -9,6 +9,7 @@
       <strong>{{fileName}}</strong>
     </p>
   </div>
+  </v-layout>
 </template>
 
 <script>

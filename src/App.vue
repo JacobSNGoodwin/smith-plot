@@ -2,21 +2,19 @@
   <v-app>
     <Toolbar/>
     <v-content>
-      <v-container justify-space-around>
-        <PlotSelection/>
-      </v-container>
+      <PlotView/>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import PlotSelection from '@/views/PlotSelection'
+import PlotView from '@/views/PlotView'
 import Toolbar from '@/components/ui/Toolbar'
 
 export default {
   name: 'App',
   components: {
-    PlotSelection,
+    PlotView,
     Toolbar
   },
   data () {
