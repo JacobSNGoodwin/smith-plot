@@ -4,15 +4,24 @@
       <slot></slot>
     </v-btn>
     <input type="file" ref="file" @change="processFile($event)">
+    <p>
+      File name:
+      <strong>{{fileName}}</strong>
+    </p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'FileButton',
+  data () {
+    return {
+      fileName: null
+    }
+  },
   methods: {
     processFile (event) {
-      console.log(event.target.files)
+      this.fileName = event.target.files[0].name
     }
   }
 }
@@ -21,4 +30,7 @@ export default {
 <style lang="stylus" scoped>
 input
   display: none
+
+p
+  margin-top: 1em
 </style>
