@@ -1,14 +1,17 @@
 <template>
-  <v-layout justify-center align-center>
-    <v-btn v-bind="$attrs" @click="$refs.file.click()">
-      <slot></slot>
-    </v-btn>
-    <input type="file" ref="file" @change="processFile($event)">
-    <p>
-      File name:
-      <strong>{{fileName}}</strong>
-    </p>
-  </div>
+  <v-layout justify-center align-center column>
+    <v-flex xs12>
+      <v-btn v-bind="$attrs" @click="$refs.file.click()">
+        <slot></slot>
+      </v-btn>
+      <input type="file" ref="file" @change="processFile($event)">
+    </v-flex>
+    <v-flex xs12>
+      <p>
+        File name:
+        <strong>{{fileName}}</strong>
+      </p>
+    </v-flex>
   </v-layout>
 </template>
 
@@ -33,5 +36,6 @@ input
   display: none
 
 p
+  display: block
   margin-top: 1em
 </style>
