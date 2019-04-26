@@ -1,5 +1,5 @@
 <template>
-  <svg preserveAspectRatio="xMinYMin meet" viewBox="0 0 1.1 1.1">
+  <svg class="smith" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1.1 1.1">
     <g transform="translate(0.05, 0.05)">
       <g>
         <path
@@ -125,3 +125,14 @@
     </g>
   </svg>
 </template>
+
+<script>
+export default {
+  name: 'SmithIcon'
+}
+</script>
+
+<style lang="stylus" scoped>
+.smith
+  fill: currentColor
+</style>

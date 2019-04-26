@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
 
+import SmithIcon from '../icons/SmithIcon.vue'
+
 Vue.use(Vuetify, {
   iconfont: 'md',
   theme: {
@@ -12,5 +14,10 @@ Vue.use(Vuetify, {
     info: '#2196F3',
     success: '#4CAF50',
     warning: '#FFC107'
+  },
+  icons: {
+    smith: {
+      component: SmithIcon
+    }
   }
 })

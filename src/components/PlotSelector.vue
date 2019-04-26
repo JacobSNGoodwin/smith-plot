@@ -5,11 +5,11 @@
         <v-tabs-slider color="primary"></v-tabs-slider>
         <v-tab href="#smith">
           Smith
-          <v-icon>phone</v-icon>
+          <v-icon x-large>$vuetify.icons.smith</v-icon>
         </v-tab>
         <v-tab href="#cartesian">
           Rectangular
-          <v-icon>favorite</v-icon>
+          <v-icon x-large>favorite</v-icon>
         </v-tab>
 
         <v-tab-item value="smith">
