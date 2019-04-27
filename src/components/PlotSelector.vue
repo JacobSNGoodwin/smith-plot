@@ -9,7 +9,7 @@
         </v-tab>
         <v-tab href="#cartesian">
           Rectangular
-          <v-icon x-large color="primary">favorite</v-icon>
+          <v-icon x-large color="primary">mdi-chart-line</v-icon>
         </v-tab>
 
         <v-tab-item value="smith">
