@@ -13,14 +13,10 @@
         </v-tab>
 
         <v-tab-item value="smith">
-          <v-card flat>
-            <v-card-text>Smith Component Here</v-card-text>
-          </v-card>
+          <SmithPlot/>
         </v-tab-item>
         <v-tab-item value="cartesian">
-          <v-card flat>
-            <v-card-text>Cartesian Component Here</v-card-text>
-          </v-card>
+          <CartesianPlot/>
         </v-tab-item>
       </v-tabs>
     </v-flex>
@@ -28,8 +24,14 @@
 </template>
 
 <script>
+import SmithPlot from '@/components/plots/SmithPlot.vue'
+import CartesianPlot from '@/components/plots/CartesianPlot.vue'
 export default {
-  name: 'PlotSelector'
+  name: 'PlotSelector',
+  components: {
+    SmithPlot,
+    CartesianPlot
+  }
 }
 </script>
 
