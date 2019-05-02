@@ -30,6 +30,8 @@ export default new Vuex.Store({
       console.log('Loading files')
       commit('startLoading')
 
+      let readCount = 0
+
       for (let i = 0; i < fileList.length; i++) {
         // use file inside of closure to assure we read every file one by one
         ;(function (file) {
@@ -48,7 +50,9 @@ export default new Vuex.Store({
             commit('addToPlotList', { name, id })
             commit('addPlot', { id, data: plotData })
 
-            if (i === fileList.length - 1) {
+            readCount++
+
+            if (readCount === fileList.length) {
               // final file has read
               commit('stopLoading')
             }
