@@ -1,22 +1,16 @@
 <template>
   <v-container>
-    <FileButton round color="secondary" @file-update="getFiles">
+    <FileButton round color="secondary" @file-update="getFiles" :loading="loadingFiles">
       <h3>Select Files</h3>
       <v-icon>add</v-icon>
     </FileButton>
-    <v-layout justify-center v-if="currentFile">
-      <v-flex xs12>
-        <p>
-          File name:
-          <strong>{{currentFile.name}}</strong>
-        </p>
-      </v-flex>
-    </v-layout>
     <PlotSelector/>
   </v-container>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import FileButton from '@/components/ui/FileButton'
 import PlotSelector from '@/components/PlotSelector'
 export default {
@@ -25,16 +19,14 @@ export default {
     FileButton,
     PlotSelector
   },
-  data () {
-    return {
-      currentFile: null
-    }
-  },
   methods: {
     getFiles (event) {
       this.$store.dispatch('loadFiles', event.target.files)
     }
-  }
+  },
+  computed: mapState([
+    'loadingFiles'
+  ])
 }
 </script>
 

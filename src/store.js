@@ -27,6 +27,7 @@ export default new Vuex.Store({
   },
   actions: {
     loadFiles ({ commit }, fileList) {
+      console.log('Loading files')
       commit('startLoading')
 
       for (let i = 0; i < fileList.length; i++) {
