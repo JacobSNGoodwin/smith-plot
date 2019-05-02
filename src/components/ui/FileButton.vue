@@ -4,7 +4,7 @@
       <v-btn v-bind="$attrs" @click="$refs.file.click()">
         <slot></slot>
       </v-btn>
-      <input type="file" ref="file" @change="$emit('file-update', $event)">
+      <input type="file" ref="file" @change="$emit('file-update', $event)" multiple>
     </v-flex>
   </v-layout>
 </template>

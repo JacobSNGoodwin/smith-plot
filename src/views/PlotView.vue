@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <FileButton round color="secondary" @file-update="getFiles">
-      <h3>Select File</h3>
+      <h3>Select Files</h3>
       <v-icon>add</v-icon>
     </FileButton>
     <v-layout justify-center v-if="currentFile">
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     getFiles (event) {
-      this.currentFile = event.target.files[0]
+      this.$store.dispatch('loadFiles', event.target.files)
     }
   }
 }
