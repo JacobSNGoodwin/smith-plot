@@ -4,7 +4,7 @@
       <h3>Select File</h3>
       <v-icon>add</v-icon>
     </FileButton>
-    <v-layout justify-center>
+    <v-layout justify-center v-if="currentFile">
       <v-flex xs12>
         <p>
           File name:
@@ -31,8 +31,8 @@ export default {
     }
   },
   methods: {
-    getFiles (files) {
-      this.currentFile = files[0]
+    getFiles (event) {
+      this.currentFile = event.target.files[0]
     }
   }
 }
