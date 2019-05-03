@@ -27,7 +27,6 @@ export default new Vuex.Store({
   },
   actions: {
     loadFiles ({ commit }, fileList) {
-      console.log('Loading files')
       commit('startLoading')
 
       let readCount = 0
@@ -61,6 +60,26 @@ export default new Vuex.Store({
           reader.readAsText(file, 'UTF-8')
         })(fileList[i])
       }
+    }
+  },
+  getters: {
+    plotsByName: state => {
+      return state.plotList.sort((a, b) => {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1
+        }
+
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1
+        }
+
+        return 0
+      })
+    },
+    plotsByID: state => {
+      return state.plotList.sort((a, b) => {
+        return a.id - b.id
+      })
     }
   }
 })

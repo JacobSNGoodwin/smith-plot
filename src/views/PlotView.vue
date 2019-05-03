@@ -21,7 +21,15 @@ export default {
   },
   methods: {
     getFiles (event) {
-      this.$store.dispatch('loadFiles', event.target.files)
+      const files = event.target.files
+
+      // check length - a cancel after successful load will produce a change event
+      if (files.length > 0) {
+        this.$store.dispatch('loadFiles', files)
+      }
+    },
+    print (event) {
+      console.log(event)
     }
   },
   computed: mapState([
