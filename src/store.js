@@ -75,11 +75,6 @@ export default new Vuex.Store({
 
         return 0
       })
-    },
-    plotsByID: state => {
-      return state.plotList.sort((a, b) => {
-        return a.id - b.id
-      })
     }
   }
 })
