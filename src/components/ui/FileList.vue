@@ -6,14 +6,18 @@
       </template>
       <v-card>
         <!-- Plot list here -->
-        <v-card-text>Plot list to go up in here</v-card-text>
+        <v-card-text v-for="plot in plotsByName" :key="plot.id">{{plot.name}}</v-card-text>
       </v-card>
     </v-expansion-panel-content>
   </v-expansion-panel>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'FileList'
+  name: 'FileList',
+  computed: {
+    ...mapGetters(['plotsByName'])
+  }
 }
 </script>
