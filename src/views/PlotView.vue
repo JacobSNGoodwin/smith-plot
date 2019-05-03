@@ -1,9 +1,10 @@
 <template>
   <v-container>
     <FileButton round color="secondary" @file-update="getFiles" :loading="loadingFiles">
-      <h3>Select Files</h3>
+      <h3>Add</h3>
       <v-icon>add</v-icon>
     </FileButton>
+    <FileList/>
     <PlotSelector/>
   </v-container>
 </template>
@@ -12,10 +13,12 @@
 import { mapState } from 'vuex'
 
 import FileButton from '@/components/ui/FileButton'
+import FileList from '@/components/ui/FileList'
 import PlotSelector from '@/components/PlotSelector'
 export default {
   name: 'PlotView',
   components: {
+    FileList,
     FileButton,
     PlotSelector
   },
@@ -27,14 +30,13 @@ export default {
       if (files.length > 0) {
         this.$store.dispatch('loadFiles', files)
       }
-    },
-    print (event) {
-      console.log(event)
     }
   },
-  computed: mapState([
-    'loadingFiles'
-  ])
+  computed: {
+    ...mapState([
+      'loadingFiles'
+    ])
+  }
 }
 </script>
 
