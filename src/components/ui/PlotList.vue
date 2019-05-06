@@ -5,7 +5,6 @@
         <h2>Plot List</h2>
       </template>
       <v-card>
-        <!-- Plot list here -->
         <v-card-text v-for="plot in plotsByName" :key="plot.id">{{plot.name}}</v-card-text>
       </v-card>
     </v-expansion-panel-content>
@@ -15,7 +14,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-  name: 'FileList',
+  name: 'PlotList',
   computed: {
     ...mapGetters(['plotsByName'])
   }

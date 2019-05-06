@@ -4,7 +4,7 @@
       <h3>Add</h3>
       <v-icon>add</v-icon>
     </FileButton>
-    <FileList/>
+    <PlotList/>
     <PlotSelector/>
   </v-container>
 </template>
@@ -13,12 +13,12 @@
 import { mapState } from 'vuex'
 
 import FileButton from '@/components/ui/FileButton'
-import FileList from '@/components/ui/FileList'
+import PlotList from '@/components/ui/PlotList'
 import PlotSelector from '@/components/PlotSelector'
 export default {
   name: 'PlotView',
   components: {
-    FileList,
+    PlotList,
     FileButton,
     PlotSelector
   },
