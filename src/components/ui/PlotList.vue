@@ -8,7 +8,7 @@
         <v-card-text>
           <v-layout row wrap>
             <v-flex xs12 sm6 md4 v-for="plot in plotsByName" :key="plot.id">
-              <v-checkbox :label="plot.name" value="true"></v-checkbox>
+              <v-switch :input-value="plot.visible" :label="plot.name" value></v-switch>
             </v-flex>
           </v-layout>
         </v-card-text>
