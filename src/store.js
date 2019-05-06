@@ -46,7 +46,7 @@ export default new Vuex.Store({
               z0: network.z0,
               n: network.nPorts
             }
-            commit('addToPlotList', { name, id })
+            commit('addToPlotList', { name, id, visible: true })
             commit('addPlot', { id, data: plotData })
 
             readCount++
