@@ -4,7 +4,7 @@
       <h3>Add</h3>
       <v-icon>add</v-icon>
     </FileButton>
-    <PlotList :plots="plotsByName" @toggle-visibility="togglePlot"/>
+    <PlotList :plots="plotsByName" @toggle-visibility="togglePlot" @edit-plot="editPlot "/>
     <PlotSelector/>
   </v-container>
 </template>
@@ -32,7 +32,11 @@ export default {
       }
     },
     togglePlot (payload) {
+      // payload.id, payload.visible
       this.$store.commit('togglePlotVisibility', payload)
+    },
+    editPlot (plotId) {
+      console.log(plotId)
     }
   },
   computed: {

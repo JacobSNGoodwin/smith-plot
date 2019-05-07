@@ -8,12 +8,21 @@
         <v-card-text>
           <v-layout row wrap>
             <v-flex xs12 sm6 md4 v-for="plot in plots" :key="plot.id">
-              <v-switch
-                :input-value="plot.visible"
-                :label="plot.name"
-                value
-                @change="$emit('toggle-visibility', { visible: $event, id: plot.id })"
-              ></v-switch>
+              <div>
+                <v-switch
+                  class="switch"
+                  :input-value="plot.visible"
+                  value
+                  @change="$emit('toggle-visibility', { visible: $event, id: plot.id })"
+                >
+                  <template v-slot:label>
+                    <v-btn flat small @click.stop="$emit('edit-plot', plot.id)">
+                      {{plot.name}}
+                      <v-icon small right>mdi-pencil</v-icon>
+                    </v-btn>
+                  </template>
+                </v-switch>
+              </div>
             </v-flex>
           </v-layout>
         </v-card-text>
