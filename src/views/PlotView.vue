@@ -4,13 +4,13 @@
       <h3>Add</h3>
       <v-icon>add</v-icon>
     </FileButton>
-    <PlotList/>
+    <PlotList :plots="plotsByName" @toggle-visibility="togglePlot"/>
     <PlotSelector/>
   </v-container>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import FileButton from '@/components/ui/FileButton'
 import PlotList from '@/components/ui/PlotList'
@@ -30,11 +30,17 @@ export default {
       if (files.length > 0) {
         this.$store.dispatch('loadFiles', files)
       }
+    },
+    togglePlot (payload) {
+      this.$store.commit('togglePlotVisibility', payload)
     }
   },
   computed: {
     ...mapState([
       'loadingFiles'
+    ]),
+    ...mapGetters([
+      'plotsByName'
     ])
   }
 }

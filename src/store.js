@@ -30,8 +30,7 @@ export default new Vuex.Store({
       const element = state.plotList.findIndex(
         plot => plot.id === toggleData.id
       )
-      console.log(element)
-      state.plotList[element].visible = toggleData.event
+      state.plotList[element].visible = toggleData.visible
     }
   },
   actions: {

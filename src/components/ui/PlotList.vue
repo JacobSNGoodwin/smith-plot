@@ -7,12 +7,12 @@
       <v-card>
         <v-card-text>
           <v-layout row wrap>
-            <v-flex xs12 sm6 md4 v-for="plot in plotsByName" :key="plot.id">
+            <v-flex xs12 sm6 md4 v-for="plot in plots" :key="plot.id">
               <v-switch
                 :input-value="plot.visible"
                 :label="plot.name"
                 value
-                @change="togglePlot($event, plot.id)"
+                @change="$emit('toggle-visibility', { visible: $event, id: plot.id })"
               ></v-switch>
             </v-flex>
           </v-layout>
@@ -23,17 +23,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 export default {
   name: 'PlotList',
-  methods: {
-    togglePlot (event, id) {
-      this.$store.commit('togglePlotVisibility', { event, id })
-    }
-  },
-  computed: {
-    ...mapGetters(['plotsByName'])
-  }
+  props: ['plots']
 }
 </script>
 
