@@ -23,6 +23,9 @@ export default new Vuex.Store({
     },
     stopLoading (state) {
       state.loadingFiles = false
+    },
+    togglePlotVisibility (state, toggleData) {
+      state.plotList[toggleData.id].visibility = toggleData.event
     }
   },
   actions: {
