@@ -48,7 +48,7 @@ export default {
       this.$store.commit('togglePlotVisibility', payload)
     },
     editPlot (plotId) {
-      this.seleectedPlot = plotId
+      this.selectedPlot = plotId
       this.dialog = true
     }
   },
