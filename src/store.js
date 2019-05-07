@@ -14,13 +14,11 @@ export default new Vuex.Store({
   mutations: {
     addPlot (state, plot) {
       state.plots[plot.id] = {
-        ...plot.data,
-        name: plot.name,
-        visible: plot.visible
+        ...plot.data
       }
     },
-    addToPlotList (state, plotId) {
-      state.plotList.push(plotId)
+    addToPlotList (state, plotInfo) {
+      state.plotList.push(plotInfo)
     },
     startLoading (state) {
       state.loadingFiles = true
@@ -29,7 +27,11 @@ export default new Vuex.Store({
       state.loadingFiles = false
     },
     togglePlotVisibility (state, toggleData) {
-      state.plots[toggleData.id].visible = toggleData.event
+      const element = state.plotList.findIndex(
+        plot => plot.id === toggleData.id
+      )
+      console.log(element)
+      state.plotList[element].visible = toggleData.event
     }
   },
   actions: {
@@ -56,8 +58,8 @@ export default new Vuex.Store({
 
             // commit plots first so that they're available for getters
             // that iterate of the plotList
-            commit('addPlot', { id, name, data: plotData, visible: true })
-            commit('addToPlotList', id)
+            commit('addPlot', { id, data: plotData })
+            commit('addToPlotList', { id, name, visible: true })
 
             readCount++
 
@@ -74,27 +76,16 @@ export default new Vuex.Store({
   },
   getters: {
     plotsByName: state => {
-      // sort plot list of ids by name
-      const plotList = state.plotList.sort((a, b) => {
-        if (
-          state.plots[a].name.toLowerCase() < state.plots[b].name.toLowerCase()
-        ) {
+      return state.plotList.sort((a, b) => {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1
         }
 
-        if (
-          state.plots[a].name.toLowerCase() > state.plots[b].name.toLowerCase()
-        ) {
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
           return 1
         }
 
         return 0
-      })
-      return plotList.map(id => {
-        return {
-          id,
-          ...state.plots[id]
-        }
       })
     }
   }
