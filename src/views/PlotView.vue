@@ -7,7 +7,7 @@
     <PlotList :plots="plotsByName" @toggle-visibility="togglePlot" @edit-plot="editPlot "/>
     <PlotSelector/>
     <v-dialog v-model="dialog" max-width="500px">
-      <EditPlot @close-dialog="dialog = false"/>
+      <EditPlot v-if="selectedPlot" @close-dialog="removeSelectedPlot" :plot="selectedPlot"/>
     </v-dialog>
   </v-container>
 </template>
@@ -47,9 +47,13 @@ export default {
       // payload.id, payload.visible
       this.$store.commit('togglePlotVisibility', payload)
     },
-    editPlot (plotId) {
-      this.selectedPlot = plotId
+    editPlot (plot) {
+      this.selectedPlot = plot
       this.dialog = true
+    },
+    removeSelectedPlot () {
+      this.selectedPlot = null
+      this.dialog = false
     }
   },
   computed: {

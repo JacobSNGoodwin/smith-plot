@@ -2,7 +2,9 @@
   <v-card>
     <v-card-title>Edit Plot</v-card-title>
     <v-card-text>
-      <p>Input here</p>
+      <v-form>
+        <v-text-field label="Plot Label" required v-model="newName"></v-text-field>
+      </v-form>
     </v-card-text>
     <v-card-actions>
       <v-btn flat @click.stop="$emit('close-dialog')">Cancel</v-btn>
@@ -15,10 +17,10 @@
 <script>
 export default {
   name: 'EditPlot',
-  props: ['name'],
+  props: ['plot'],
   data () {
     return {
-      newName: name
+      newName: this.plot.name
     }
   }
 }

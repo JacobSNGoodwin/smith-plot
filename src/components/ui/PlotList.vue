@@ -17,7 +17,7 @@
                   @change="$emit('toggle-visibility', { visible: $event, id: plot.id })"
                 >
                   <template v-slot:label>
-                    <v-btn flat small @click.stop="$emit('edit-plot', plot.id)">
+                    <v-btn flat small @click.stop="$emit('edit-plot', plot)">
                       {{plot.name}}
                       <v-icon small right>mdi-pencil</v-icon>
                     </v-btn>
