@@ -12,6 +12,7 @@
                 <v-switch
                   class="switch"
                   :input-value="plot.visible"
+                  hide-details
                   value
                   @change="$emit('toggle-visibility', { visible: $event, id: plot.id })"
                 >
