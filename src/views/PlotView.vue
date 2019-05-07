@@ -6,6 +6,9 @@
     </FileButton>
     <PlotList :plots="plotsByName" @toggle-visibility="togglePlot" @edit-plot="editPlot "/>
     <PlotSelector/>
+    <v-dialog v-model="dialog" max-width="500px">
+      <EditPlot @close-dialog="dialog = false"/>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -14,13 +17,22 @@ import { mapState, mapGetters } from 'vuex'
 
 import FileButton from '@/components/ui/FileButton'
 import PlotList from '@/components/ui/PlotList'
+import EditPlot from '@/components/ui/EditPlot'
 import PlotSelector from '@/components/PlotSelector'
+
 export default {
   name: 'PlotView',
   components: {
     PlotList,
     FileButton,
-    PlotSelector
+    PlotSelector,
+    EditPlot
+  },
+  data () {
+    return {
+      selectedPlot: null,
+      dialog: false
+    }
   },
   methods: {
     getFiles (event) {
@@ -36,7 +48,8 @@ export default {
       this.$store.commit('togglePlotVisibility', payload)
     },
     editPlot (plotId) {
-      console.log(plotId)
+      this.seleectedPlot = plotId
+      this.dialog = true
     }
   },
   computed: {
