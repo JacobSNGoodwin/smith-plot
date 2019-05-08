@@ -20,6 +20,14 @@ export default new Vuex.Store({
     addToPlotList (state, plotInfo) {
       state.plotList.push(plotInfo)
     },
+    deletePlot (state, plotToDelete) {
+      // remove from plot list
+      // remove from plots (plot data)
+      state.plotList = state.plotList.filter(
+        plot => plot.id !== plotToDelete.id
+      )
+      delete state.plots[plotToDelete.id]
+    },
     startLoading (state) {
       state.loadingFiles = true
     },
