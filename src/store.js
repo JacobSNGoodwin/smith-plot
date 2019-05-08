@@ -39,6 +39,12 @@ export default new Vuex.Store({
         plot => plot.id === toggleData.id
       )
       state.plotList[element].visible = toggleData.visible
+    },
+    updatePlotName (state, plotData) {
+      const plotIndex = state.plotList.findIndex(
+        plot => plot.id === plotData.id
+      )
+      state.plotList[plotIndex].name = plotData.name
     }
   },
   actions: {

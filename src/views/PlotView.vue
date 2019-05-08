@@ -11,6 +11,7 @@
         v-if="selectedPlot"
         @close-dialog="clearSelectedPlot"
         @delete-plot="deletePlot"
+        @update-plot-name="updatePlotName"
         :plot="selectedPlot"
       />
     </v-dialog>
@@ -62,6 +63,11 @@ export default {
     },
     deletePlot () {
       this.$store.commit('deletePlot', this.selectedPlot)
+      this.selectedPlot = null
+      this.dialog = false
+    },
+    updatePlotName (newName) {
+      this.$store.commit('updatePlotName', { id: this.selectedPlot.id, name: newName })
       this.selectedPlot = null
       this.dialog = false
     }

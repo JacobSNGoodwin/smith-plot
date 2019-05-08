@@ -9,7 +9,7 @@
     <v-card-actions>
       <v-btn flat @click.stop="$emit('close-dialog')">Cancel</v-btn>
       <v-btn flat color="error" @click.stop="$emit('delete-plot')">Delete</v-btn>
-      <v-btn flat color="primary" @click.stop="$emit('update-plot-name')">Save</v-btn>
+      <v-btn flat color="primary" @click.stop="$emit('update-plot-name', newName)">Save</v-btn>
     </v-card-actions>
   </v-card>
 </template>
