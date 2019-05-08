@@ -1,33 +1,17 @@
 <template>
-  <v-layout justify-center align-center column>
+  <v-layout class="FileButton" justify-center align-center column>
     <v-flex xs12>
       <v-btn v-bind="$attrs" @click="$refs.file.click()">
         <slot></slot>
       </v-btn>
-      <input type="file" ref="file" @change="processFile($event)">
-    </v-flex>
-    <v-flex xs12>
-      <p>
-        File name:
-        <strong>{{fileName}}</strong>
-      </p>
+      <input type="file" ref="file" @change="$emit('file-update', $event)" multiple>
     </v-flex>
   </v-layout>
 </template>
 
 <script>
 export default {
-  name: 'FileButton',
-  data () {
-    return {
-      fileName: null
-    }
-  },
-  methods: {
-    processFile (event) {
-      this.fileName = event.target.files[0].name
-    }
-  }
+  name: 'FileButton'
 }
 </script>
 
@@ -35,7 +19,6 @@ export default {
 input
   display: none
 
-p
-  display: block
-  margin-top: 1em
+.FileButton
+  padding: 1em 0
 </style>
