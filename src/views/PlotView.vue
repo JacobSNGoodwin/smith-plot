@@ -1,12 +1,14 @@
 <template>
   <v-container>
-    <FileButton round color="secondary" @file-update="getFiles" :loading="loadingFiles">
-      <h3>Add</h3>
-      <v-icon>add</v-icon>
-    </FileButton>
-    <PlotList :plots="plotsByName" @toggle-visibility="togglePlot" @edit-plot="editPlot "/>
+    <v-layout class="selection-buttons" justify-center>
+      <FileButton round color="secondary" @file-update="getFiles" :loading="loadingFiles">
+        Add
+        <v-icon>add</v-icon>
+      </FileButton>
+      <PlotList :plots="plotsByName" @toggle-visibility="togglePlot" @edit-plot="editPlot "/>
+    </v-layout>
     <PlotSelector/>
-    <v-dialog v-model="dialog" max-width="500px">
+    <!-- <v-dialog v-model="dialog" max-width="500px">
       <EditPlot
         v-if="selectedPlot"
         @close-dialog="clearSelectedPlot"
@@ -14,7 +16,7 @@
         @update-plot-name="updatePlotName"
         :plot="selectedPlot"
       />
-    </v-dialog>
+    </v-dialog>-->
   </v-container>
 </template>
 
@@ -23,7 +25,7 @@ import { mapState, mapGetters } from 'vuex'
 
 import FileButton from '@/components/ui/FileButton'
 import PlotList from '@/components/ui/PlotList'
-import EditPlot from '@/components/ui/EditPlot'
+// import EditPlot from '@/components/ui/EditPlot'
 import PlotSelector from '@/components/PlotSelector'
 
 export default {
@@ -31,8 +33,8 @@ export default {
   components: {
     PlotList,
     FileButton,
-    PlotSelector,
-    EditPlot
+    PlotSelector
+    // EditPlot
   },
   data () {
     return {
@@ -86,4 +88,7 @@ export default {
 <style lang="stylus" scoped>
 p
   text-align: center
+
+.selection-buttons
+  padding-bottom: 2em
 </style>

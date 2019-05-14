@@ -1,12 +1,10 @@
 <template>
-  <v-layout class="FileButton" justify-center align-center column>
-    <v-flex xs12>
-      <v-btn v-bind="$attrs" @click="$refs.file.click()">
-        <slot></slot>
-      </v-btn>
-      <input type="file" ref="file" @change="$emit('file-update', $event)" multiple>
-    </v-flex>
-  </v-layout>
+  <div class="FileButton">
+    <v-btn v-bind="$attrs" @click="$refs.file.click()">
+      <slot></slot>
+    </v-btn>
+    <input type="file" ref="file" @change="$emit('file-update', $event)" multiple>
+  </div>
 </template>
 
 <script>
@@ -20,5 +18,5 @@ input
   display: none
 
 .FileButton
-  padding: 1em 0
+  display: inline-flex
 </style>

@@ -1,35 +1,15 @@
 <template>
-  <v-expansion-panel color="secondary">
-    <v-expansion-panel-content>
-      <template v-slot:header>
-        <h2>Plot List</h2>
+  <div class="text-xs-center">
+    <v-menu offset-y>
+      <template v-slot:activator="{ on }">
+        <v-btn round color="primary" v-on="on">
+          Select
+          <v-icon>arrow_drop_down</v-icon>
+        </v-btn>
       </template>
-      <v-card>
-        <v-card-text>
-          <v-layout row wrap>
-            <v-flex xs12 sm6 md4 v-for="plot in plots" :key="plot.id">
-              <div>
-                <v-switch
-                  class="switch"
-                  :input-value="plot.visible"
-                  hide-details
-                  value
-                  @change="$emit('toggle-visibility', { visible: $event, id: plot.id })"
-                >
-                  <template v-slot:label>
-                    <v-btn flat small @click.stop="$emit('edit-plot', plot)">
-                      {{plot.name}}
-                      <v-icon small right>mdi-pencil</v-icon>
-                    </v-btn>
-                  </template>
-                </v-switch>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-      </v-card>
-    </v-expansion-panel-content>
-  </v-expansion-panel>
+      <h3>Menu Content</h3>
+    </v-menu>
+  </div>
 </template>
 
 <script>
