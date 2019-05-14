@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar app absolute clipped-right color="primary">
+  <v-toolbar app fixed clipped-right color="primary">
     <v-toolbar-title class="white--text">RF Plotter</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn @click.stop="toggleDrawer" flat color="white">
