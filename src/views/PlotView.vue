@@ -5,7 +5,6 @@
         Add
         <v-icon>add</v-icon>
       </FileButton>
-      <PlotList :plots="plotsByName" @toggle-visibility="togglePlot" @edit-plot="editPlot "/>
     </v-layout>
     <PlotSelector/>
     <!-- <v-dialog v-model="dialog" max-width="500px">
@@ -24,14 +23,12 @@
 import { mapState, mapGetters } from 'vuex'
 
 import FileButton from '@/components/ui/FileButton'
-import PlotList from '@/components/ui/PlotList'
 // import EditPlot from '@/components/ui/EditPlot'
 import PlotSelector from '@/components/PlotSelector'
 
 export default {
   name: 'PlotView',
   components: {
-    PlotList,
     FileButton,
     PlotSelector
     // EditPlot

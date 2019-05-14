@@ -9,7 +9,8 @@ export default new Vuex.Store({
   state: {
     plotList: [],
     plots: {},
-    loadingFiles: false
+    loadingFiles: false,
+    navDrawer: false
   },
   mutations: {
     addPlot (state, plot) {
@@ -33,6 +34,13 @@ export default new Vuex.Store({
     },
     stopLoading (state) {
       state.loadingFiles = false
+    },
+    toggleNavDrawer (state, val) {
+      if (val === null) {
+        state.navDrawer = !state.navDrawer
+      } else {
+        state.navDrawer = val
+      }
     },
     togglePlotVisibility (state, toggleData) {
       const element = state.plotList.findIndex(
