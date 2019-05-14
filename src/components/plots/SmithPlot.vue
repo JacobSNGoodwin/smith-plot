@@ -53,12 +53,12 @@ export default {
   shape-rendering: geometricPrecision
 
 .realCircles
-  stroke: red
+  stroke: #333333
   stroke-width: 5
   fill: none
 
 .imagCircles
-  stroke: blue
+  stroke: #333333
   stroke-width: 5
   fill: none
 </style>
