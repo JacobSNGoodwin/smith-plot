@@ -1,6 +1,9 @@
 <template>
   <v-navigation-drawer right fixed clipped app v-model="drawer" disable-resize-watcher>
-    <v-list>
+    <v-list subheader>
+      <v-list-tile>
+        <v-list-tile-title class="title">Plots</v-list-tile-title>
+      </v-list-tile>
       <v-list-group v-for="plot in plotsByName" :key="plot.id">
         <template v-slot:activator>
           <v-list-tile>
@@ -41,3 +44,9 @@ export default {
   }
 }
 </script>
+
+<style lang="stylus" scoped>
+.title
+  text-align: center
+  padding: 1em 0
+</style>
