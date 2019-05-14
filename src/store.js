@@ -100,6 +100,9 @@ export default new Vuex.Store({
 
         return 0
       })
+    },
+    visiblePlots: state => {
+      return state.plotList.filter(plot => plot.visible)
     }
   }
 })
