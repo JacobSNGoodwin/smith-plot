@@ -77,12 +77,24 @@ export default new Vuex.Store({
               n: network.nPorts
             }
 
-            // fileList will also contains a list of S-parameters
+            // fileList will also contains a list of S-parameters for the file
+            // and a visibility for each
+            const sPlots = []
+            for (let i = 0; i < plotData.n; i++) {
+              for (let j = 0; j < plotData.n; j++) {
+                const label = `s${i + 1},${j + 1}`
+                sPlots.push({
+                  label,
+                  indeces: [i, j],
+                  visible: false
+                })
+              }
+            }
 
             // commit plots first so that they're available for getters
             // that iterate of the fileList
             commit('addPlot', { id, data: plotData })
-            commit('addToFileList', { id, name })
+            commit('addToFileList', { id, name, sPlots })
 
             readCount++
 
@@ -110,9 +122,6 @@ export default new Vuex.Store({
 
         return 0
       })
-    },
-    visiblePlots: state => {
-      return state.fileList.filter(plot => plot.visible)
     }
   }
 })
