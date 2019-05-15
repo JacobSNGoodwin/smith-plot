@@ -1,5 +1,5 @@
 <template>
-  <div class="FileButton">
+  <div>
     <v-btn v-bind="$attrs" @click="$refs.file.click()">
       <slot></slot>
     </v-btn>
@@ -16,7 +16,4 @@ export default {
 <style lang="stylus" scoped>
 input
   display: none
-
-.FileButton
-  display: inline-flex
 </style>
