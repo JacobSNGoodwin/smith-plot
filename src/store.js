@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    plotList: [],
+    fileList: [],
     plots: {},
     loadingFiles: false,
     navDrawer: false
@@ -18,13 +18,13 @@ export default new Vuex.Store({
         ...plot.data
       }
     },
-    addToPlotList (state, plotInfo) {
-      state.plotList.push(plotInfo)
+    addToFileList (state, plotInfo) {
+      state.fileList.push(plotInfo)
     },
     deletePlot (state, plotToDelete) {
       // remove from plot list
       // remove from plots (plot data)
-      state.plotList = state.plotList.filter(
+      state.fileList = state.fileList.filter(
         plot => plot.id !== plotToDelete.id
       )
       delete state.plots[plotToDelete.id]
@@ -43,16 +43,16 @@ export default new Vuex.Store({
       }
     },
     togglePlotVisibility (state, toggleData) {
-      const element = state.plotList.findIndex(
+      const element = state.fileList.findIndex(
         plot => plot.id === toggleData.id
       )
-      state.plotList[element].visible = toggleData.visible
+      state.fileList[element].visible = toggleData.visible
     },
     updatePlotName (state, plotData) {
-      const plotIndex = state.plotList.findIndex(
+      const plotIndex = state.fileList.findIndex(
         plot => plot.id === plotData.id
       )
-      state.plotList[plotIndex].name = plotData.name
+      state.fileList[plotIndex].name = plotData.name
     }
   },
   actions: {
@@ -71,16 +71,18 @@ export default new Vuex.Store({
           reader.onload = function (e) {
             const network = new Network(e.target.result, file.name)
             const plotData = {
-              s: network.data,
+              data: network.data,
               unit: network.freqUnit,
               z0: network.z0,
               n: network.nPorts
             }
 
+            // fileList will also contains a list of S-parameters
+
             // commit plots first so that they're available for getters
-            // that iterate of the plotList
+            // that iterate of the fileList
             commit('addPlot', { id, data: plotData })
-            commit('addToPlotList', { id, name, visible: true })
+            commit('addToFileList', { id, name })
 
             readCount++
 
@@ -97,7 +99,7 @@ export default new Vuex.Store({
   },
   getters: {
     plotsByName: state => {
-      return state.plotList.sort((a, b) => {
+      return state.fileList.sort((a, b) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1
         }
@@ -110,7 +112,7 @@ export default new Vuex.Store({
       })
     },
     visiblePlots: state => {
-      return state.plotList.filter(plot => plot.visible)
+      return state.fileList.filter(plot => plot.visible)
     }
   }
 })

@@ -1,7 +1,13 @@
 <template>
   <v-navigation-drawer right fixed clipped app v-model="drawer" disable-resize-watcher>
     <v-layout justify-center>
-      <FileButton round color="secondary" @file-update="getFiles" :loading="loadingFiles">
+      <FileButton
+        class="FileButton"
+        round
+        color="secondary"
+        @file-update="getFiles"
+        :loading="loadingFiles"
+      >
         Add
         <v-icon>add</v-icon>
       </FileButton>
@@ -76,7 +82,5 @@ export default {
 
 .FileButton
   display: block
-
-  button
-    margin: auto
+  padding-top: 1em
 </style>
