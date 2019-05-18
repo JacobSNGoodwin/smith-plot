@@ -25,9 +25,14 @@
           </v-list-tile>
         </template>
         <v-list-tile v-for="sPlots in plot.sPlots" :key="sPlots.label">
-          <v-list-tile-content>
-            <v-list-tile-title>{{sPlots.label}}</v-list-tile-title>
-          </v-list-tile-content>
+          <v-layout align-content-center>
+            <v-list-tile-action>
+              <v-checkbox></v-checkbox>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>{{sPlots.label}}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-layout>
         </v-list-tile>
       </v-list-group>
     </v-list>
