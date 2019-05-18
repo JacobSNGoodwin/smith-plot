@@ -24,9 +24,9 @@
             </v-list-tile-content>
           </v-list-tile>
         </template>
-        <v-list-tile>
+        <v-list-tile v-for="sPlots in plot.sPlots" :key="sPlots.label">
           <v-list-tile-content>
-            <v-list-tile-title>Plots down here</v-list-tile-title>
+            <v-list-tile-title>{{sPlots.label}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list-group>

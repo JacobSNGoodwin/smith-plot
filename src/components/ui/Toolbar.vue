@@ -2,7 +2,7 @@
   <v-toolbar app fixed clipped-right color="primary">
     <v-toolbar-title class="white--text">RF Plotter</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn @click.stop="toggleDrawer" flat color="white">
+    <v-btn @click.stop="toggleDrawer" flat color="secondary">
       Select Plots
       <v-icon right>mdi-chart-line</v-icon>
     </v-btn>
