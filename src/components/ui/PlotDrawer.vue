@@ -24,6 +24,11 @@
             </v-list-tile-content>
           </v-list-tile>
         </template>
+        <v-list-tile>
+          <v-layout justify-center>
+            <v-btn small round @click.stop="openModifyDialog(file)">Modify</v-btn>
+          </v-layout>
+        </v-list-tile>
         <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
           <v-layout align-content-center>
             <v-list-tile-action>
@@ -67,6 +72,9 @@ export default {
         value: event
       }
       this.$store.commit('setPlotVisibility', plotInfo)
+    },
+    openModifyDialog (file) {
+      this.$store.commit('setFileToModify', file)
     }
   },
   computed: {

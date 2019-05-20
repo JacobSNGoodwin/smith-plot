@@ -1,57 +1,49 @@
 <template>
   <v-container>
     <PlotSelector/>
-    <!-- <v-dialog v-model="dialog" max-width="500px">
+    <!-- update:returnValue - handle state when clicking backdrop outside of dialog -->
+    <v-dialog :value="fileToModify" max-width="500px" @update:returnValue="clearSelectedFile">
       <EditPlot
-        v-if="selectedPlot"
-        @close-dialog="clearSelectedPlot"
-        @delete-plot="deletePlot"
+        v-if="fileToModify"
+        @close-dialog="clearSelectedFile"
+        @delete-plot="deleteFile"
         @update-plot-name="updatePlotName"
-        :plot="selectedPlot"
+        :plot="fileToModify"
       />
-    </v-dialog>-->
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-// import EditPlot from '@/components/ui/EditPlot'
+import { mapState } from 'vuex'
+
+import EditPlot from '@/components/ui/EditPlot'
 import PlotSelector from '@/components/PlotSelector'
 
 export default {
   name: 'PlotView',
   components: {
-    PlotSelector
-    // EditPlot
-  },
-  data () {
-    return {
-      selectedPlot: null,
-      dialog: false
-    }
+    PlotSelector,
+    EditPlot
   },
   methods: {
-    togglePlot (payload) {
-      // payload.id, payload.visible
-      this.$store.commit('togglePlotVisibility', payload)
+    clearSelectedFile () {
+      this.$store.commit('setFileToModify', null)
     },
-    editPlot (plot) {
-      this.selectedPlot = plot
-      this.dialog = true
+    deleteFile () {
+      this.$store.commit('deleteFile', this.fileToModify)
     },
-    clearSelectedPlot () {
-      this.selectedPlot = null
-      this.dialog = false
-    },
-    deletePlot () {
-      this.$store.commit('deletePlot', this.selectedPlot)
-      this.selectedPlot = null
-      this.dialog = false
+    testChange (event) {
+      console.log(event)
     },
     updatePlotName (newName) {
-      this.$store.commit('updatePlotName', { id: this.selectedPlot.id, name: newName })
-      this.selectedPlot = null
-      this.dialog = false
+      this.$store.commit('updatePlotName', { id: this.fileToModify.id, name: newName })
     }
+  },
+  computed: {
+    ...mapState([
+      'fileToModify'
+    ])
   }
 }
 </script>
