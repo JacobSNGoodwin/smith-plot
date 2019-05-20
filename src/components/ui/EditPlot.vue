@@ -2,7 +2,8 @@
   <v-card>
     <v-card-title>Edit Plot</v-card-title>
     <v-card-text>
-      <v-form>
+      <!-- Use form prevent so user can press enter to submit -->
+      <v-form @submit.prevent="$emit('update-plot-name', newName)">
         <v-text-field label="Plot Label" required v-model="newName"></v-text-field>
       </v-form>
     </v-card-text>
