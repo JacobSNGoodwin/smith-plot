@@ -33,7 +33,7 @@
               ></v-checkbox>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>{{plot.label}} - {{index}}</v-list-tile-title>
+              <v-list-tile-title>{{plot.label}}</v-list-tile-title>
             </v-list-tile-content>
           </v-layout>
         </v-list-tile>
