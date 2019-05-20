@@ -10,7 +10,8 @@ export default new Vuex.Store({
     fileList: [],
     plots: {},
     loadingFiles: false,
-    navDrawer: false
+    navDrawer: false,
+    plotType: 'smith'
   },
   mutations: {
     addPlot (state, plot) {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
         plot => plot.id !== plotToDelete.id
       )
       delete state.plots[plotToDelete.id]
+    },
+    setPlotType (state, plotType) {
+      this.state.plotType = plotType
     },
     setPlotVisibility (state, plotInfo) {
       const fileIndexToUpdate = state.fileList.findIndex(

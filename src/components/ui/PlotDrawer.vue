@@ -28,6 +28,7 @@
           <v-layout align-content-center>
             <v-list-tile-action>
               <v-checkbox
+                color="primary"
                 :input-value="plot.visibile"
                 @change="togglePlotVisibility({index, id: file.id}, $event)"
               ></v-checkbox>
