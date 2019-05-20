@@ -16,7 +16,7 @@
       <v-list-tile>
         <v-list-tile-title class="title">Plots</v-list-tile-title>
       </v-list-tile>
-      <v-list-group v-for="file in plotsByName" :key="file.id">
+      <v-list-group v-for="file in filesByName" :key="file.id">
         <template v-slot:activator>
           <v-list-tile>
             <v-list-tile-content>
@@ -28,6 +28,7 @@
           <v-layout align-content-center>
             <v-list-tile-action>
               <v-checkbox
+                :disabled="(plotType === 'smith' && plot.disabledSmith)"
                 color="primary"
                 :input-value="plot.visibile"
                 @change="togglePlotVisibility({index, id: file.id}, $event)"
@@ -81,11 +82,12 @@ export default {
         }
       }
     },
-    ...mapState([
-      'loadingFiles'
-    ]),
     ...mapGetters([
-      'plotsByName'
+      'filesByName'
+    ]),
+    ...mapState([
+      'loadingFiles',
+      'plotType'
     ])
   }
 }

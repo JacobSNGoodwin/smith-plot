@@ -93,7 +93,7 @@ export default new Vuex.Store({
                   label,
                   indeces: [i, j],
                   visible: false,
-                  enabledSmith: i === j // state to enable/plot on Smith Chart
+                  disabledSmith: i !== j // state to enable/plot on Smith Chart
                 })
               }
             }
