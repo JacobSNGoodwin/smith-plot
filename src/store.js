@@ -92,7 +92,8 @@ export default new Vuex.Store({
                 sPlots.push({
                   label,
                   indeces: [i, j],
-                  visible: false
+                  visible: false,
+                  enabledSmith: i === j // state to enable/plot on Smith Chart
                 })
               }
             }
@@ -116,7 +117,7 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    plotsByName: state => {
+    filesByName: state => {
       return state.fileList.sort((a, b) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
           return -1
