@@ -16,15 +16,15 @@
       <v-list-tile>
         <v-list-tile-title class="title">Plots</v-list-tile-title>
       </v-list-tile>
-      <v-list-group v-for="plot in plotsByName" :key="plot.id">
+      <v-list-group v-for="file in plotsByName" :key="file.id">
         <template v-slot:activator>
           <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title>{{ plot.name }}</v-list-tile-title>
+              <v-list-tile-title>{{ file.name }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>
-        <v-list-tile v-for="sPlots in plot.sPlots" :key="sPlots.label">
+        <v-list-tile v-for="plot in file.sPlots" :key="plot.label">
           <v-layout align-content-center>
             <v-list-tile-action>
               <v-checkbox></v-checkbox>
