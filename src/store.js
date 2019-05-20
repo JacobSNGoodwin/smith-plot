@@ -29,6 +29,14 @@ export default new Vuex.Store({
       )
       delete state.plots[plotToDelete.id]
     },
+    setPlotVisibility (state, plotInfo) {
+      const fileIndexToUpdate = state.fileList.findIndex(
+        file => file.id === plotInfo.id
+      )
+
+      state.fileList[fileIndexToUpdate].sPlots[plotInfo.index].visible =
+        plotInfo.value
+    },
     startLoading (state) {
       state.loadingFiles = true
     },
@@ -41,12 +49,6 @@ export default new Vuex.Store({
       } else {
         state.navDrawer = val
       }
-    },
-    togglePlotVisibility (state, toggleData) {
-      const element = state.fileList.findIndex(
-        plot => plot.id === toggleData.id
-      )
-      state.fileList[element].visible = toggleData.visible
     },
     updatePlotName (state, plotData) {
       const plotIndex = state.fileList.findIndex(

@@ -24,13 +24,16 @@
             </v-list-tile-content>
           </v-list-tile>
         </template>
-        <v-list-tile v-for="plot in file.sPlots" :key="plot.label">
+        <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
           <v-layout align-content-center>
             <v-list-tile-action>
-              <v-checkbox></v-checkbox>
+              <v-checkbox
+                :input-value="plot.visibile"
+                @change="togglePlotVisibility({index, id: file.id}, $event)"
+              ></v-checkbox>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>{{sPlots.label}}</v-list-tile-title>
+              <v-list-tile-title>{{plot.label}} - {{index}}</v-list-tile-title>
             </v-list-tile-content>
           </v-layout>
         </v-list-tile>
@@ -55,6 +58,13 @@ export default {
       if (files.length > 0) {
         this.$store.dispatch('loadFiles', files)
       }
+    },
+    togglePlotVisibility (plotToToggle, event) {
+      const plotInfo = {
+        ...plotToToggle,
+        value: event
+      }
+      this.$store.commit('setPlotVisibility', plotInfo)
     }
   },
   computed: {
