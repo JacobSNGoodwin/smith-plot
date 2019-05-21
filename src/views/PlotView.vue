@@ -33,9 +33,6 @@ export default {
     deleteFile () {
       this.$store.commit('deleteFile', this.fileToModify)
     },
-    testChange (event) {
-      console.log(event)
-    },
     updatePlotName (newName) {
       this.$store.commit('updatePlotName', { id: this.fileToModify.id, name: newName })
     }

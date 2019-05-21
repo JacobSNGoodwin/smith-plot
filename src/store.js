@@ -40,6 +40,14 @@ export default new Vuex.Store({
     setFileToModify (state, file) {
       state.fileToModify = file
     },
+    setPlotColor (state, plotInfo) {
+      const fileIndexToUpdate = state.fileList.findIndex(
+        file => file.id === plotInfo.id
+      )
+
+      state.fileList[fileIndexToUpdate].sPlots[plotInfo.index].color =
+        plotInfo.value
+    },
     setPlotType (state, plotType) {
       state.plotType = plotType
     },

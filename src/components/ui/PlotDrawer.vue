@@ -26,7 +26,7 @@
         </template>
         <v-list-tile>
           <v-layout justify-center>
-            <v-btn small round @click.stop="openModifyDialog(file)">Modify</v-btn>
+            <v-btn small round @click.stop="openModifyDialog(file)">Edit</v-btn>
           </v-layout>
         </v-list-tile>
         <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
@@ -39,11 +39,11 @@
               @change="togglePlotVisibility({index, id: file.id}, $event)"
               :label="plot.label"
             ></v-checkbox>
-            <!-- </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{plot.label}}</v-list-tile-title>
-            </v-list-tile-content>-->
-            <v-btn :color="plot.color" small dark>Change</v-btn>
+            <ColorPicker
+              :currentColor="plot.color"
+              @color-change="updateColor({index, id: file.id}, $event)"
+            />
+            <!-- <v-btn :color="plot.color" small dark depressed>Change</v-btn> -->
           </v-layout>
         </v-list-tile>
       </v-list-group>
@@ -54,10 +54,13 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import FileButton from '@/components/ui/FileButton'
+import ColorPicker from '@/components/ui/ColorPicker'
+
 export default {
   name: 'PlotDrawer',
   components: {
-    FileButton
+    FileButton,
+    ColorPicker
   },
   methods: {
     getFiles (event) {
@@ -68,6 +71,9 @@ export default {
         this.$store.dispatch('loadFiles', files)
       }
     },
+    openModifyDialog (file) {
+      this.$store.commit('setFileToModify', file)
+    },
     togglePlotVisibility (plotToToggle, event) {
       const plotInfo = {
         ...plotToToggle,
@@ -75,8 +81,12 @@ export default {
       }
       this.$store.commit('setPlotVisibility', plotInfo)
     },
-    openModifyDialog (file) {
-      this.$store.commit('setFileToModify', file)
+    updateColor (plotToUpdate, hexColor) {
+      const plotInfo = {
+        ...plotToUpdate,
+        value: hexColor
+      }
+      this.$store.commit('setPlotColor', plotInfo)
     }
   },
   computed: {
