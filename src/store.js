@@ -3,7 +3,12 @@ import Vuex from 'vuex'
 import uuidv1 from 'uuid/v1'
 import Network from 'rf-network'
 
+import colorGenerator from './util/colorGenerator'
+
 Vue.use(Vuex)
+
+// globally declared so as to exhaust color list before repeating
+const colorGen = colorGenerator()
 
 export default new Vuex.Store({
   state: {
@@ -99,7 +104,8 @@ export default new Vuex.Store({
                   label,
                   indeces: [i, j],
                   visible: false,
-                  disabledSmith: i !== j // state to enable/plot on Smith Chart
+                  disabledSmith: i !== j, // state to enable/plot on Smith Chart,
+                  color: colorGen.next().value
                 })
               }
             }

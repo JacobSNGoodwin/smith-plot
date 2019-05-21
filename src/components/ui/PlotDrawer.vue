@@ -30,18 +30,20 @@
           </v-layout>
         </v-list-tile>
         <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
-          <v-layout align-content-center>
-            <v-list-tile-action>
-              <v-checkbox
-                :disabled="(plotType === 'smith' && plot.disabledSmith)"
-                color="primary"
-                :input-value="plot.visibile"
-                @change="togglePlotVisibility({index, id: file.id}, $event)"
-              ></v-checkbox>
-            </v-list-tile-action>
+          <v-layout align-center>
+            <!-- <v-list-tile-action> -->
+            <v-checkbox
+              :disabled="(plotType === 'smith' && plot.disabledSmith)"
+              :color="plot.color"
+              :input-value="plot.visibile"
+              @change="togglePlotVisibility({index, id: file.id}, $event)"
+              :label="plot.label"
+            ></v-checkbox>
+            <!-- </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>{{plot.label}}</v-list-tile-title>
-            </v-list-tile-content>
+            </v-list-tile-content>-->
+            <v-btn :color="plot.color" small dark>Change</v-btn>
           </v-layout>
         </v-list-tile>
       </v-list-group>
