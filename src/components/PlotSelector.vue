@@ -1,7 +1,7 @@
 <template>
   <v-layout class="PlotSelector" justify-center>
     <v-flex xs12>
-      <v-tabs fixed-tabs light icons-and-text>
+      <v-tabs fixed-tabs light icons-and-text @change="setPlotType($event)">
         <v-tabs-slider color="primary"></v-tabs-slider>
         <v-tab href="#smith">
           Smith
@@ -31,6 +31,11 @@ export default {
   components: {
     SmithPlot,
     CartesianPlot
+  },
+  methods: {
+    setPlotType (event) {
+      this.$store.commit('setPlotType', event)
+    }
   }
 }
 </script>
