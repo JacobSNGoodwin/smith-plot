@@ -39,7 +39,8 @@ export default {
   },
   computed: {
     ...mapState([
-      'fileToModify'
+      'fileToModify',
+      'plots'
     ])
   }
 }

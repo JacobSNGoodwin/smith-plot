@@ -45,7 +45,7 @@ export default {
 
 <style lang="stylus" scoped>
 .smithContainer
-  max-width: 800px
+  max-width: 750px
   margin: auto
   padding: 2em 0
 

@@ -137,6 +137,24 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    enabledPlots (state, getters) {
+      const files = getters.filesByName
+
+      const allPlots = []
+
+      files.forEach(file => {
+        file.sPlots.forEach(plot => {
+          if (plot.visible && !plot.disabledSmith) {
+            allPlots.push({
+              ...plot,
+              data: state.plots[file.id]
+            })
+          }
+        })
+      })
+
+      return allPlots
+    },
     filesByName: state => {
       return state.fileList.sort((a, b) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {
