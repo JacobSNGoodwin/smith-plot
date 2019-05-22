@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import uuidv1 from 'uuid/v1'
 import Network from 'rf-network'
+// import math from 'mathjs'
 
 import colorGenerator from './util/colorGenerator'
 

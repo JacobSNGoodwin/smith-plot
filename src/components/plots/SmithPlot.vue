@@ -8,13 +8,21 @@
         <g class="imagCircles" :transform="groupTranslate">
           <path v-for="path in imagPaths" :key="path" :d="path"></path>
         </g>
+        <g class="smithTraces" :transform="smithTranslate">
+          <path
+            v-for="(plot, index) in plots"
+            :key="plot.fileName+plot.label"
+            :d="smithLines[index]"
+            :stroke="plot.color"
+          ></path>
+        </g>
       </svg>
     </div>
   </v-card>
 </template>
 
 <script>
-import { getRealPath, getImagPath } from '../../util/smithMath'
+import { getRealPath, getImagPath, getSmithPlotLine } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
   props: {
@@ -41,6 +49,12 @@ export default {
     },
     imagPaths () {
       return this.imagLineValues.map(imagValue => getImagPath(imagValue))
+    },
+    smithTranslate () {
+      return `translate(${this.margin + this.viewPort / 2}, ${this.margin + this.viewPort / 2})`
+    },
+    smithLines () {
+      return this.plots.map(plot => getSmithPlotLine(plot))
     }
   }
 }
@@ -62,6 +76,10 @@ export default {
 
 .imagCircles
   stroke: #333333
+  stroke-width: 5
+  fill: none
+
+.smithTraces
   stroke-width: 5
   fill: none
 </style>

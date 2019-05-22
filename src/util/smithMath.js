@@ -110,6 +110,11 @@ const a = d3
   .domain([0, 2 * Math.PI])
   .range([0, -2 * Math.PI])
 
+const a2 = d3
+  .scaleLinear()
+  .domain([0, 2 * Math.PI])
+  .range([+Math.PI / 2, -2 * Math.PI + Math.PI / 2])
+
 // d3 path generators
 const getRealPath = rL => {
   const arc = getRealArc(rL, Number.MAX_VALUE, -Number.MAX_VALUE)
@@ -151,4 +156,15 @@ const getImagPath = xL => {
   return imagPath.toString()
 }
 
-export { getRealPath, getImagPath }
+// d3 line generator
+const getSmithPlotLine = plot => {
+  const radialLine = d3
+    .lineRadial()
+    .radius(s => r(Math.sqrt(s.re * s.re + s.im * s.im)))
+    .angle(s => a2(math.atan2(s.im, s.re)))
+    .curve(d3.curveNatural)
+
+  return radialLine(plot.s)
+}
+
+export { getRealPath, getImagPath, getSmithPlotLine }
