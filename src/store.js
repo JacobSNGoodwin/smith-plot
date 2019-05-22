@@ -144,12 +144,28 @@ export default new Vuex.Store({
 
       files.forEach(file => {
         file.sPlots.forEach(plot => {
-          if (plot.visible && !plot.disabledSmith) {
-            allPlots.push({
-              ...plot,
-              data: state.plots[file.id]
-            })
+          const plotData = {
+            ...plot,
+            fileName: file.name,
+            freq: state.plots[file.id].data.freq,
+            s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],
+            n: state.plots[file.id].n,
+            unit: state.plots[file.id].unit,
+            z0: state.plots[file.id].z0
           }
+          if (
+            (plot.visible && state.plotType !== 'smith') ||
+            (plot.visible && state.plotType === 'smith' && !plot.disabledSmith)
+          ) {
+            allPlots.push(plotData)
+          }
+          // if (
+          //   plot.visible &&
+          //   state.plotType === 'smith' &&
+          //   !plot.disabledSmith
+          // ) {
+          //   allPlots.push(plotData)
+          // }
         })
       })
 
