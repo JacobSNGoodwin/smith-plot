@@ -17,6 +17,9 @@
 import { getRealPath, getImagPath } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
+  props: {
+    plots: Array
+  },
   data () {
     return {
       viewPort: 1000,

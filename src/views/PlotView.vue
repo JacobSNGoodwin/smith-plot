@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <PlotSelector/>
+    <PlotSelector :enabledPlots="enabledPlots"/>
     <!-- update:returnValue - handle state when clicking backdrop outside of dialog -->
     <v-dialog :value="fileToModify" max-width="500px" @update:returnValue="clearSelectedFile">
       <EditPlot
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 import EditPlot from '@/components/ui/EditPlot'
 import PlotSelector from '@/components/PlotSelector'
@@ -39,8 +39,10 @@ export default {
   },
   computed: {
     ...mapState([
-      'fileToModify',
-      'plots'
+      'fileToModify'
+    ]),
+    ...mapGetters([
+      'enabledPlots'
     ])
   }
 }
