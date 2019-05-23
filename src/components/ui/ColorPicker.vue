@@ -22,8 +22,17 @@ export default {
   data () {
     return {
       colors: {
-        hex8: this.currentColor
+        hex: null,
+        hex8: null,
+        a: null
       }
+    }
+  },
+  created () {
+    this.colors = {
+      hex: this.currentColor,
+      hex8: this.currentColor + 'FF',
+      a: 1
     }
   }
 }
