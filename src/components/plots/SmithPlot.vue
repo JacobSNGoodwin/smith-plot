@@ -11,6 +11,7 @@
 
         <transition-group class="smithTraces" :transform="smithTranslate" name="fade" tag="g">
           <path
+            @mouseover="showTooltip"
             v-for="(plot, index) in plots"
             :key="plot.fileName+plot.label"
             :d="smithLines[index]"
@@ -35,6 +36,18 @@ export default {
       margin: 25,
       realLineValues: [0, 0.2, 0.5, 1, 2, 5, 10],
       imagLineValues: [-10, -5, -2, -1, -0.5, -0.2, 0, 0.2, 0.5, 1, 2, 5, 10]
+    }
+  },
+  methods: {
+    showTooltip (event) {
+      const svg = event.target.nearestViewportElement
+      const pt = svg.createSVGPoint()
+
+      pt.x = event.clientX
+      pt.y = event.clientY
+
+      const svgPt = pt.matrixTransform(svg.getScreenCTM().inverse())
+      console.log(svgPt)
     }
   },
   computed: {
