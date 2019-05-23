@@ -8,14 +8,15 @@
         <g class="imagCircles" :transform="groupTranslate">
           <path v-for="path in imagPaths" :key="path" :d="path"></path>
         </g>
-        <g class="smithTraces" :transform="smithTranslate">
+
+        <transition-group class="smithTraces" :transform="smithTranslate" name="fade" tag="g">
           <path
             v-for="(plot, index) in plots"
             :key="plot.fileName+plot.label"
             :d="smithLines[index]"
             :stroke="plot.color"
           ></path>
-        </g>
+        </transition-group>
       </svg>
     </div>
   </v-card>
@@ -82,4 +83,10 @@ export default {
 .smithTraces
   stroke-width: 5
   fill: none
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity .5s
+
+.fade-enter, .fade-leave-to
+  opacity: 0
 </style>
