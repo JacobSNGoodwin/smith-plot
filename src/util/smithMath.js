@@ -11,11 +11,19 @@ const zLoadNormalizedToGamma = zLoadNormalized => {
   return math.divide(numerator, denominator)
 }
 
-// function gammaToZLoadNormalized(gamma) {
-//   const numerator = math.add(1, gamma)
-//   const denominator = math.subtract(1, gamma)
-//   return math.divide(numerator, denominator)
-// }
+const gammaToZLoadNormalized = gamma => {
+  const numerator = math.add(1, gamma)
+  const denominator = math.subtract(1, gamma)
+  return math.divide(numerator, denominator)
+}
+
+/*
+ * Given the reflection coefficient, gamma, and the carracteristic impedance, z0,
+ * gammaToZload computers the complex load impedance
+ */
+const gammaToZLoad = (gamma, z0) => {
+  return math.multiply(z0, gammaToZLoadNormalized(gamma))
+}
 
 /*
  * Takes in the value of the constant resitance circle and the start and end point
@@ -183,4 +191,10 @@ const getSmithCoordinate = sComplex => {
   }
 }
 
-export { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate }
+export {
+  getRealPath,
+  getImagPath,
+  getSmithPlotLine,
+  getSmithCoordinate,
+  gammaToZLoad
+}

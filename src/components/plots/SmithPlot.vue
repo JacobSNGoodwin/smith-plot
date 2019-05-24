@@ -20,7 +20,7 @@
               :r="5"
               :stroke="plot.color"
               :fill="plot.color"
-              @mouseover="showTooltip"
+              @mouseover="showTooltip(plot, index, $event)"
               @mouseout="hideTooltip"
             ></circle>
           </g>
@@ -31,17 +31,24 @@
       :value="tooltipVisible"
       :position-x="tooltipX"
       :position-y="tooltipY"
+      :color="this.tooltipData.color"
       absolute
       light
       bottom
+      nudge-right="20"
     >
-      <span>A dadgummed tooltip</span>
+      <v-layout class="tooltipContent" justify-center column>
+        <div class="subheading font-weight-bold">{{this.tooltipData.title}}</div>
+        <div class="body-2">freq: {{this.tooltipData.freq}}</div>
+        <div class="body-2">S: {{this.tooltipData.s}}</div>
+        <div class="body-2">Z: {{this.tooltipData.z}}</div>
+      </v-layout>
     </v-tooltip>
   </v-card>
 </template>
 
 <script>
-import { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate } from '../../util/smithMath'
+import { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate, gammaToZLoad } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
   props: {
@@ -55,14 +62,47 @@ export default {
       imagLineValues: [-10, -5, -2, -1, -0.5, -0.2, 0, 0.2, 0.5, 1, 2, 5, 10],
       tooltipX: null,
       tooltipY: null,
-      tooltipVisible: false
+      tooltipVisible: false,
+      tooltipData: {
+        freq: null,
+        s: null,
+        z: null,
+        title: null,
+        color: null
+      }
     }
   },
   methods: {
     getDataPoint (plot, index) {
       return getSmithCoordinate(plot.s[index])
     },
-    showTooltip (event) {
+    showTooltip (plot, index, event) {
+      const freq = plot.freq[index]
+      const s = plot.s[index]
+
+      let sSign = '+'
+      let sImag = s.im
+      if (s.im < 0) {
+        sSign = '-'
+        sImag = -1 * s.im
+      }
+
+      const z = gammaToZLoad(plot.s[index], plot.z0)
+
+      let zSign = '+'
+      let zImag = z.im
+      if (z.im < 0) {
+        zSign = '-'
+        zImag = -1 * z.im
+      }
+
+      this.tooltipData.color = plot.color
+      this.tooltipData.freq = `${freq.toFixed(4)} ${plot.unit}`
+      this.tooltipData.s = `${s.re.toFixed(4)} ${sSign} ${sImag.toFixed(4)}i`
+      this.tooltipData.z = `${z.re.toFixed(4)} ${zSign} ${zImag.toFixed(4)}i \u03A9`
+
+      this.tooltipData.title = `${plot.fileName} - ${plot.label}`
+
       this.tooltipX = event.clientX
       this.tooltipY = event.clientY
       this.tooltipVisible = true
@@ -125,6 +165,7 @@ export default {
 .fade-enter, .fade-leave-to
   opacity: 0
 
-circle
-  stroke-width: 5
+.tooltipContent
+  div
+    padding: .5em 1em
 </style>
