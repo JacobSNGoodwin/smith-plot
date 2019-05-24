@@ -1,5 +1,15 @@
 <template>
   <v-card flat>
+    <v-layout row justify-space-around>
+      <v-flex sm4 xs10>
+        <v-select
+          class="selectPlot"
+          v-model="selectedPlotType"
+          :items="plotTypes"
+          label="Plot Type"
+        ></v-select>
+      </v-flex>
+    </v-layout>
     <div class="cartesianContainer">
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet"></svg>
     </div>
@@ -16,7 +26,16 @@ export default {
   data () {
     return {
       viewPort: 1000,
-      margin: 25
+      margin: 25,
+      plotTypes: [
+        'Real',
+        'Imaginary',
+        'Magnitude',
+        'dB',
+        'Angle - Radians',
+        'Angle - Degrees'
+      ],
+      selectedPlotType: 'Real'
     }
   },
   computed: {
@@ -48,4 +67,7 @@ export default {
 
 .cartesianSvg
   shape-rendering: geometricPrecision
+
+.selectPlot
+  margin-top: 1.5em
 </style>
