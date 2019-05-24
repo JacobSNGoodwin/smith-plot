@@ -20,11 +20,23 @@
               :r="5"
               :stroke="plot.color"
               :fill="plot.color"
+              @mouseover="showTooltip"
+              @mouseout="hideTooltip"
             ></circle>
           </g>
         </transition-group>
       </svg>
     </div>
+    <v-tooltip
+      :value="tooltipVisible"
+      :position-x="tooltipX"
+      :position-y="tooltipY"
+      absolute
+      light
+      bottom
+    >
+      <span>A dadgummed tooltip</span>
+    </v-tooltip>
   </v-card>
 </template>
 
@@ -40,7 +52,10 @@ export default {
       viewPort: 1000,
       margin: 25,
       realLineValues: [0, 0.2, 0.5, 1, 2, 5, 10],
-      imagLineValues: [-10, -5, -2, -1, -0.5, -0.2, 0, 0.2, 0.5, 1, 2, 5, 10]
+      imagLineValues: [-10, -5, -2, -1, -0.5, -0.2, 0, 0.2, 0.5, 1, 2, 5, 10],
+      tooltipX: null,
+      tooltipY: null,
+      tooltipVisible: false
     }
   },
   methods: {
@@ -48,15 +63,14 @@ export default {
       return getSmithCoordinate(plot.s[index])
     },
     showTooltip (event) {
-      const svg = event.target.nearestViewportElement
-      const pt = svg.createSVGPoint()
-
-      pt.x = event.clientX
-      pt.y = event.clientY
-
-      const svgPt = pt.matrixTransform(svg.getScreenCTM().inverse())
-      console.log(svgPt)
+      this.tooltipX = event.clientX
+      this.tooltipY = event.clientY
+      this.tooltipVisible = true
+    },
+    hideTooltip (event) {
+      this.tooltipVisible = false
     }
+
   },
   computed: {
     svgBox () {
@@ -112,5 +126,5 @@ export default {
   opacity: 0
 
 circle
-  stroke-width: 1
+  stroke-width: 5
 </style>
