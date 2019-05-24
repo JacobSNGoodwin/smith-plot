@@ -13,10 +13,10 @@
         </v-tab>
 
         <v-tab-item value="smith">
-          <SmithPlot :plots="enabledPlots"/>
+          <SmithPlot :plots="smithPlots"/>
         </v-tab-item>
         <v-tab-item value="cartesian">
-          <CartesianPlot/>
+          <CartesianPlot :plots="enabledPlots"/>
         </v-tab-item>
       </v-tabs>
     </v-flex>
@@ -38,6 +38,11 @@ export default {
   methods: {
     setPlotType (event) {
       this.$store.commit('setPlotType', event)
+    }
+  },
+  computed: {
+    smithPlots () {
+      return this.enabledPlots.filter(plot => !plot.disabledSmith)
     }
   }
 }
