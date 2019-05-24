@@ -11,11 +11,19 @@ const zLoadNormalizedToGamma = zLoadNormalized => {
   return math.divide(numerator, denominator)
 }
 
-// function gammaToZLoadNormalized(gamma) {
-//   const numerator = math.add(1, gamma)
-//   const denominator = math.subtract(1, gamma)
-//   return math.divide(numerator, denominator)
-// }
+const gammaToZLoadNormalized = gamma => {
+  const numerator = math.add(1, gamma)
+  const denominator = math.subtract(1, gamma)
+  return math.divide(numerator, denominator)
+}
+
+/*
+ * Given the reflection coefficient, gamma, and the carracteristic impedance, z0,
+ * gammaToZload computers the complex load impedance
+ */
+const gammaToZLoad = (gamma, z0) => {
+  return math.multiply(z0, gammaToZLoadNormalized(gamma))
+}
 
 /*
  * Takes in the value of the constant resitance circle and the start and end point
@@ -110,6 +118,20 @@ const a = d3
   .domain([0, 2 * Math.PI])
   .range([0, -2 * Math.PI])
 
+// scale for plots (Smith traces and data points)
+const a2 = d3
+  .scaleLinear()
+  .domain([0, 2 * Math.PI])
+  .range([+Math.PI / 2, -2 * Math.PI + Math.PI / 2])
+const x2 = d3
+  .scaleLinear()
+  .domain([-1, 1])
+  .range([-500, 500])
+const y2 = d3
+  .scaleLinear()
+  .domain([-1, 1])
+  .range([500, -500])
+
 // d3 path generators
 const getRealPath = rL => {
   const arc = getRealArc(rL, Number.MAX_VALUE, -Number.MAX_VALUE)
@@ -151,4 +173,28 @@ const getImagPath = xL => {
   return imagPath.toString()
 }
 
-export { getRealPath, getImagPath }
+// d3 line generator
+const getSmithPlotLine = plot => {
+  const radialLine = d3
+    .lineRadial()
+    .radius(s => r(Math.sqrt(s.re * s.re + s.im * s.im)))
+    .angle(s => a2(math.atan2(s.im, s.re)))
+    .curve(d3.curveNatural)
+
+  return radialLine(plot.s)
+}
+
+const getSmithCoordinate = sComplex => {
+  return {
+    cx: x2(sComplex.re),
+    cy: y2(sComplex.im)
+  }
+}
+
+export {
+  getRealPath,
+  getImagPath,
+  getSmithPlotLine,
+  getSmithCoordinate,
+  gammaToZLoad
+}

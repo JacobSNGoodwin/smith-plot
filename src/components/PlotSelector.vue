@@ -13,7 +13,7 @@
         </v-tab>
 
         <v-tab-item value="smith">
-          <SmithPlot/>
+          <SmithPlot :plots="enabledPlots"/>
         </v-tab-item>
         <v-tab-item value="cartesian">
           <CartesianPlot/>
@@ -31,6 +31,9 @@ export default {
   components: {
     SmithPlot,
     CartesianPlot
+  },
+  props: {
+    enabledPlots: Array
   },
   methods: {
     setPlotType (event) {

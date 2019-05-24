@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import uuidv1 from 'uuid/v1'
 import Network from 'rf-network'
+// import math from 'mathjs'
 
 import colorGenerator from './util/colorGenerator'
 
@@ -137,6 +138,40 @@ export default new Vuex.Store({
     }
   },
   getters: {
+    enabledPlots (state, getters) {
+      const files = getters.filesByName
+
+      const allPlots = []
+
+      files.forEach(file => {
+        file.sPlots.forEach(plot => {
+          const plotData = {
+            ...plot,
+            fileName: file.name,
+            freq: state.plots[file.id].data.freq,
+            s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],
+            n: state.plots[file.id].n,
+            unit: state.plots[file.id].unit,
+            z0: state.plots[file.id].z0
+          }
+          if (
+            (plot.visible && state.plotType !== 'smith') ||
+            (plot.visible && state.plotType === 'smith' && !plot.disabledSmith)
+          ) {
+            allPlots.push(plotData)
+          }
+          // if (
+          //   plot.visible &&
+          //   state.plotType === 'smith' &&
+          //   !plot.disabledSmith
+          // ) {
+          //   allPlots.push(plotData)
+          // }
+        })
+      })
+
+      return allPlots
+    },
     filesByName: state => {
       return state.fileList.sort((a, b) => {
         if (a.name.toLowerCase() < b.name.toLowerCase()) {

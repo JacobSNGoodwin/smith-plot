@@ -12,7 +12,7 @@
         <v-icon>add</v-icon>
       </FileButton>
     </v-layout>
-    <v-list subheader>
+    <v-list subheader expand>
       <v-list-tile>
         <v-list-tile-title class="title">Plots</v-list-tile-title>
       </v-list-tile>
@@ -31,7 +31,6 @@
         </v-list-tile>
         <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
           <v-layout align-center>
-            <!-- <v-list-tile-action> -->
             <v-checkbox
               :disabled="(plotType === 'smith' && plot.disabledSmith)"
               :color="plot.color"
@@ -43,7 +42,6 @@
               :currentColor="plot.color"
               @color-change="updateColor({index, id: file.id}, $event)"
             />
-            <!-- <v-btn :color="plot.color" small dark depressed>Change</v-btn> -->
           </v-layout>
         </v-list-tile>
       </v-list-group>
@@ -121,4 +119,8 @@ export default {
 .FileButton
   display: block
   padding-top: 1em
+
+.ExpansionPanel
+  box-shadow: none
+  margin-top: 1em
 </style>

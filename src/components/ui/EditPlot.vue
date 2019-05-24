@@ -1,11 +1,8 @@
 <template>
-  <v-card>
+  <v-card @keydown.enter="$emit('update-plot-name', newName)">
     <v-card-title>Edit Plot</v-card-title>
     <v-card-text>
-      <!-- Use form prevent so user can press enter to submit -->
-      <v-form @submit.prevent="$emit('update-plot-name', newName)">
-        <v-text-field label="Plot Label" required v-model="newName"></v-text-field>
-      </v-form>
+      <v-text-field label="Plot Label" required v-model="newName"></v-text-field>
     </v-card-text>
     <v-card-actions>
       <v-btn flat @click.stop="$emit('close-dialog')">Cancel</v-btn>

@@ -1,15 +1,10 @@
 <template>
-  <v-menu
-    offset-x
-    left
-    :close-on-content-click="false"
-    @update:returnValue="$emit('color-change', colors.hex8)"
-  >
+  <v-menu offset-x left :close-on-content-click="false">
     <template v-slot:activator="{ on }">
       <v-btn class="custom-size" :color="colors.hex8" fab dark v-on="on"></v-btn>
     </template>
     <v-card>
-      <chrome-picker v-model="colors"/>
+      <chrome-picker v-model="colors" @input="$emit('color-change', colors.hex8)"/>
     </v-card>
   </v-menu>
 </template>
@@ -27,8 +22,17 @@ export default {
   data () {
     return {
       colors: {
-        hex8: this.currentColor
+        hex: null,
+        hex8: null,
+        a: null
       }
+    }
+  },
+  created () {
+    this.colors = {
+      hex: this.currentColor,
+      hex8: this.currentColor + 'FF',
+      a: 1
     }
   }
 }
