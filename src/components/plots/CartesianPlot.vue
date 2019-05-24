@@ -13,7 +13,9 @@
       </v-flex>
     </v-layout>
     <div class="cartesianContainer">
-      <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet"></svg>
+      <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
+        <g class="cartesianGroup" :transform="groupTranslate"></g>
+      </svg>
     </div>
   </v-card>
 </template>
@@ -37,13 +39,24 @@ export default {
         { name: 'Angle - Radians', val: 'rad' },
         { name: 'Angle - Degrees', val: 'deg' }
       ],
-      selectedPlotType: 'Real'
+      selectedPlotType: 'Real',
+      axesSettings: {
+        xmin: 0,
+        xmax: 1E9,
+        xticks: 5,
+        ymin: -100,
+        ymax: 100,
+        yticks: 5
+      }
     }
   },
   computed: {
     svgBox () {
       const totalWidth = this.viewPort + 2 * this.margin
       return `0 0 ${totalWidth} ${totalWidth}`
+    },
+    groupTranslate () {
+      return `translate(${this.margin}, ${this.margin})`
     },
     plotsAllComponents () {
       const newPlots = this.plots.map(plot => {
