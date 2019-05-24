@@ -154,12 +154,6 @@ export default new Vuex.Store({
             unit: state.plots[file.id].unit,
             z0: state.plots[file.id].z0
           }
-          // if (
-          //   (plot.visible && state.plotType !== 'smith') ||
-          //   (plot.visible && state.plotType === 'smith' && !plot.disabledSmith)
-          // ) {
-          //   allPlots.push(plotData)
-          // }
           if (plot.visible) {
             allPlots.push(plotData)
           }

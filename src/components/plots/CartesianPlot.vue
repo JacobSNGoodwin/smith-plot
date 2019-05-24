@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { getSComponents } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -22,6 +23,18 @@ export default {
     svgBox () {
       const totalWidth = this.viewPort + 2 * this.margin
       return `0 0 ${totalWidth} ${totalWidth}`
+    },
+    plotsAllComponents () {
+      const newPlots = this.plots.map(plot => {
+        const plotComponents = getSComponents(plot.s)
+
+        return {
+          ...plot,
+          ...plotComponents
+        }
+      })
+
+      return newPlots
     }
   }
 }
