@@ -10,6 +10,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "chroma-js": "^2.0.3",
     "core-js": "^2.6.5",
     "d3": "^5.9.2",
     "mathjs": "^5.10.0",

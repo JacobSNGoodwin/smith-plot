@@ -39,7 +39,7 @@
       light
       bottom
     >
-      <v-layout class="tooltipContent" justify-center column>
+      <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
         <div class="subheading font-weight-bold">{{this.tooltipData.title}}</div>
         <div class="body-2">freq: {{this.tooltipData.freq}}</div>
         <div class="body-2">S: {{this.tooltipData.s}}</div>
@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import * as chroma from 'chroma-js'
 import { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate, gammaToZLoad } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
@@ -140,6 +141,26 @@ export default {
     },
     dataPointRadius () {
       return this.showDataPoints ? 5 : 10
+    },
+    fontStyle () {
+      if (this.tooltipData.color === null) {
+        return {
+          color: '#fff'
+        }
+      }
+
+      // choose font color based on luminance of background
+      const luminance = chroma(this.tooltipData.color).luminance()
+
+      if (luminance > 0.179) {
+        return {
+          color: '#000'
+        }
+      }
+
+      return {
+        color: '#fff'
+      }
     }
   }
 }
