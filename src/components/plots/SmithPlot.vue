@@ -9,14 +9,19 @@
           <path v-for="path in imagPaths" :key="path" :d="path"></path>
         </g>
 
-        <transition-group class="smithTraces" :transform="smithTranslate" name="fade" tag="g">
-          <path
-            @mouseover="showTooltip"
-            v-for="(plot, index) in plots"
-            :key="plot.fileName+plot.label"
-            :d="smithLines[index]"
-            :stroke="plot.color"
-          ></path>
+        <transition-group :transform="smithTranslate" name="fade" tag="g">
+          <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
+            <path class="smithTraces" :d="smithLines[index]" :stroke="plot.color"></path>
+            <circle
+              v-for="(freq, index) in plot.freq"
+              :key="freq"
+              :cx="getDataPoint(plot, index).cx"
+              :cy="getDataPoint(plot, index).cy"
+              :r="5"
+              :stroke="plot.color"
+              :fill="plot.color"
+            ></circle>
+          </g>
         </transition-group>
       </svg>
     </div>
@@ -24,7 +29,7 @@
 </template>
 
 <script>
-import { getRealPath, getImagPath, getSmithPlotLine } from '../../util/smithMath'
+import { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
   props: {
@@ -39,6 +44,9 @@ export default {
     }
   },
   methods: {
+    getDataPoint (plot, index) {
+      return getSmithCoordinate(plot.s[index])
+    },
     showTooltip (event) {
       const svg = event.target.nearestViewportElement
       const pt = svg.createSVGPoint()
@@ -98,8 +106,11 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .5s
+  transition: opacity .35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
+
+circle
+  stroke-width: 1
 </style>

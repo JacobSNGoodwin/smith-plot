@@ -110,10 +110,19 @@ const a = d3
   .domain([0, 2 * Math.PI])
   .range([0, -2 * Math.PI])
 
+// scale for plots (Smith traces and data points)
 const a2 = d3
   .scaleLinear()
   .domain([0, 2 * Math.PI])
   .range([+Math.PI / 2, -2 * Math.PI + Math.PI / 2])
+const x2 = d3
+  .scaleLinear()
+  .domain([-1, 1])
+  .range([-500, 500])
+const y2 = d3
+  .scaleLinear()
+  .domain([-1, 1])
+  .range([500, -500])
 
 // d3 path generators
 const getRealPath = rL => {
@@ -167,4 +176,11 @@ const getSmithPlotLine = plot => {
   return radialLine(plot.s)
 }
 
-export { getRealPath, getImagPath, getSmithPlotLine }
+const getSmithCoordinate = sComplex => {
+  return {
+    cx: x2(sComplex.re),
+    cy: y2(sComplex.im)
+  }
+}
+
+export { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate }
