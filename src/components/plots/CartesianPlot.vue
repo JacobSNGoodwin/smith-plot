@@ -6,6 +6,8 @@
           class="selectPlot"
           v-model="selectedPlotType"
           :items="plotTypes"
+          item-text="name"
+          item-value="val"
           label="Plot Type"
         ></v-select>
       </v-flex>
@@ -28,12 +30,12 @@ export default {
       viewPort: 1000,
       margin: 25,
       plotTypes: [
-        'Real',
-        'Imaginary',
-        'Magnitude',
-        'dB',
-        'Angle - Radians',
-        'Angle - Degrees'
+        { name: 'Real', val: 're' },
+        { name: 'Imaginary', val: 'im' },
+        { name: 'Magnitude', val: 'mag' },
+        { name: 'dB', val: 'db' },
+        { name: 'Angle - Radians', val: 'rad' },
+        { name: 'Angle - Degrees', val: 'deg' }
       ],
       selectedPlotType: 'Real'
     }
