@@ -1,5 +1,8 @@
 <template>
   <v-card flat>
+    <v-layout column align-center>
+      <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
+    </v-layout>
     <div class="smithContainer">
       <svg class="smithSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="realCircles" :transform="groupTranslate">
@@ -17,9 +20,9 @@
               :key="freq"
               :cx="getDataPoint(plot, index).cx"
               :cy="getDataPoint(plot, index).cy"
-              :r="5"
-              :stroke="plot.color"
-              :fill="plot.color"
+              :r="dataPointRadius"
+              :stroke="getStrokeFill(plot.color)"
+              :fill="getStrokeFill(plot.color)"
               @mouseover="showTooltip(plot, index, $event)"
               @mouseout="hideTooltip"
             ></circle>
@@ -69,7 +72,8 @@ export default {
         z: null,
         title: null,
         color: null
-      }
+      },
+      showDataPoints: false
     }
   },
   methods: {
@@ -107,6 +111,9 @@ export default {
       this.tooltipY = event.clientY
       this.tooltipVisible = true
     },
+    getStrokeFill (color) {
+      return this.showDataPoints ? color : 'transparent'
+    },
     hideTooltip (event) {
       this.tooltipVisible = false
     }
@@ -131,6 +138,9 @@ export default {
     },
     smithLines () {
       return this.plots.map(plot => getSmithPlotLine(plot))
+    },
+    dataPointRadius () {
+      return this.showDataPoints ? 5 : 10
     }
   }
 }
@@ -168,4 +178,8 @@ export default {
 .tooltipContent
   div
     padding: .5em 1em
+
+.switch
+  div
+    margin: auto
 </style>
