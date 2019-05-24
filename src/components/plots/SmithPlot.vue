@@ -38,7 +38,6 @@
       absolute
       light
       bottom
-      nudge-right="20"
     >
       <v-layout class="tooltipContent" justify-center column>
         <div class="subheading font-weight-bold">{{this.tooltipData.title}}</div>
