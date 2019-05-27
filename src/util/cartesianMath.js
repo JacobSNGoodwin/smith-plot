@@ -54,4 +54,16 @@ const getXLimits = plots => {
   }
 }
 
-export { getSComponents, getXLimits }
+const getYLimits = (plots, selectedPlotType) => {
+  const allExtent = []
+  plots.forEach(plot => {
+    allExtent.push(...d3.extent(plot[selectedPlotType]))
+  })
+
+  return {
+    min: d3.min(allExtent),
+    max: d3.max(allExtent)
+  }
+}
+
+export { getSComponents, getXLimits, getYLimits }

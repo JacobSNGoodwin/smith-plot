@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getSComponents, getXLimits } from '../../util/cartesianMath'
+import { getSComponents, getXLimits, getYLimits } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -39,7 +39,7 @@ export default {
         { name: 'Angle - Radians', val: 'sAngle' },
         { name: 'Angle - Degrees', val: 'sDeg' }
       ],
-      selectedPlotType: 're',
+      selectedPlotType: 'sRe',
       axesSettings: {
         xmin: 0,
         xmax: 1E9,
@@ -72,6 +72,9 @@ export default {
     },
     xLimits () {
       return getXLimits(this.plotsAllComponents)
+    },
+    yLimits () {
+      return getYLimits(this.plotsAllComponents, this.selectedPlotType)
     }
   }
 }
