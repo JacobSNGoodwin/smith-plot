@@ -8,6 +8,8 @@ import math from 'mathjs'
 // const THZ = 1e12 // just in case some numskull wants to try optical on this... groan
 
 const getSComponents = sParamsRealImag => {
+  const sRe = []
+  const sIm = []
   const sDb = []
   const sMag = []
   const sAngle = []
@@ -16,6 +18,8 @@ const getSComponents = sParamsRealImag => {
   sParamsRealImag.forEach(sParam => {
     const mag = math.sqrt(sParam.re * sParam.re + sParam.im * sParam.im)
     const angle = math.atan2(sParam.im, sParam.re)
+    sRe.push(sParam.re)
+    sIm.push(sParam.im)
     sMag.push(mag)
     sDb.push(20 * math.log10(mag))
     sAngle.push(angle)
@@ -23,6 +27,8 @@ const getSComponents = sParamsRealImag => {
   })
 
   return {
+    sRe,
+    sIm,
     sMag,
     sDb,
     sAngle,
@@ -30,4 +36,11 @@ const getSComponents = sParamsRealImag => {
   }
 }
 
-export { getSComponents }
+const getXLimits = (plots, plotType) => {
+  // if (plotType === 'sRe' || plotType === 'sIm') {
+
+  // }
+  return [0, 0]
+}
+
+export { getSComponents, getXLimits }
