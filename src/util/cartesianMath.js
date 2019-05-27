@@ -1,11 +1,14 @@
 import math from 'mathjs'
-// import * as d3 from 'd3'
+import * as d3 from 'd3'
 
-// const HZ = 1
-// const KHZ = 1e3
-// const MHZ = 1e6
-// const GHZ = 1e9
-// const THZ = 1e12 // just in case some numskull wants to try optical on this... groan
+const unitMap = new Map([
+  ['HZ', 1],
+  ['KHZ', 1e3],
+  ['MHZ', 1e6],
+  ['GHZ', 1e9],
+  ['THZ', 1e12],
+  ['PHZ', 1e15]
+])
 
 const getSComponents = sParamsRealImag => {
   const sRe = []
@@ -36,11 +39,19 @@ const getSComponents = sParamsRealImag => {
   }
 }
 
-const getXLimits = (plots, plotType) => {
-  // if (plotType === 'sRe' || plotType === 'sIm') {
+const getXLimits = plots => {
+  const allExtent = []
+  plots.forEach(plot => {
+    const plotExtent = d3.extent(plot.freq)
+    const plotMin = plotExtent[0] * unitMap.get(plot.unit)
+    const plotMax = plotExtent[1] * unitMap.get(plot.unit)
+    allExtent.push(plotMin, plotMax)
+  })
 
-  // }
-  return [0, 0]
+  return {
+    min: d3.min(allExtent),
+    max: d3.max(allExtent)
+  }
 }
 
 export { getSComponents, getXLimits }

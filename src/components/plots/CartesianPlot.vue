@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getSComponents } from '../../util/cartesianMath'
+import { getSComponents, getXLimits } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -32,14 +32,14 @@ export default {
       viewPort: 1000,
       margin: 25,
       plotTypes: [
-        { name: 'Real', val: 're' },
-        { name: 'Imaginary', val: 'im' },
-        { name: 'Magnitude', val: 'mag' },
-        { name: 'dB', val: 'db' },
-        { name: 'Angle - Radians', val: 'rad' },
-        { name: 'Angle - Degrees', val: 'deg' }
+        { name: 'Real', val: 'sRe' },
+        { name: 'Imaginary', val: 'sIm' },
+        { name: 'Magnitude', val: 'sMag' },
+        { name: 'dB', val: 'sDb' },
+        { name: 'Angle - Radians', val: 'sAngle' },
+        { name: 'Angle - Degrees', val: 'sDeg' }
       ],
-      selectedPlotType: 'Real',
+      selectedPlotType: 're',
       axesSettings: {
         xmin: 0,
         xmax: 1E9,
@@ -51,10 +51,6 @@ export default {
     }
   },
   computed: {
-    svgBox () {
-      const totalWidth = this.viewPort + 2 * this.margin
-      return `0 0 ${totalWidth} ${totalWidth}`
-    },
     groupTranslate () {
       return `translate(${this.margin}, ${this.margin})`
     },
@@ -69,6 +65,13 @@ export default {
       })
 
       return newPlots
+    },
+    svgBox () {
+      const totalWidth = this.viewPort + 2 * this.margin
+      return `0 0 ${totalWidth} ${totalWidth}`
+    },
+    xLimits () {
+      return getXLimits(this.plotsAllComponents)
     }
   }
 }
