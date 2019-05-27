@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { getSComponents, getXLimits, getYLimits } from '../../util/cartesianMath'
+import { getSComponents, getXLimits, getYLimits, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -46,7 +46,8 @@ export default {
         xticks: 5,
         ymin: -100,
         ymax: 100,
-        yticks: 5
+        yticks: 5,
+        plotFreqUnit: 'GHZ' // default unit of GHz
       }
     }
   },
@@ -58,8 +59,11 @@ export default {
       const newPlots = this.plots.map(plot => {
         const plotComponents = getSComponents(plot.s)
 
+        const freqToLocalUnit = normalizeFreq(plot.freq, this.axesSettings.plotFreqUnit, plot.unit) // make all plots have same freq unit
+
         return {
           ...plot,
+          freq: freqToLocalUnit,
           ...plotComponents
         }
       })

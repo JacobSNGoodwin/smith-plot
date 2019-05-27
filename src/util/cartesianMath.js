@@ -43,9 +43,7 @@ const getXLimits = plots => {
   const allExtent = []
   plots.forEach(plot => {
     const plotExtent = d3.extent(plot.freq)
-    const plotMin = plotExtent[0] * unitMap.get(plot.unit)
-    const plotMax = plotExtent[1] * unitMap.get(plot.unit)
-    allExtent.push(plotMin, plotMax)
+    allExtent.push(plotExtent[0], plotExtent[1])
   })
 
   return {
@@ -66,4 +64,10 @@ const getYLimits = (plots, selectedPlotType) => {
   }
 }
 
-export { getSComponents, getXLimits, getYLimits }
+const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
+  return frequencies.map(
+    frequency => frequency * (unitMap.get(inputUnit) / unitMap.get(outputUnit))
+  )
+}
+
+export { getSComponents, getXLimits, getYLimits, normalizeFreq }
