@@ -130,7 +130,10 @@ const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
   if (yLimits.min < 0 && yLimits.max > 0) {
     const path0 = d3.path()
     path0.moveTo(0, yScale(0))
-    path0.lineTo(viewPort.x - 2 * axesSettings.inset, yScale(0))
+    path0.lineTo(
+      viewPort.x - axesSettings.insetRight - axesSettings.insetLeft,
+      yScale(0)
+    )
 
     zeroPath = path0.toString()
   }
