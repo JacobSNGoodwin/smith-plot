@@ -105,10 +105,13 @@ const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
   path.moveTo(0, yMin)
   path.lineTo(0, yMax)
 
+  let zeroPath = null
+
   if (plots.length <= 0) {
     return {
       path: path.toString(),
-      ticks: null
+      ticks: null,
+      zeroPath
     }
   }
 
@@ -123,9 +126,19 @@ const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
     })
   }
 
+  // add data for a dashed line horizontal line at 0 if scale goes from negative to positive
+  if (yLimits.min < 0 && yLimits.max > 0) {
+    const path0 = d3.path()
+    path0.moveTo(0, yScale(0))
+    path0.lineTo(viewPort.x - 2 * axesSettings.inset, yScale(0))
+
+    zeroPath = path0.toString()
+  }
+
   return {
     path: path.toString(), // path of the yAxis
-    ticks
+    ticks,
+    zeroPath
   }
 }
 

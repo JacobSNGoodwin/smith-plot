@@ -17,13 +17,14 @@
         <g class="cartesianGroup" :transform="groupTranslate">
           <g class="axisGroup" :transform="`translate(${this.axesSettings.inset}, 0)`">
             <path class="yAxis" :d="yAxisData.path"></path>
+            <path v-if="yAxisData.zeroPath" class="zeroAxis" :d="yAxisData.zeroPath"></path>
             <g
               v-for="tick in yAxisData.ticks"
               :key="tick.label"
               :transform="`translate(0, ${tick.offsetY})`"
             >
               <line x2="-10"></line>
-              <text class="tickLabel" x="-16" dy="6">{{tick.label.toFixed(3)}}</text>
+              <text class="tickLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
           <g
@@ -135,9 +136,13 @@ export default {
 .tickLabel
   stroke: #333333
   fill: #333333
-  stroke-width: 1
+  stroke-width: 1.5
   font-size: 20px
   font-family: Roboto
   text-anchor: end
   text-rendering: geometricPrecision
+
+.zeroAxis
+  stroke-width: 1.5
+  stroke-dasharray: 5, 5
 </style>
