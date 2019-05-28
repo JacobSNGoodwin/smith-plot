@@ -33,6 +33,10 @@
             :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
           >
             <path class="xAxis" :d="xAxisData.path"></path>
+            <text
+              class="tickLabel xUnit"
+              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom})`"
+            >{{axesSettings.plotFreqUnit}}</text>
             <g
               v-for="tick in xAxisData.ticks"
               :key="tick.label"
@@ -149,6 +153,9 @@ export default {
   text-anchor: end
 
 .xLabel
+  text-anchor: middle
+
+.xUnit
   text-anchor: middle
 
 .zeroAxis
