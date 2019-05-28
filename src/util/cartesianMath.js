@@ -145,7 +145,7 @@ const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
     .line()
     .x(d => xScale(d.x))
     .y(d => yScale(d.y))
-    .curve(d3.curveNatural)
+    .curve(d3.curveMonotoneX)
 
   const plotPaths = plots.map(plot => {
     const pathData = []
