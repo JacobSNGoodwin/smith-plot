@@ -42,8 +42,8 @@ const getSComponents = sParamsRealImag => {
 
 const getXAxisData = (plots, viewPort, axesSettings) => {
   const xLimits = getXLimits(plots)
-  const xMin = axesSettings.inset
-  const xMax = viewPort.x - axesSettings.inset
+  const xMin = axesSettings.insetLeft
+  const xMax = viewPort.x - axesSettings.insetRight
 
   const xScale = d3
     .scaleLinear()
@@ -93,8 +93,8 @@ const getXLimits = plots => {
 
 const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
   const yLimits = getYLimits(plots, selectedPlotType)
-  const yMin = axesSettings.inset
-  const yMax = viewPort.y - axesSettings.inset
+  const yMin = axesSettings.insetTop
+  const yMax = viewPort.y - axesSettings.insetBottom
 
   const yScale = d3
     .scaleLinear()

@@ -15,7 +15,7 @@
     <div class="cartesianContainer">
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="cartesianGroup" :transform="groupTranslate">
-          <g class="axisGroup" :transform="`translate(${this.axesSettings.inset}, 0)`">
+          <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
             <path class="yAxis" :d="yAxisData.path"></path>
             <path v-if="yAxisData.zeroPath" class="zeroAxis" :d="yAxisData.zeroPath"></path>
             <g
@@ -30,7 +30,7 @@
           <g
             v-if="xAxisData"
             class="axisGroup"
-            :transform="`translate(0, ${this.viewPort.y - this.axesSettings.inset})`"
+            :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
           >
             <path class="xAxis" :d="xAxisData.path"></path>
             <g
@@ -58,7 +58,7 @@ export default {
   data () {
     return {
       viewPort: {
-        x: 1000,
+        x: 1200,
         y: 750
       },
       margin: 25,
@@ -79,7 +79,10 @@ export default {
         ymax: 100,
         yTicks: 5,
         plotFreqUnit: 'GHZ', // default unit of GHz
-        inset: 50 // inset of axes for group
+        insetTop: 10, // inset of axes for group
+        insetBottom: 90,
+        insetLeft: 80,
+        insetRight: 20
       }
     }
   },
@@ -119,7 +122,7 @@ export default {
 
 <style lang="stylus" scoped>
 .cartesianContainer
-  max-width: 750px
+  max-width: 1200px
   margin: auto
   padding: 2em 0
 
