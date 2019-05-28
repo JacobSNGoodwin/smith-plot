@@ -36,7 +36,7 @@
             <text
               class="tickLabel xUnit"
               :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom})`"
-            >{{axesSettings.plotFreqUnit}}</text>
+            >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
             <g
               v-for="tick in xAxisData.ticks"
               :key="tick.label"
@@ -87,6 +87,14 @@ export default {
         insetBottom: 90,
         insetLeft: 80,
         insetRight: 20
+      },
+      freqUnitLabel: {
+        'HZ': 'Hz',
+        'KHZ': 'kHz',
+        'MHZ': 'MHz',
+        'GHZ': 'GHz',
+        'THZ': 'THz',
+        'PHZ': 'PHz'
       }
     }
   },
