@@ -41,16 +41,40 @@ const getSComponents = sParamsRealImag => {
 }
 
 const getXAxisData = (plots, viewPort, axesSettings) => {
-  // constt xLimits = getXLimits(plots)
-  const xMin = 10
-  const xMax = viewPort.x - 10
+  const xLimits = getXLimits(plots)
+  const xMin = axesSettings.inset
+  const xMax = viewPort.x - axesSettings.inset
+
+  const xScale = d3
+    .scaleLinear()
+    .domain([xLimits.min, xLimits.max])
+    .range([xMin, xMax])
 
   const path = d3.path()
-  path.moveTo(xMin, viewPort.y - 10)
-  path.lineTo(xMax, viewPort.y - 10)
+  path.moveTo(xMin, 0)
+  path.lineTo(xMax, 0)
+
+  if (plots.length <= 0) {
+    return {
+      path: path.toString(),
+      ticks: null
+    }
+  }
+
+  const ticks = []
+
+  for (let i = 0; i <= axesSettings.yTicks; i++) {
+    const labelOffset =
+      xLimits.min + (xLimits.max - xLimits.min) * (i / axesSettings.xTicks)
+    ticks.push({
+      label: labelOffset,
+      offsetX: xScale(labelOffset)
+    })
+  }
 
   return {
-    path: path.toString()
+    path: path.toString(),
+    ticks
   }
 }
 
@@ -69,8 +93,8 @@ const getXLimits = plots => {
 
 const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
   const yLimits = getYLimits(plots, selectedPlotType)
-  const yMin = 10
-  const yMax = viewPort.y - 10
+  const yMin = axesSettings.inset
+  const yMax = viewPort.y - axesSettings.inset
 
   const yScale = d3
     .scaleLinear()
@@ -78,8 +102,15 @@ const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
     .range([yMax, yMin])
 
   const path = d3.path()
-  path.moveTo(10, yMin)
-  path.lineTo(10, yMax)
+  path.moveTo(0, yMin)
+  path.lineTo(0, yMax)
+
+  if (plots.length <= 0) {
+    return {
+      path: path.toString(),
+      ticks: null
+    }
+  }
 
   const ticks = []
 
@@ -88,7 +119,7 @@ const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
       yLimits.min + (yLimits.max - yLimits.min) * (i / axesSettings.yTicks)
     ticks.push({
       label: labelHeight,
-      height: yScale(labelHeight)
+      offsetY: yScale(labelHeight)
     })
   }
 

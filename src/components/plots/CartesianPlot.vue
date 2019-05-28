@@ -15,11 +15,30 @@
     <div class="cartesianContainer">
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="cartesianGroup" :transform="groupTranslate">
-          <g class="axisGroup">
+          <g class="axisGroup" :transform="`translate(${this.axesSettings.inset}, 0)`">
             <path class="yAxis" :d="yAxisData.path"></path>
+            <g
+              v-for="tick in yAxisData.ticks"
+              :key="tick.label"
+              :transform="`translate(0, ${tick.offsetY})`"
+            >
+              <line x2="-10"></line>
+              <text class="tickLabel" x="-16" dy="6">{{tick.label.toFixed(3)}}</text>
+            </g>
           </g>
-          <g class="axisGroup">
+          <g
+            v-if="xAxisData"
+            class="axisGroup"
+            :transform="`translate(0, ${this.viewPort.y - this.axesSettings.inset})`"
+          >
             <path class="xAxis" :d="xAxisData.path"></path>
+            <g
+              v-for="tick in xAxisData.ticks"
+              :key="tick.label"
+              :transform="`translate(${tick.offsetX}, 0)`"
+            >
+              <line v-if="tick.offsetX" y2="10"></line>
+            </g>
           </g>
         </g>
       </svg>
@@ -57,7 +76,8 @@ export default {
         ymin: -100,
         ymax: 100,
         yTicks: 5,
-        plotFreqUnit: 'GHZ' // default unit of GHz
+        plotFreqUnit: 'GHZ', // default unit of GHz
+        inset: 50 // inset of axes for group
       }
     }
   },
@@ -109,6 +129,15 @@ export default {
 
 .axisGroup
   stroke: #333333
-  stroke-width: 2
+  stroke-width: 3
   fill: none
+
+.tickLabel
+  stroke: #333333
+  fill: #333333
+  stroke-width: 1
+  font-size: 20px
+  font-family: Roboto
+  text-anchor: end
+  text-rendering: geometricPrecision
 </style>
