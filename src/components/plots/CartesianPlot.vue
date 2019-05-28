@@ -16,33 +16,32 @@
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="cartesianGroup" :transform="groupTranslate">
           <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
-            <path class="yAxis" :d="yAxisData.path"></path>
-            <path v-if="yAxisData.zeroPath" class="zeroAxis" :d="yAxisData.zeroPath"></path>
+            <path class="yAxis" :d="axisData.yAxisPath"></path>
+            <path v-if="axisData.zeroPath" class="zeroAxis" :d="axisData.zeroPath"></path>
             <g
-              v-for="tick in yAxisData.ticks"
+              v-for="tick in axisData.ticksY"
               :key="tick.label"
-              :transform="`translate(0, ${tick.offsetY})`"
+              :transform="`translate(0, ${tick.offset})`"
             >
               <line x2="-10"></line>
               <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
           <g
-            v-if="xAxisData"
             class="axisGroup"
             :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
           >
-            <path class="xAxis" :d="xAxisData.path"></path>
+            <path class="xAxis" :d="axisData.xAxisPath"></path>
             <text
               class="tickLabel xUnit"
               :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom})`"
             >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
             <g
-              v-for="tick in xAxisData.ticks"
+              v-for="tick in axisData.ticksX"
               :key="tick.label"
-              :transform="`translate(${tick.offsetX}, 0)`"
+              :transform="`translate(${tick.offset}, 0)`"
             >
-              <line v-if="tick.offsetX" y2="10"></line>
+              <line v-if="tick.offset" y2="10"></line>
               <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
@@ -53,7 +52,7 @@
 </template>
 
 <script>
-import { getSComponents, getXAxisData, getYAxisData, normalizeFreq } from '../../util/cartesianMath'
+import { getSComponents, getAxisData, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -122,11 +121,8 @@ export default {
       const totalHeight = this.viewPort.y + 2 * this.margin
       return `0 0 ${totalWidth} ${totalHeight}`
     },
-    xAxisData () {
-      return getXAxisData(this.plotsAllComponents, this.viewPort, this.axesSettings)
-    },
-    yAxisData () {
-      return getYAxisData(this.plotsAllComponents, this.selectedPlotType, this.viewPort, this.axesSettings)
+    axisData () {
+      return getAxisData(this.plotsAllComponents, this.selectedPlotType, this.viewPort, this.axesSettings)
     }
   }
 }

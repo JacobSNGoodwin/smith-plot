@@ -11,6 +11,28 @@ const unitMap = new Map([
   ['PHZ', 1e15]
 ])
 
+const getCartPlotLines = () => {
+  // const xLimits = getXLimits(plots)
+  // const xMin = axesSettings.insetLeft
+  // const xMax = viewPort.x - axesSettings.insetRight
+
+  // const xScale = d3
+  //   .scaleLinear()
+  //   .domain([xLimits.min, xLimits.max])
+  //   .range([xMin, xMax])
+
+  // const yLimits = getYLimits(plots, selectedPlotType)
+  // const yMin = axesSettings.insetTop
+  // const yMax = viewPort.y - axesSettings.insetBottom
+
+  // const yScale = d3
+  //   .scaleLinear()
+  //   .domain([yLimits.min, yLimits.max])
+  //   .range([yMax, yMin])
+
+  return null
+}
+
 const getSComponents = sParamsRealImag => {
   const sRe = []
   const sIm = []
@@ -40,94 +62,72 @@ const getSComponents = sParamsRealImag => {
   }
 }
 
-const getXAxisData = (plots, viewPort, axesSettings) => {
-  const xLimits = getXLimits(plots)
-  const xMin = axesSettings.insetLeft
-  const xMax = viewPort.x - axesSettings.insetRight
-
-  const xScale = d3
-    .scaleLinear()
-    .domain([xLimits.min, xLimits.max])
-    .range([xMin, xMax])
-
-  const path = d3.path()
-  path.moveTo(xMin, 0)
-  path.lineTo(xMax, 0)
-
-  if (plots.length <= 0) {
-    return {
-      path: path.toString(),
-      ticks: null
-    }
-  }
-
-  const ticks = []
-
-  for (let i = 0; i <= axesSettings.yTicks; i++) {
-    const labelOffset =
-      xLimits.min + (xLimits.max - xLimits.min) * (i / axesSettings.xTicks)
-    ticks.push({
-      label: labelOffset,
-      offsetX: xScale(labelOffset)
-    })
-  }
-
-  return {
-    path: path.toString(),
-    ticks
-  }
-}
-
-const getXLimits = plots => {
-  const allExtent = []
-  plots.forEach(plot => {
-    const plotExtent = d3.extent(plot.freq)
-    allExtent.push(plotExtent[0], plotExtent[1])
-  })
-
-  return {
-    min: d3.min(allExtent),
-    max: d3.max(allExtent)
-  }
-}
-
-const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
-  const yLimits = getYLimits(plots, selectedPlotType)
+const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
+  // create linear scales based on max dimensions
+  const limits = getLimits(plots, selectedPlotType)
   const yMin = axesSettings.insetTop
   const yMax = viewPort.y - axesSettings.insetBottom
 
   const yScale = d3
     .scaleLinear()
-    .domain([yLimits.min, yLimits.max])
+    .domain([limits.yMin, limits.yMax])
     .range([yMax, yMin])
 
-  const path = d3.path()
-  path.moveTo(0, yMin)
-  path.lineTo(0, yMax)
+  const xMin = axesSettings.insetLeft
+  const xMax = viewPort.x - axesSettings.insetRight
 
+  const xScale = d3
+    .scaleLinear()
+    .domain([limits.xMin, limits.xMax])
+    .range([xMin, xMax])
+
+  // a path representing the y axis
+  const yAxisPath = d3.path()
+  yAxisPath.moveTo(0, yMin)
+  yAxisPath.lineTo(0, yMax)
+
+  const xAxisPath = d3.path()
+  xAxisPath.moveTo(xMin, 0)
+  xAxisPath.lineTo(xMax, 0)
+
+  // zero path will be used for a dashed line at y = 0 if plot contains y = 0
   let zeroPath = null
 
   if (plots.length <= 0) {
     return {
-      path: path.toString(),
-      ticks: null,
+      yAxisPath: yAxisPath.toString(),
+      xAxisPath: xAxisPath.toString(),
+      ticksY: null,
+      ticksX: null,
       zeroPath
     }
   }
 
-  const ticks = []
+  // compute positions of tick marks
+  const ticksY = []
 
   for (let i = 0; i <= axesSettings.yTicks; i++) {
     const labelHeight =
-      yLimits.min + (yLimits.max - yLimits.min) * (i / axesSettings.yTicks)
-    ticks.push({
+      limits.yMin + (limits.yMax - limits.yMin) * (i / axesSettings.yTicks)
+    ticksY.push({
       label: labelHeight,
-      offsetY: yScale(labelHeight)
+      offset: yScale(labelHeight)
+    })
+  }
+
+  const ticksX = []
+
+  for (let i = 0; i <= axesSettings.yTicks; i++) {
+    const labelOffset =
+      limits.xMin + (limits.xMax - limits.xMin) * (i / axesSettings.xTicks)
+    ticksX.push({
+      label: labelOffset,
+      offset: xScale(labelOffset)
     })
   }
 
   // add data for a dashed line horizontal line at 0 if scale goes from negative to positive
-  if (yLimits.min < 0 && yLimits.max > 0) {
+  if (limits.yMin < 0 && limits.yMax > 0) {
     const path0 = d3.path()
     path0.moveTo(0, yScale(0))
     path0.lineTo(
@@ -139,21 +139,27 @@ const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
   }
 
   return {
-    path: path.toString(), // path of the yAxis
-    ticks,
+    yAxisPath: yAxisPath.toString(), // path of the yAxis
+    xAxisPath: xAxisPath.toString(),
+    ticksY,
+    ticksX,
     zeroPath
   }
 }
 
-const getYLimits = (plots, selectedPlotType) => {
-  const allExtent = []
+const getLimits = (plots, selectedPlotType) => {
+  const extentY = []
+  const extentX = []
   plots.forEach(plot => {
-    allExtent.push(...d3.extent(plot[selectedPlotType]))
+    extentY.push(...d3.extent(plot[selectedPlotType]))
+    extentX.push(...d3.extent(plot.freq))
   })
 
   return {
-    min: d3.min(allExtent),
-    max: d3.max(allExtent)
+    yMin: d3.min(extentY),
+    yMax: d3.max(extentY),
+    xMin: d3.min(extentX),
+    xMax: d3.max(extentX)
   }
 }
 
@@ -163,4 +169,4 @@ const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
   )
 }
 
-export { getSComponents, getXAxisData, getXLimits, getYAxisData, normalizeFreq }
+export { getCartPlotLines, getSComponents, getAxisData, normalizeFreq }
