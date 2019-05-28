@@ -45,6 +45,9 @@
               <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
+          <g v-for="(plot, index) in plotsAllComponents" :key="plot.fileName+plot.label">
+            <path class="cartTraces" :d="axisData.plotPaths[index]" :stroke="plot.color"></path>
+          </g>
         </g>
       </svg>
     </div>
@@ -136,6 +139,10 @@ export default {
 
 .cartesianSvg
   shape-rendering: geometricPrecision
+
+.cartTraces
+  fill: none
+  stroke-width: 5
 
 .selectPlot
   margin-top: 1.5em

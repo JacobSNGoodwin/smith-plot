@@ -99,11 +99,12 @@ const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
       xAxisPath: xAxisPath.toString(),
       ticksY: null,
       ticksX: null,
-      zeroPath
+      zeroPath,
+      plotPaths: null
     }
   }
 
-  // compute positions of tick marks
+  // compute positions of tick marks for both axes
   const ticksY = []
 
   for (let i = 0; i <= axesSettings.yTicks; i++) {
@@ -138,12 +139,36 @@ const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
     zeroPath = path0.toString()
   }
 
+  // get plot paths while we're at it since we have all the dadgummed info we dun need
+  // plotPaths will contain an array of path strings
+  const lineGenerator = d3
+    .line()
+    .x(d => xScale(d.x))
+    .y(d => yScale(d.y))
+    .curve(d3.curveNatural)
+
+  const plotPaths = plots.map(plot => {
+    const pathData = []
+
+    // need to find more efficient way to do this before hand in data store
+    for (let i = 0; i < plot.freq.length; i++) {
+      pathData.push({
+        x: plot.freq[i],
+        y: plot[selectedPlotType][i]
+      })
+    }
+
+    const path = lineGenerator(pathData)
+    return path
+  })
+
   return {
     yAxisPath: yAxisPath.toString(), // path of the yAxis
     xAxisPath: xAxisPath.toString(),
     ticksY,
     ticksX,
-    zeroPath
+    zeroPath,
+    plotPaths
   }
 }
 
