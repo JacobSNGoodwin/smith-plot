@@ -24,7 +24,7 @@
               :transform="`translate(0, ${tick.offsetY})`"
             >
               <line x2="-10"></line>
-              <text class="tickLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
+              <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
           <g
@@ -39,6 +39,7 @@
               :transform="`translate(${tick.offsetX}, 0)`"
             >
               <line v-if="tick.offsetX" y2="10"></line>
+              <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
         </g>
@@ -136,13 +137,18 @@ export default {
 .tickLabel
   stroke: #333333
   fill: #333333
-  stroke-width: 1.5
+  stroke-width: 1
   font-size: 20px
   font-family: Roboto
-  text-anchor: end
   text-rendering: geometricPrecision
 
+.yLabel
+  text-anchor: end
+
+.xLabel
+  text-anchor: middle
+
 .zeroAxis
-  stroke-width: 1.5
+  stroke-width: 1.2
   stroke-dasharray: 5, 5
 </style>
