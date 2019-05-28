@@ -15,8 +15,11 @@
     <div class="cartesianContainer">
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="cartesianGroup" :transform="groupTranslate">
-          <g class="yAxisGroup">
+          <g class="axisGroup">
             <path class="yAxis" :d="yAxisData.path"></path>
+          </g>
+          <g class="axisGroup">
+            <path class="xAxis" :d="xAxisData.path"></path>
           </g>
         </g>
       </svg>
@@ -25,7 +28,7 @@
 </template>
 
 <script>
-import { getSComponents, getXLimits, getYAxisData, normalizeFreq } from '../../util/cartesianMath'
+import { getSComponents, getXAxisData, getYAxisData, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -82,8 +85,8 @@ export default {
       const totalHeight = this.viewPort.y + 2 * this.margin
       return `0 0 ${totalWidth} ${totalHeight}`
     },
-    xLimits () {
-      return getXLimits(this.plotsAllComponents)
+    xAxisData () {
+      return getXAxisData(this.plotsAllComponents, this.viewPort, this.axesSettings)
     },
     yAxisData () {
       return getYAxisData(this.plotsAllComponents, this.selectedPlotType, this.viewPort, this.axesSettings)
@@ -104,7 +107,7 @@ export default {
 .selectPlot
   margin-top: 1.5em
 
-.yAxisGroup
+.axisGroup
   stroke: #333333
   stroke-width: 2
   fill: none

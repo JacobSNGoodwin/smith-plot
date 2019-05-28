@@ -40,6 +40,20 @@ const getSComponents = sParamsRealImag => {
   }
 }
 
+const getXAxisData = (plots, viewPort, axesSettings) => {
+  // constt xLimits = getXLimits(plots)
+  const xMin = 10
+  const xMax = viewPort.x - 10
+
+  const path = d3.path()
+  path.moveTo(xMin, viewPort.y - 10)
+  path.lineTo(xMax, viewPort.y - 10)
+
+  return {
+    path: path.toString()
+  }
+}
+
 const getXLimits = plots => {
   const allExtent = []
   plots.forEach(plot => {
@@ -102,4 +116,4 @@ const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
   )
 }
 
-export { getSComponents, getXLimits, getYAxisData, normalizeFreq }
+export { getSComponents, getXAxisData, getXLimits, getYAxisData, normalizeFreq }
