@@ -1,6 +1,7 @@
 import math from 'mathjs'
 import * as d3 from 'd3'
 
+// Map for quick unit conversion
 const unitMap = new Map([
   ['HZ', 1],
   ['KHZ', 1e3],
@@ -52,6 +53,37 @@ const getXLimits = plots => {
   }
 }
 
+const getYAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
+  const yLimits = getYLimits(plots, selectedPlotType)
+  const yMin = 10
+  const yMax = viewPort.y - 10
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([yLimits.min, yLimits.max])
+    .range([yMax, yMin])
+
+  const path = d3.path()
+  path.moveTo(10, yMin)
+  path.lineTo(10, yMax)
+
+  const ticks = []
+
+  for (let i = 0; i <= axesSettings.yTicks; i++) {
+    const labelHeight =
+      yLimits.min + (yLimits.max - yLimits.min) * (i / axesSettings.yTicks)
+    ticks.push({
+      label: labelHeight,
+      height: yScale(labelHeight)
+    })
+  }
+
+  return {
+    path: path.toString(), // path of the yAxis
+    ticks
+  }
+}
+
 const getYLimits = (plots, selectedPlotType) => {
   const allExtent = []
   plots.forEach(plot => {
@@ -70,4 +102,4 @@ const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
   )
 }
 
-export { getSComponents, getXLimits, getYLimits, normalizeFreq }
+export { getSComponents, getXLimits, getYAxisData, normalizeFreq }

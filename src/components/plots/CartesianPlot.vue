@@ -14,14 +14,18 @@
     </v-layout>
     <div class="cartesianContainer">
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
-        <g class="cartesianGroup" :transform="groupTranslate"></g>
+        <g class="cartesianGroup" :transform="groupTranslate">
+          <g class="yAxisGroup">
+            <path class="yAxis" :d="yAxisData.path"></path>
+          </g>
+        </g>
       </svg>
     </div>
   </v-card>
 </template>
 
 <script>
-import { getSComponents, getXLimits, getYLimits, normalizeFreq } from '../../util/cartesianMath'
+import { getSComponents, getXLimits, getYAxisData, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -29,7 +33,10 @@ export default {
   },
   data () {
     return {
-      viewPort: 1000,
+      viewPort: {
+        x: 1000,
+        y: 750
+      },
       margin: 25,
       plotTypes: [
         { name: 'Real', val: 'sRe' },
@@ -43,10 +50,10 @@ export default {
       axesSettings: {
         xmin: 0,
         xmax: 1E9,
-        xticks: 5,
+        xTicks: 5,
         ymin: -100,
         ymax: 100,
-        yticks: 5,
+        yTicks: 5,
         plotFreqUnit: 'GHZ' // default unit of GHz
       }
     }
@@ -71,14 +78,15 @@ export default {
       return newPlots
     },
     svgBox () {
-      const totalWidth = this.viewPort + 2 * this.margin
-      return `0 0 ${totalWidth} ${totalWidth}`
+      const totalWidth = this.viewPort.x + 2 * this.margin
+      const totalHeight = this.viewPort.y + 2 * this.margin
+      return `0 0 ${totalWidth} ${totalHeight}`
     },
     xLimits () {
       return getXLimits(this.plotsAllComponents)
     },
-    yLimits () {
-      return getYLimits(this.plotsAllComponents, this.selectedPlotType)
+    yAxisData () {
+      return getYAxisData(this.plotsAllComponents, this.selectedPlotType, this.viewPort, this.axesSettings)
     }
   }
 }
@@ -95,4 +103,9 @@ export default {
 
 .selectPlot
   margin-top: 1.5em
+
+.yAxisGroup
+  stroke: #333333
+  stroke-width: 2
+  fill: none
 </style>
