@@ -40,10 +40,10 @@
       bottom
     >
       <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
-        <div class="subheading font-weight-bold">{{this.tooltipData.title}}</div>
-        <div class="body-2">freq: {{this.tooltipData.freq}}</div>
-        <div class="body-2">S: {{this.tooltipData.s}}</div>
-        <div class="body-2">Z: {{this.tooltipData.z}}</div>
+        <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
+        <div class="body-2">freq: {{tooltipData.freq}}</div>
+        <div class="body-2">S: {{tooltipData.s}}</div>
+        <div class="body-2">Z: {{tooltipData.z}}</div>
       </v-layout>
     </v-tooltip>
   </v-card>
