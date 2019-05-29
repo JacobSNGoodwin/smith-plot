@@ -11,28 +11,6 @@ const unitMap = new Map([
   ['PHZ', 1e15]
 ])
 
-const getCartPlotLines = () => {
-  // const xLimits = getXLimits(plots)
-  // const xMin = axesSettings.insetLeft
-  // const xMax = viewPort.x - axesSettings.insetRight
-
-  // const xScale = d3
-  //   .scaleLinear()
-  //   .domain([xLimits.min, xLimits.max])
-  //   .range([xMin, xMax])
-
-  // const yLimits = getYLimits(plots, selectedPlotType)
-  // const yMin = axesSettings.insetTop
-  // const yMax = viewPort.y - axesSettings.insetBottom
-
-  // const yScale = d3
-  //   .scaleLinear()
-  //   .domain([yLimits.min, yLimits.max])
-  //   .range([yMax, yMin])
-
-  return null
-}
-
 const getSComponents = sParamsRealImag => {
   const sRe = []
   const sIm = []
@@ -62,9 +40,15 @@ const getSComponents = sParamsRealImag => {
   }
 }
 
-const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
+const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
   // create linear scales based on max dimensions
-  const limits = getLimits(plots, selectedPlotType)
+  const plotsAllTypes = plots.map(plot => {
+    return {
+      ...getSComponents(plot.s),
+      freq: normalizeFreq(plot.freq, axesSettings.plotFreqUnit, plot.unit)
+    }
+  })
+  const limits = getLimits(plotsAllTypes, selectedPlotType)
   const yMin = axesSettings.insetTop
   const yMax = viewPort.y - axesSettings.insetBottom
 
@@ -93,7 +77,7 @@ const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
   // zero path will be used for a dashed line at y = 0 if plot contains y = 0
   let zeroPath = null
 
-  if (plots.length <= 0) {
+  if (plotsAllTypes.length <= 0) {
     return {
       yAxisPath: yAxisPath.toString(),
       xAxisPath: xAxisPath.toString(),
@@ -147,7 +131,7 @@ const getAxisData = (plots, selectedPlotType, viewPort, axesSettings) => {
     .y(d => yScale(d.y))
     .curve(d3.curveMonotoneX)
 
-  const plotPaths = plots.map(plot => {
+  const plotPaths = plotsAllTypes.map(plot => {
     const pathData = []
 
     // need to find more efficient way to do this before hand in data store
@@ -194,4 +178,4 @@ const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
   )
 }
 
-export { getCartPlotLines, getSComponents, getAxisData, normalizeFreq }
+export { getSComponents, getPlotData, normalizeFreq }

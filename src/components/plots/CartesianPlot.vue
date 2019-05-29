@@ -16,10 +16,10 @@
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="cartesianGroup" :transform="groupTranslate">
           <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
-            <path class="yAxis" :d="axisData.yAxisPath"></path>
-            <path v-if="axisData.zeroPath" class="zeroAxis" :d="axisData.zeroPath"></path>
+            <path class="yAxis" :d="plotData.yAxisPath"></path>
+            <path v-if="plotData.zeroPath" class="zeroAxis" :d="plotData.zeroPath"></path>
             <g
-              v-for="tick in axisData.ticksY"
+              v-for="tick in plotData.ticksY"
               :key="tick.label"
               :transform="`translate(0, ${tick.offset})`"
             >
@@ -31,13 +31,13 @@
             class="axisGroup"
             :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
           >
-            <path class="xAxis" :d="axisData.xAxisPath"></path>
+            <path class="xAxis" :d="plotData.xAxisPath"></path>
             <text
               class="tickLabel xUnit"
               :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom})`"
             >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
             <g
-              v-for="tick in axisData.ticksX"
+              v-for="tick in plotData.ticksX"
               :key="tick.label"
               :transform="`translate(${tick.offset}, 0)`"
             >
@@ -45,8 +45,8 @@
               <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
-          <g v-for="(plot, index) in plotsAllComponents" :key="plot.fileName+plot.label">
-            <path class="cartTraces" :d="axisData.plotPaths[index]" :stroke="plot.color"></path>
+          <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
+            <path class="cartTraces" :d="plotData.plotPaths[index]" :stroke="plot.color"></path>
           </g>
         </g>
       </svg>
@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { getSComponents, getAxisData, normalizeFreq } from '../../util/cartesianMath'
+import { getPlotData } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -104,28 +104,13 @@ export default {
     groupTranslate () {
       return `translate(${this.margin}, ${this.margin})`
     },
-    plotsAllComponents () {
-      const newPlots = this.plots.map(plot => {
-        const plotComponents = getSComponents(plot.s)
-
-        const freqToLocalUnit = normalizeFreq(plot.freq, this.axesSettings.plotFreqUnit, plot.unit) // make all plots have same freq unit
-
-        return {
-          ...plot,
-          freq: freqToLocalUnit,
-          ...plotComponents
-        }
-      })
-
-      return newPlots
-    },
     svgBox () {
       const totalWidth = this.viewPort.x + 2 * this.margin
       const totalHeight = this.viewPort.y + 2 * this.margin
       return `0 0 ${totalWidth} ${totalHeight}`
     },
-    axisData () {
-      return getAxisData(this.plotsAllComponents, this.selectedPlotType, this.viewPort, this.axesSettings)
+    plotData () {
+      return getPlotData(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
     }
   }
 }
