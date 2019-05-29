@@ -25,8 +25,16 @@
           </v-list-tile>
         </template>
         <v-list-tile>
-          <v-layout justify-center>
-            <v-btn small round @click.stop="openModifyDialog(file)">Edit</v-btn>
+          <v-layout justify-space-around>
+            <v-btn fab small outline color="info" @click.stop="enablePlotsInFile(file)">
+              <v-icon>mdi-check-box-multiple-outline</v-icon>
+            </v-btn>
+            <v-btn fab small outline color="error" @click.stop="disablePlotsInFile(file)">
+              <v-icon>mdi-minus-box-outline</v-icon>
+            </v-btn>
+            <v-btn fab small outline color="success" @click.stop="openModifyDialog(file)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
           </v-layout>
         </v-list-tile>
         <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
@@ -34,7 +42,7 @@
             <v-checkbox
               :disabled="(plotType === 'smith' && plot.disabledSmith)"
               :color="plot.color"
-              :input-value="plot.visibile"
+              :value="plot.visible"
               @change="togglePlotVisibility({index, id: file.id}, $event)"
               :label="plot.label"
             ></v-checkbox>
@@ -61,6 +69,16 @@ export default {
     ColorPicker
   },
   methods: {
+    disablePlotsInFile (file) {
+      file.sPlots.forEach((plot, index) => {
+        this.togglePlotVisibility({ index, id: file.id }, false)
+      })
+    },
+    enablePlotsInFile (file) {
+      file.sPlots.forEach((plot, index) => {
+        this.togglePlotVisibility({ index, id: file.id }, true)
+      })
+    },
     getFiles (event) {
       const files = event.target.files
 
