@@ -34,7 +34,7 @@
       :value="tooltipVisible"
       :position-x="tooltipX"
       :position-y="tooltipY"
-      :color="this.tooltipData.color"
+      :color="tooltipData.color"
       absolute
       light
       bottom
