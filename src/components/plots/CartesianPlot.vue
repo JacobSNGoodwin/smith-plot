@@ -1,5 +1,8 @@
 <template>
   <v-card flat>
+    <v-layout column align-center>
+      <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
+    </v-layout>
     <v-layout row justify-space-around>
       <v-flex sm4 xs10>
         <v-select
@@ -46,11 +49,36 @@
             </g>
           </g>
           <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
-            <path class="cartTraces" :d="plotData.plotPaths[index]" :stroke="plot.color"></path>
+            <path class="cartTraces" :d="plotData.plotPaths[index].path" :stroke="plot.color"></path>
+            <circle
+              v-for="d in plotData.plotPaths[index].pathData"
+              :key="d.x"
+              :cx="plotData.xScale(d.x)"
+              :cy="plotData.yScale(d.y)"
+              :r="dataPointRadius"
+              :stroke="getStrokeFill(plot.color)"
+              :fill="getStrokeFill(plot.color)"
+            ></circle>
           </g>
         </g>
       </svg>
     </div>
+    <!-- <v-tooltip
+      :value="tooltipVisible"
+      :position-x="tooltipX"
+      :position-y="tooltipY"
+      :color="tooltipData.color"
+      absolute
+      light
+      bottom
+    >
+      <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
+        <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
+        <div class="body-2">freq: {{tooltipData.freq}}</div>
+        <div class="body-2">S: {{tooltipData.s}}</div>
+        <div class="body-2">Z: {{tooltipData.z}}</div>
+      </v-layout>
+    </v-tooltip>-->
   </v-card>
 </template>
 
@@ -97,7 +125,23 @@ export default {
         'GHZ': 'GHz',
         'THZ': 'THz',
         'PHZ': 'PHz'
-      }
+      },
+      tooltipX: null,
+      tooltipY: null,
+      tooltipVisible: false,
+      tooltipData: {
+        freq: null,
+        s: null,
+        z: null,
+        title: null,
+        color: null
+      },
+      showDataPoints: false
+    }
+  },
+  methods: {
+    getStrokeFill (color) {
+      return this.showDataPoints ? color : 'transparent'
     }
   },
   computed: {
@@ -111,6 +155,9 @@ export default {
     },
     plotData () {
       return getPlotData(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
+    },
+    dataPointRadius () {
+      return this.showDataPoints ? 5 : 10
     }
   }
 }

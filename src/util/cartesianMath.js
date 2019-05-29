@@ -84,7 +84,9 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
       ticksY: null,
       ticksX: null,
       zeroPath,
-      plotPaths: null
+      plotPaths: null,
+      yScale,
+      xScale
     }
   }
 
@@ -143,7 +145,7 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     }
 
     const path = lineGenerator(pathData)
-    return path
+    return { path, pathData }
   })
 
   return {
@@ -152,7 +154,9 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     ticksY,
     ticksX,
     zeroPath,
-    plotPaths
+    plotPaths,
+    yScale,
+    xScale
   }
 }
 
