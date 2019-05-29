@@ -95,7 +95,7 @@ export default {
     return {
       viewPort: {
         x: 1200,
-        y: 750
+        y: 800
       },
       margin: 25,
       plotTypes: [
@@ -145,7 +145,6 @@ export default {
       return this.showDataPoints ? color : 'transparent'
     },
     showTooltip (plot, index, dataPoint, event) {
-      console.log(dataPoint)
       const freq = dataPoint.x
       const s = dataPoint.y
 
@@ -204,7 +203,7 @@ export default {
 
 <style lang="stylus" scoped>
 .cartesianContainer
-  max-width: 1200px
+  max-width: 900px
   margin: auto
   padding: 2em 0
 

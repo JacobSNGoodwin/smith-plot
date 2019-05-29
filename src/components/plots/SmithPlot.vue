@@ -168,7 +168,7 @@ export default {
 
 <style lang="stylus" scoped>
 .smithContainer
-  max-width: 750px
+  max-width: 600px
   margin: auto
   padding: 2em 0
 
@@ -190,14 +190,14 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .35s
+  transition: opacity 0.35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
 
 .tooltipContent
   div
-    padding: .5em 1em
+    padding: 0.5em 1em
 
 .switch
   div
