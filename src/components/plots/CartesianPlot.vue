@@ -74,7 +74,7 @@
       light
       bottom
     >
-      <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
+      <v-layout :style="fontStyle" justify-center column>
         <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
         <div class="body-2">freq: {{tooltipData.freq}}</div>
         <div class="body-2">{{selectedPlotType}}: {{tooltipData.s}}</div>
