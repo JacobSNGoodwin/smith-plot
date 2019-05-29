@@ -4,12 +4,13 @@
       <v-btn class="custom-size" :color="colors.hex8" fab dark v-on="on"></v-btn>
     </template>
     <v-card>
-      <chrome-picker v-model="colors" @input="$emit('color-change', colors.hex8)"/>
+      <chrome-picker v-model="colors" @input="debouncedColorChange"/>
     </v-card>
   </v-menu>
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
 import { Chrome } from 'vue-color'
 export default {
   name: 'ColorPicker',
@@ -27,6 +28,9 @@ export default {
         a: null
       }
     }
+  },
+  methods: {
+    debouncedColorChange: debounce(function () { this.$emit('color-change', this.colors.hex8) }, 100)
   },
   created () {
     this.colors = {
