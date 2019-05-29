@@ -20,9 +20,9 @@ export default {
     PlotView,
     Toolbar
   },
-  data () {
-    return {
-      //
+  created () {
+    if (window.innerWidth < 1264) {
+      this.$store.commit('toggleNavDrawer', false)
     }
   }
 }

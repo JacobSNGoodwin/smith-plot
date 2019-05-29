@@ -16,7 +16,7 @@ export default new Vuex.Store({
     fileList: [],
     plots: {},
     loadingFiles: false,
-    navDrawer: false,
+    navDrawer: true,
     plotType: 'smith',
     fileToModify: null
   },
