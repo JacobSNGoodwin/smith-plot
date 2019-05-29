@@ -58,12 +58,14 @@
               :r="dataPointRadius"
               :stroke="getStrokeFill(plot.color)"
               :fill="getStrokeFill(plot.color)"
+              @mouseover="showTooltip(plot, index, d, $event)"
+              @mouseout="hideTooltip"
             ></circle>
           </g>
         </g>
       </svg>
     </div>
-    <!-- <v-tooltip
+    <v-tooltip
       :value="tooltipVisible"
       :position-x="tooltipX"
       :position-y="tooltipY"
@@ -75,14 +77,14 @@
       <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
         <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
         <div class="body-2">freq: {{tooltipData.freq}}</div>
-        <div class="body-2">S: {{tooltipData.s}}</div>
-        <div class="body-2">Z: {{tooltipData.z}}</div>
+        <div class="body-2">{{selectedPlotType}}: {{tooltipData.s}}</div>
       </v-layout>
-    </v-tooltip>-->
+    </v-tooltip>
   </v-card>
 </template>
 
 <script>
+import * as chroma from 'chroma-js'
 import { getPlotData } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
@@ -132,7 +134,6 @@ export default {
       tooltipData: {
         freq: null,
         s: null,
-        z: null,
         title: null,
         color: null
       },
@@ -142,6 +143,24 @@ export default {
   methods: {
     getStrokeFill (color) {
       return this.showDataPoints ? color : 'transparent'
+    },
+    showTooltip (plot, index, dataPoint, event) {
+      console.log(dataPoint)
+      const freq = dataPoint.x
+      const s = dataPoint.y
+
+      this.tooltipData.color = plot.color
+      this.tooltipData.freq = `${freq.toFixed(4)} ${this.axesSettings.plotFreqUnit}`
+      this.tooltipData.s = `${s.toFixed(4)}`
+
+      this.tooltipData.title = `${plot.fileName} - ${plot.label}`
+
+      this.tooltipX = event.clientX
+      this.tooltipY = event.clientY
+      this.tooltipVisible = true
+    },
+    hideTooltip (event) {
+      this.tooltipVisible = false
     }
   },
   computed: {
@@ -158,6 +177,26 @@ export default {
     },
     dataPointRadius () {
       return this.showDataPoints ? 5 : 10
+    },
+    fontStyle () {
+      if (this.tooltipData.color === null) {
+        return {
+          color: '#fff'
+        }
+      }
+
+      // choose font color based on luminance of background
+      const luminance = chroma(this.tooltipData.color).luminance()
+
+      if (luminance > 0.179) {
+        return {
+          color: '#000'
+        }
+      }
+
+      return {
+        color: '#fff'
+      }
     }
   }
 }
