@@ -70,14 +70,10 @@ export default {
   },
   methods: {
     disablePlotsInFile (file) {
-      file.sPlots.forEach((plot, index) => {
-        this.togglePlotVisibility({ index, id: file.id }, false)
-      })
+      this.$store.commit('setAllPlotsVisibility', { id: file.id, value: false })
     },
     enablePlotsInFile (file) {
-      file.sPlots.forEach((plot, index) => {
-        this.togglePlotVisibility({ index, id: file.id }, true)
-      })
+      this.$store.commit('setAllPlotsVisibility', { id: file.id, value: true })
     },
     getFiles (event) {
       const files = event.target.files
