@@ -4,6 +4,7 @@ import 'vuetify/src/stylus/app.styl'
 
 import '@mdi/font/css/materialdesignicons.css'
 import SmithIcon from '../icons/SmithIcon.vue'
+import CoaxIcon from '../icons/CoaxIcon.vue'
 
 Vue.use(Vuetify, {
   iconfont: 'mdi',
@@ -19,6 +20,9 @@ Vue.use(Vuetify, {
   icons: {
     smith: {
       component: SmithIcon
+    },
+    coax: {
+      component: CoaxIcon
     }
   }
 })

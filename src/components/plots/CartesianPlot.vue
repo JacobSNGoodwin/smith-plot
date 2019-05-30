@@ -3,8 +3,8 @@
     <v-layout column align-center>
       <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
     </v-layout>
-    <v-layout row justify-space-around>
-      <v-flex sm4 xs10>
+    <v-layout row justify-center>
+      <v-flex sm3 xs6>
         <v-select
           class="selectPlot"
           v-model="selectedPlotType"
@@ -12,6 +12,16 @@
           item-text="name"
           item-value="val"
           label="Plot Type"
+        ></v-select>
+      </v-flex>
+      <v-flex sm3 xs6>
+        <v-select
+          class="selectPlot"
+          v-model="axesSettings.plotFreqUnit"
+          :items="freqUnits"
+          item-text="name"
+          item-value="val"
+          label="Freq Unit"
         ></v-select>
       </v-flex>
     </v-layout>
@@ -37,7 +47,7 @@
             <path class="xAxis" :d="plotData.xAxisPath"></path>
             <text
               class="tickLabel xUnit"
-              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom})`"
+              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
             >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
             <g
               v-for="tick in plotData.ticksX"
@@ -48,7 +58,7 @@
               <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
-          <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
+          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
             <path class="cartTraces" :d="plotData.plotPaths[index].path" :stroke="plot.color"></path>
             <circle
               v-for="d in plotData.plotPaths[index].pathData"
@@ -74,7 +84,7 @@
       light
       bottom
     >
-      <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
+      <v-layout :style="fontStyle" justify-center column>
         <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
         <div class="body-2">freq: {{tooltipData.freq}}</div>
         <div class="body-2">{{selectedPlotType}}: {{tooltipData.s}}</div>
@@ -95,7 +105,7 @@ export default {
     return {
       viewPort: {
         x: 1200,
-        y: 750
+        y: 600
       },
       margin: 25,
       plotTypes: [
@@ -105,6 +115,12 @@ export default {
         { name: 'dB', val: 'sDb' },
         { name: 'Angle - Radians', val: 'sAngle' },
         { name: 'Angle - Degrees', val: 'sDeg' }
+      ],
+      freqUnits: [
+        { name: 'KHz', val: 'KHZ' },
+        { name: 'MHz', val: 'MHZ' },
+        { name: 'GHz', val: 'GHZ' },
+        { name: 'THz', val: 'THZ' }
       ],
       selectedPlotType: 'sRe',
       axesSettings: {
@@ -116,9 +132,9 @@ export default {
         yTicks: 5,
         plotFreqUnit: 'GHZ', // default unit of GHz
         insetTop: 10, // inset of axes for group
-        insetBottom: 90,
-        insetLeft: 80,
-        insetRight: 20
+        insetBottom: 70,
+        insetLeft: 70,
+        insetRight: 40
       },
       freqUnitLabel: {
         'HZ': 'Hz',
@@ -145,7 +161,6 @@ export default {
       return this.showDataPoints ? color : 'transparent'
     },
     showTooltip (plot, index, dataPoint, event) {
-      console.log(dataPoint)
       const freq = dataPoint.x
       const s = dataPoint.y
 
@@ -204,7 +219,7 @@ export default {
 
 <style lang="stylus" scoped>
 .cartesianContainer
-  max-width: 1200px
+  max-width: 1000px
   margin: auto
   padding: 2em 0
 
@@ -224,10 +239,10 @@ export default {
   fill: none
 
 .tickLabel
-  stroke: #333333
+  // stroke: #333333
   fill: #333333
-  stroke-width: 1
-  font-size: 20px
+  stroke-width: 0
+  font-size: 24px
   font-family: Roboto
   text-rendering: geometricPrecision
 
@@ -243,4 +258,7 @@ export default {
 .zeroAxis
   stroke-width: 1.2
   stroke-dasharray: 5, 5
+
+.selectPlot
+  padding: 0 1em
 </style>

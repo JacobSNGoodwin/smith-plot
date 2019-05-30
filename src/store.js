@@ -16,9 +16,10 @@ export default new Vuex.Store({
     fileList: [],
     plots: {},
     loadingFiles: false,
-    navDrawer: false,
+    navDrawer: true,
     plotType: 'smith',
-    fileToModify: null
+    fileToModify: null,
+    error: null
   },
   mutations: {
     addPlot (state, plot) {
@@ -29,6 +30,9 @@ export default new Vuex.Store({
     addToFileList (state, plotInfo) {
       state.fileList.push(plotInfo)
     },
+    clearError (state) {
+      state.error = null
+    },
     deleteFile (state, plotToDelete) {
       // remove from plot list
       // remove from plots (plot data)
@@ -37,6 +41,9 @@ export default new Vuex.Store({
       )
       delete state.plots[plotToDelete.id]
       state.fileToModify = null
+    },
+    setError (state, error) {
+      state.error = error
     },
     setFileToModify (state, file) {
       state.fileToModify = file
@@ -51,6 +58,15 @@ export default new Vuex.Store({
     },
     setPlotType (state, plotType) {
       state.plotType = plotType
+    },
+    setAllPlotsVisibility (state, fileVisibility) {
+      const fileIndexToUpdate = state.fileList.findIndex(
+        file => file.id === fileVisibility.id
+      )
+
+      state.fileList[fileIndexToUpdate].sPlots.forEach(plot => {
+        plot.visible = fileVisibility.value
+      })
     },
     setPlotVisibility (state, plotInfo) {
       const fileIndexToUpdate = state.fileList.findIndex(
@@ -82,10 +98,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    loadFiles ({ commit }, fileList) {
+    loadFiles ({ commit }, payload) {
       commit('startLoading')
 
       let readCount = 0
+      const fileList = payload.files
 
       for (let i = 0; i < fileList.length; i++) {
         // use file inside of closure to assure we read every file one by one
@@ -95,39 +112,51 @@ export default new Vuex.Store({
           const reader = new FileReader()
 
           reader.onload = function (e) {
-            const network = new Network(e.target.result, file.name)
-            const plotData = {
-              data: network.data,
-              unit: network.freqUnit,
-              z0: network.z0,
-              n: network.nPorts
-            }
-
-            // fileList will also contains a list of S-parameters for the file
-            // and a visibility for each
-            const sPlots = []
-            for (let i = 0; i < plotData.n; i++) {
-              for (let j = 0; j < plotData.n; j++) {
-                const label = `s${i + 1},${j + 1}`
-                sPlots.push({
-                  label,
-                  indeces: [i, j],
-                  visible: false,
-                  disabledSmith: i !== j, // state to enable/plot on Smith Chart,
-                  color: colorGen.next().value
-                })
+            try {
+              const network = new Network(e.target.result, file.name)
+              const plotData = {
+                data: network.data,
+                unit: network.freqUnit,
+                z0: network.z0,
+                n: network.nPorts
               }
-            }
 
-            // commit plots first so that they're available for getters
-            // that iterate of the fileList
-            commit('addPlot', { id, data: plotData })
-            commit('addToFileList', { id, name, sPlots })
+              // fileList will also contains a list of S-parameters for the file
+              // and a visibility for each
+              const sPlots = []
+              for (let i = 0; i < plotData.n; i++) {
+                for (let j = 0; j < plotData.n; j++) {
+                  const label = `s${i + 1},${j + 1}`
+                  sPlots.push({
+                    label,
+                    indeces: [i, j],
+                    visible: false,
+                    disabledSmith: i !== j, // state to enable/plot on Smith Chart,
+                    color: colorGen.next().value
+                  })
+                }
+              }
 
-            readCount++
+              // commit plots first so that they're available for getters
+              // that iterate of the fileList
+              commit('addPlot', { id, data: plotData })
+              commit('addToFileList', { id, name, sPlots })
 
-            if (readCount === fileList.length) {
-              // final file has read
+              readCount++
+
+              if (readCount === fileList.length) {
+                // final file has read
+                // clear file ref so same file could be reloaded (though that's not desirable here)
+                payload.fileRef.value = null
+                commit('stopLoading')
+              }
+            } catch (error) {
+              commit('setError', {
+                userMessage: `Error reading file "${file.name}"`,
+                error: error.message
+              })
+              // clear file ref so same file could be reloaded (though that's not desirable here)
+              payload.fileRef.value = null
               commit('stopLoading')
             }
           }
@@ -147,6 +176,7 @@ export default new Vuex.Store({
         file.sPlots.forEach(plot => {
           const plotData = {
             ...plot,
+            fileId: file.id,
             fileName: file.name,
             freq: state.plots[file.id].data.freq,
             s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],

@@ -13,7 +13,7 @@
         </g>
 
         <transition-group :transform="smithTranslate" name="fade" tag="g">
-          <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
+          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
             <path class="smithTraces" :d="smithLines[index]" :stroke="plot.color"></path>
             <circle
               v-for="(freq, index) in plot.freq"
@@ -39,8 +39,9 @@
       light
       bottom
     >
-      <v-layout class="tooltipContent" :style="fontStyle" justify-center column>
+      <v-layout :style="fontStyle" justify-center column>
         <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
+        <div class="body-2">Zref: {{tooltipData.z0}}</div>
         <div class="body-2">freq: {{tooltipData.freq}}</div>
         <div class="body-2">S: {{tooltipData.s}}</div>
         <div class="body-2">Z: {{tooltipData.z}}</div>
@@ -70,6 +71,7 @@ export default {
         freq: null,
         s: null,
         z: null,
+        z0: null,
         title: null,
         color: null
       },
@@ -101,6 +103,7 @@ export default {
       }
 
       this.tooltipData.color = plot.color
+      this.tooltipData.z0 = plot.z0
       this.tooltipData.freq = `${freq.toFixed(4)} ${plot.unit}`
       this.tooltipData.s = `${s.re.toFixed(4)} ${sSign} ${sImag.toFixed(4)}i`
       this.tooltipData.z = `${z.re.toFixed(4)} ${zSign} ${zImag.toFixed(4)}i \u03A9`
@@ -168,7 +171,7 @@ export default {
 
 <style lang="stylus" scoped>
 .smithContainer
-  max-width: 750px
+  max-width: 600px
   margin: auto
   padding: 2em 0
 
@@ -194,10 +197,6 @@ export default {
 
 .fade-enter, .fade-leave-to
   opacity: 0
-
-.tooltipContent
-  div
-    padding: .5em 1em
 
 .switch
   div
