@@ -47,7 +47,7 @@
             <path class="xAxis" :d="plotData.xAxisPath"></path>
             <text
               class="tickLabel xUnit"
-              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom})`"
+              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
             >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
             <g
               v-for="tick in plotData.ticksX"
@@ -132,9 +132,9 @@ export default {
         yTicks: 5,
         plotFreqUnit: 'GHZ', // default unit of GHz
         insetTop: 10, // inset of axes for group
-        insetBottom: 60,
+        insetBottom: 70,
         insetLeft: 70,
-        insetRight: 30
+        insetRight: 40
       },
       freqUnitLabel: {
         'HZ': 'Hz',
@@ -239,10 +239,10 @@ export default {
   fill: none
 
 .tickLabel
-  stroke: #333333
+  // stroke: #333333
   fill: #333333
-  stroke-width: 1
-  font-size: 20px
+  stroke-width: 0
+  font-size: 30px
   font-family: Roboto
   text-rendering: geometricPrecision
 
