@@ -15,7 +15,7 @@ export default {
     return {
       links: [
         { icon: 'mdi-linkedin', url: 'https://www.linkedin.com/in/jacobgoodwin1/', color: '#0077b5' },
-        { icon: 'mdi-github-circle', url: 'https://github.com/Maxbrain0/', color: '#6e5494' },
+        { icon: 'mdi-github-circle', url: 'https://github.com/Maxbrain0/smith-plot', color: '#6e5494' },
         { icon: '$vuetify.icons.coax', url: 'https://www.tlcalc.app', color: 'none' },
         { icon: 'mdi-email-outline', url: 'mailto: jacob.goodwin@gmail.com"', color: 'info' }
       ]
