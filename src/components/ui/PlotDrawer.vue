@@ -75,12 +75,12 @@ export default {
     enablePlotsInFile (file) {
       this.$store.commit('setAllPlotsVisibility', { id: file.id, value: true })
     },
-    getFiles (event) {
+    getFiles (event, fileRef) {
       const files = event.target.files
 
       // check length - a cancel after successful load will produce a change event
       if (files.length > 0) {
-        this.$store.dispatch('loadFiles', files)
+        this.$store.dispatch('loadFiles', { files, fileRef })
       }
     },
     openModifyDialog (file) {

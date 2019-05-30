@@ -98,10 +98,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    loadFiles ({ commit }, fileList) {
+    loadFiles ({ commit }, payload) {
       commit('startLoading')
 
       let readCount = 0
+      const fileList = payload.files
 
       for (let i = 0; i < fileList.length; i++) {
         // use file inside of closure to assure we read every file one by one
@@ -145,6 +146,8 @@ export default new Vuex.Store({
 
               if (readCount === fileList.length) {
                 // final file has read
+                // clear file ref so same file could be reloaded (though that's not desirable here)
+                payload.fileRef.value = null
                 commit('stopLoading')
               }
             } catch (error) {
@@ -152,6 +155,8 @@ export default new Vuex.Store({
                 userMessage: `Error reading file "${file.name}"`,
                 error: error.message
               })
+              // clear file ref so same file could be reloaded (though that's not desirable here)
+              payload.fileRef.value = null
               commit('stopLoading')
             }
           }
