@@ -162,6 +162,7 @@ export default new Vuex.Store({
         file.sPlots.forEach(plot => {
           const plotData = {
             ...plot,
+            fileId: file.id,
             fileName: file.name,
             freq: state.plots[file.id].data.freq,
             s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],

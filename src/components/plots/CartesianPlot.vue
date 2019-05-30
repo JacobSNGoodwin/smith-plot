@@ -48,7 +48,7 @@
               <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
             </g>
           </g>
-          <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
+          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
             <path class="cartTraces" :d="plotData.plotPaths[index].path" :stroke="plot.color"></path>
             <circle
               v-for="d in plotData.plotPaths[index].pathData"

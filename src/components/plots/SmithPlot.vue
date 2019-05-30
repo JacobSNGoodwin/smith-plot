@@ -13,7 +13,7 @@
         </g>
 
         <transition-group :transform="smithTranslate" name="fade" tag="g">
-          <g v-for="(plot, index) in plots" :key="plot.fileName+plot.label">
+          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
             <path class="smithTraces" :d="smithLines[index]" :stroke="plot.color"></path>
             <circle
               v-for="(freq, index) in plot.freq"
@@ -193,7 +193,7 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity 0.35s
+  transition: opacity .35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
