@@ -105,7 +105,7 @@ export default {
     return {
       viewPort: {
         x: 1200,
-        y: 800
+        y: 600
       },
       margin: 25,
       plotTypes: [
@@ -219,7 +219,7 @@ export default {
 
 <style lang="stylus" scoped>
 .cartesianContainer
-  max-width: 900px
+  max-width: 1000px
   margin: auto
   padding: 2em 0
 
