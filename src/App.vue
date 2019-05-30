@@ -5,6 +5,7 @@
     <v-content>
       <PlotView/>
     </v-content>
+    <Footer/>
   </v-app>
 </template>
 
@@ -12,13 +13,15 @@
 import PlotDrawer from '@/components/ui/PlotDrawer'
 import PlotView from '@/views/PlotView'
 import Toolbar from '@/components/ui/Toolbar'
+import Footer from '@/components/ui/Footer'
 
 export default {
   name: 'App',
   components: {
     PlotDrawer,
     PlotView,
-    Toolbar
+    Toolbar,
+    Footer
   },
   created () {
     if (window.innerWidth < 1264) {
