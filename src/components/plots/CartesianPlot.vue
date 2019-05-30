@@ -242,7 +242,7 @@ export default {
   // stroke: #333333
   fill: #333333
   stroke-width: 0
-  font-size: 30px
+  font-size: 24px
   font-family: Roboto
   text-rendering: geometricPrecision
 
