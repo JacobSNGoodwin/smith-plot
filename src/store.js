@@ -31,7 +31,7 @@ export default new Vuex.Store({
       state.fileList.push(plotInfo)
     },
     clearError (state) {
-      this.state.error = null
+      state.error = null
     },
     deleteFile (state, plotToDelete) {
       // remove from plot list
