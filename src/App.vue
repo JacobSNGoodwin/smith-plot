@@ -30,7 +30,7 @@ export default {
       { property: 'og:type', content: 'website' },
       // Should the the same as your canonical link, see below.
       { property: 'og:url', content: 'https://www.smithplot.com' },
-      { property: 'og:image', content: 'https://www.smithplot.com/img/SmithPlotter.PNG' },
+      { property: 'og:image', content: 'https://www.smithplot.com/img/SmithChart.JPG' },
       // Often the same as your meta description, but not always.
       { property: 'og:description', content: 'Modern Single Page Application for Plotting Touchstone files on a Smith Chart and in Cartesian Coordinates.' },
 
@@ -41,12 +41,12 @@ export default {
       { name: 'twitter:description', content: 'Modern Single Page Application for Plotting Touchstone files on a Smith Chart and in Cartesian Coordinates.' },
       // Your twitter handle, if you have one.
       { name: 'twitter:creator', content: '@JacobSNGoodwin' },
-      { name: 'twitter:image:src', content: 'https://www.smithplot.com/img/SmithPlotter.PNG' },
+      { name: 'twitter:image:src', content: 'https://www.smithplot.com/img/SmithChart.JPG' },
 
       // Google / Schema.org markup:
       { itemprop: 'name', content: 'SmithPlot' },
       { itemprop: 'description', content: 'Modern Single Page Application for Plotting Touchstone files on a Smith Chart and in Cartesian Coordinates.' },
-      { itemprop: 'image', content: 'https://www.smithplot.com/img/SmithPlotter.PNG' }
+      { itemprop: 'image', content: 'https://www.smithplot.com/img/SmithChart.JPG' }
     ],
     link: [
       { rel: 'canonical', href: 'https://www.smithplot.com' }
