@@ -1,5 +1,5 @@
 <template>
-  <v-footer app height="auto" class="pa-4 subheading">
+  <v-footer app height="auto" class="pa-1 subheading">
     <v-layout justify-center row wrap>
       <v-btn v-for="link in links" :key="link.url" :href="link.url" target="_blank" icon large>
         <v-icon large :color="link.color">{{link.icon}}</v-icon>
