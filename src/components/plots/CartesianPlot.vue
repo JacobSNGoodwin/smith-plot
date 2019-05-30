@@ -3,8 +3,8 @@
     <v-layout column align-center>
       <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
     </v-layout>
-    <v-layout row justify-space-around>
-      <v-flex sm4 xs10>
+    <v-layout row justify-center>
+      <v-flex sm3 xs6>
         <v-select
           class="selectPlot"
           v-model="selectedPlotType"
@@ -12,6 +12,16 @@
           item-text="name"
           item-value="val"
           label="Plot Type"
+        ></v-select>
+      </v-flex>
+      <v-flex sm3 xs6>
+        <v-select
+          class="selectPlot"
+          v-model="axesSettings.plotFreqUnit"
+          :items="freqUnits"
+          item-text="name"
+          item-value="val"
+          label="Freq Unit"
         ></v-select>
       </v-flex>
     </v-layout>
@@ -106,6 +116,12 @@ export default {
         { name: 'Angle - Radians', val: 'sAngle' },
         { name: 'Angle - Degrees', val: 'sDeg' }
       ],
+      freqUnits: [
+        { name: 'KHz', val: 'KHZ' },
+        { name: 'MHz', val: 'MHZ' },
+        { name: 'GHz', val: 'GHZ' },
+        { name: 'THz', val: 'THZ' }
+      ],
       selectedPlotType: 'sRe',
       axesSettings: {
         xmin: 0,
@@ -116,9 +132,9 @@ export default {
         yTicks: 5,
         plotFreqUnit: 'GHZ', // default unit of GHz
         insetTop: 10, // inset of axes for group
-        insetBottom: 90,
-        insetLeft: 80,
-        insetRight: 20
+        insetBottom: 60,
+        insetLeft: 70,
+        insetRight: 30
       },
       freqUnitLabel: {
         'HZ': 'Hz',
@@ -242,4 +258,7 @@ export default {
 .zeroAxis
   stroke-width: 1.2
   stroke-dasharray: 5, 5
+
+.selectPlot
+  padding: 0 1em
 </style>
