@@ -1,6 +1,8 @@
 {
   "name": "rf-plotter",
   "version": "0.1.0",
+  "author": "Jacob Goodwin <jacob.goodwin@gmail.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
