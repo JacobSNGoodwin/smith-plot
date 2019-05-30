@@ -1,6 +1,6 @@
 <template>
   <v-toolbar app fixed clipped-right color="primary">
-    <v-toolbar-title class="white--text">RF Plotter</v-toolbar-title>
+    <v-toolbar-title class="white--text">SmithPlot</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn @click.stop="toggleDrawer" flat color="secondary">
       Select Plots

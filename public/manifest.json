@@ -1,6 +1,6 @@
 {
-  "name": "rfplot",
-  "short_name": "rfplot",
+  "name": "SmithPlot",
+  "short_name": "SmithPlot",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

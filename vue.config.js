@@ -1,6 +1,6 @@
 module.exports = {
   pwa: {
-    name: 'rfplot',
+    name: 'SmithPlot',
     themeColor: '#254070',
     msTileColor: '#FFD65E',
     appleMobileWebAppCapable: 'yes',
