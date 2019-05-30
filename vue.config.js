@@ -1,6 +1,6 @@
 module.exports = {
   pwa: {
-    name: 'rf-plotter',
+    name: 'rfplot',
     themeColor: '#254070',
     msTileColor: '#FFD65E',
     appleMobileWebAppCapable: 'yes',

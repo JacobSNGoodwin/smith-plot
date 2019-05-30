@@ -1,6 +1,6 @@
 {
-  "name": "rf-plotter",
-  "short_name": "rf-plotter",
+  "name": "rfplot",
+  "short_name": "rfplot",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
