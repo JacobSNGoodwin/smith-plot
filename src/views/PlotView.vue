@@ -11,6 +11,7 @@
         :plot="fileToModify"
       />
     </v-dialog>
+    <ErrorDialog :error="error" @clear-error="clearError"></ErrorDialog>
   </v-container>
 </template>
 
@@ -19,14 +20,19 @@ import { mapState, mapGetters } from 'vuex'
 
 import EditPlot from '@/components/ui/EditPlot'
 import PlotSelector from '@/components/PlotSelector'
+import ErrorDialog from '@/components/ui/ErrorDialog'
 
 export default {
   name: 'PlotView',
   components: {
     PlotSelector,
-    EditPlot
+    EditPlot,
+    ErrorDialog
   },
   methods: {
+    clearError () {
+      this.$store.commit('clearError')
+    },
     clearSelectedFile () {
       this.$store.commit('setFileToModify', null)
     },
@@ -39,7 +45,8 @@ export default {
   },
   computed: {
     ...mapState([
-      'fileToModify'
+      'fileToModify',
+      'error'
     ]),
     ...mapGetters([
       'enabledPlots'
