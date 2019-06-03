@@ -17,18 +17,8 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
   const yMin = axesSettings.insetTop
   const yMax = viewPort.y - axesSettings.insetBottom
 
-  const yScale = d3
-    .scaleLinear()
-    .domain([limits.yMin, limits.yMax])
-    .range([yMax, yMin])
-
   const xMin = axesSettings.insetLeft
   const xMax = viewPort.x - axesSettings.insetRight
-
-  const xScale = d3
-    .scaleLinear()
-    .domain([limits.xMin, limits.xMax])
-    .range([xMin, xMax])
 
   // a path representing the y axis
   const yAxisPath = d3.path()
@@ -39,21 +29,32 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
   xAxisPath.moveTo(xMin, 0)
   xAxisPath.lineTo(xMax, 0)
 
-  // zero path will be used for a dashed line at y = 0 if plot contains y = 0
-  let zeroPath = null
-
-  if (plotsAllTypes.length <= 0) {
+  // check if not plots, just retrun axes
+  if (plots.length <= 0) {
     return {
       yAxisPath: yAxisPath.toString(),
       xAxisPath: xAxisPath.toString(),
       ticksY: null,
       ticksX: null,
-      zeroPath,
+      zeroPath: null,
       plotPaths: null,
-      yScale,
-      xScale
+      yScale: null,
+      xScale: null
     }
   }
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([limits.yMin, limits.yMax])
+    .range([yMax, yMin])
+
+  const xScale = d3
+    .scaleLinear()
+    .domain([limits.xMin, limits.xMax])
+    .range([xMin, xMax])
+
+  // zero path will be used for a dashed line at y = 0 if plot contains y = 0
+  let zeroPath = null
 
   // compute positions of tick marks for both axes
   const ticksY = []
@@ -98,7 +99,7 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     .y(d => yScale(d.y))
     .curve(d3.curveMonotoneX)
 
-  const plotPaths = plotsAllTypes.map(plot => {
+  const plotPaths = plots.map(plot => {
     const pathData = []
 
     // need to find more efficient way to do this before hand in data store
