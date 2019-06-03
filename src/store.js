@@ -136,6 +136,9 @@ export default new Vuex.Store({
                     sParams: network.data.s[i][j],
                     indeces: [i, j],
                     visible: false,
+                    unit: network.freqUnit, // duplicates of file may make access easier
+                    z0: network.z0,
+                    n: network.nPorts,
                     disabledSmith: i !== j, // state to enable/plot on Smith Chart,
                     color: colorGen.next().value
                   }
@@ -171,45 +174,39 @@ export default new Vuex.Store({
         })(fileList[i])
       }
     }
+  },
+  getters: {
+    enabledPlotList (state) {
+      const enabledPlots = []
+
+      state.fileList.forEach(fileId => {
+        state.files[fileId].plotList.forEach(plotId => {
+          if (state.plots[plotId].visible) {
+            enabledPlots.push(plotId)
+          }
+        })
+      })
+
+      return enabledPlots
+    },
+    fileListByName: state => {
+      return state.fileList.sort((a, b) => {
+        if (
+          state.files[a].fileName.toLowerCase() <
+          state.files[b].fileName.toLowerCase()
+        ) {
+          return -1
+        }
+
+        if (
+          state.files[a].fileName.toLowerCase() >
+          state.files[b].fileName.toLowerCase()
+        ) {
+          return 1
+        }
+
+        return 0
+      })
+    }
   }
-  // getters: {
-  //   enabledPlots (state, getters) {
-  //     const files = getters.filesByName
-
-  //     const allPlots = []
-
-  //     files.forEach(file => {
-  //       file.sPlots.forEach(plot => {
-  //         const plotData = {
-  //           ...plot,
-  //           fileId: file.id,
-  //           fileName: file.name,
-  //           freq: state.plots[file.id].data.freq,
-  //           s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],
-  //           n: state.plots[file.id].n,
-  //           unit: state.plots[file.id].unit,
-  //           z0: state.plots[file.id].z0
-  //         }
-  //         if (plot.visible) {
-  //           allPlots.push(plotData)
-  //         }
-  //       })
-  //     })
-
-  //     return allPlots
-  //   },
-  //   filesByName: state => {
-  //     return state.fileList.sort((a, b) => {
-  //       if (a.name.toLowerCase() < b.name.toLowerCase()) {
-  //         return -1
-  //       }
-
-  //       if (a.name.toLowerCase() > b.name.toLowerCase()) {
-  //         return 1
-  //       }
-
-  //       return 0
-  //     })
-  //   }
-  // }
 })
