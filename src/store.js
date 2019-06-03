@@ -14,6 +14,7 @@ const colorGen = colorGenerator()
 export default new Vuex.Store({
   state: {
     fileList: [],
+    files: {},
     plots: {},
     loadingFiles: false,
     navDrawer: true,
@@ -23,12 +24,11 @@ export default new Vuex.Store({
   },
   mutations: {
     addPlot (state, plot) {
-      state.plots[plot.id] = {
-        ...plot.data
-      }
+      state.plots[plot.plotId] = plot.plotData
     },
-    addToFileList (state, plotInfo) {
-      state.fileList.push(plotInfo)
+    addFile (state, file) {
+      state.files[file.fileId] = file.fileData
+      state.fileList.push(file.fileId)
     },
     clearError (state) {
       state.error = null
@@ -107,40 +107,46 @@ export default new Vuex.Store({
       for (let i = 0; i < fileList.length; i++) {
         // use file inside of closure to assure we read every file one by one
         ;(function (file) {
-          const name = file.name
-          const id = uuidv1()
+          const fileId = uuidv1()
           const reader = new FileReader()
 
           reader.onload = function (e) {
             try {
               const network = new Network(e.target.result, file.name)
-              const plotData = {
-                data: network.data,
+
+              // data to be added to file object
+              const fileData = {
+                fileName: network.fileName,
                 unit: network.freqUnit,
                 z0: network.z0,
-                n: network.nPorts
+                n: network.nPorts,
+                plotList: []
               }
 
-              // fileList will also contains a list of S-parameters for the file
-              // and a visibility for each
-              const sPlots = []
-              for (let i = 0; i < plotData.n; i++) {
-                for (let j = 0; j < plotData.n; j++) {
+              // create plotList inside of fileData, add plot to plots map (object)
+              for (let i = 0; i < fileData.n; i++) {
+                for (let j = 0; j < fileData.n; j++) {
+                  const plotId = uuidv1()
                   const label = `s${i + 1},${j + 1}`
-                  sPlots.push({
+                  fileData.plotList.push(plotId)
+
+                  const plotData = {
                     label,
+                    freq: network.data.freq,
+                    sParams: network.data.s[i][j],
                     indeces: [i, j],
                     visible: false,
                     disabledSmith: i !== j, // state to enable/plot on Smith Chart,
                     color: colorGen.next().value
-                  })
+                  }
+
+                  // add plot to state.plots
+                  commit('addPlot', { plotId, plotData })
                 }
               }
 
-              // commit plots first so that they're available for getters
-              // that iterate of the fileList
-              commit('addPlot', { id, data: plotData })
-              commit('addToFileList', { id, name, sPlots })
+              // now that all plots have been added to state.plots, add file to state
+              commit('addFile', { fileId, fileData })
 
               readCount++
 
@@ -165,45 +171,45 @@ export default new Vuex.Store({
         })(fileList[i])
       }
     }
-  },
-  getters: {
-    enabledPlots (state, getters) {
-      const files = getters.filesByName
-
-      const allPlots = []
-
-      files.forEach(file => {
-        file.sPlots.forEach(plot => {
-          const plotData = {
-            ...plot,
-            fileId: file.id,
-            fileName: file.name,
-            freq: state.plots[file.id].data.freq,
-            s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],
-            n: state.plots[file.id].n,
-            unit: state.plots[file.id].unit,
-            z0: state.plots[file.id].z0
-          }
-          if (plot.visible) {
-            allPlots.push(plotData)
-          }
-        })
-      })
-
-      return allPlots
-    },
-    filesByName: state => {
-      return state.fileList.sort((a, b) => {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) {
-          return -1
-        }
-
-        if (a.name.toLowerCase() > b.name.toLowerCase()) {
-          return 1
-        }
-
-        return 0
-      })
-    }
   }
+  // getters: {
+  //   enabledPlots (state, getters) {
+  //     const files = getters.filesByName
+
+  //     const allPlots = []
+
+  //     files.forEach(file => {
+  //       file.sPlots.forEach(plot => {
+  //         const plotData = {
+  //           ...plot,
+  //           fileId: file.id,
+  //           fileName: file.name,
+  //           freq: state.plots[file.id].data.freq,
+  //           s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],
+  //           n: state.plots[file.id].n,
+  //           unit: state.plots[file.id].unit,
+  //           z0: state.plots[file.id].z0
+  //         }
+  //         if (plot.visible) {
+  //           allPlots.push(plotData)
+  //         }
+  //       })
+  //     })
+
+  //     return allPlots
+  //   },
+  //   filesByName: state => {
+  //     return state.fileList.sort((a, b) => {
+  //       if (a.name.toLowerCase() < b.name.toLowerCase()) {
+  //         return -1
+  //       }
+
+  //       if (a.name.toLowerCase() > b.name.toLowerCase()) {
+  //         return 1
+  //       }
+
+  //       return 0
+  //     })
+  //   }
+  // }
 })
