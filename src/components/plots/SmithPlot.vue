@@ -24,7 +24,7 @@
               :stroke="getStrokeFill(plot.color)"
               :fill="getStrokeFill(plot.color)"
               @mouseover="showTooltip(plot, index, $event)"
-              @mouseout="hideTooltip"
+              @mouseleave="hideTooltip"
             ></circle>
           </g>
         </transition-group>
@@ -196,7 +196,7 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity 0.35s
+  transition: opacity .35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
