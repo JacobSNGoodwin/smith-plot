@@ -40,7 +40,7 @@ export default {
       this.$store.commit('deleteFile', this.fileToModify)
     },
     updateFileName (newName) {
-      this.$store.commit('updateFileName', { id: this.fileToModify.id, name: newName })
+      this.$store.commit('updateFileName', { fileId: this.fileToModify, name: newName })
     }
   },
   computed: {

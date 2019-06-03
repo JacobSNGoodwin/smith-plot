@@ -81,7 +81,10 @@ export default new Vuex.Store({
         state.navDrawer = val
       }
     },
-    updateFileName (state, fileData) {}
+    updateFileName (state, fileData) {
+      state.files[fileData.fileId].fileName = fileData.name
+      state.fileToModify = null
+    }
   },
   actions: {
     loadFiles ({ commit }, payload) {
