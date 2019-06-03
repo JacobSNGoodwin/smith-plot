@@ -106,7 +106,7 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     for (let i = 0; i < plot.freq.length; i++) {
       pathData.push({
         x: plot.freq[i],
-        y: plot[selectedPlotType][i]
+        y: plot.sParams[selectedPlotType][i]
       })
     }
 
