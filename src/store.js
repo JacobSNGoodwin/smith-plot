@@ -167,12 +167,14 @@ export default new Vuex.Store({
   getters: {
     enabledPlotList (state) {
       const enabledPlots = []
-
       state.fileList.forEach(fileId => {
-        console.log(fileId)
         state.files[fileId].plotList.forEach(plotId => {
-          console.log(plotId)
-          if (state.plots[plotId].visible) {
+          if (
+            (state.plots[plotId].visible && state.plotType === 'cartesian') ||
+            (state.plots[plotId].visible &&
+              state.plotType === 'smith' &&
+              !state.plots[plotId].disabledSmith)
+          ) {
             enabledPlots.push(plotId)
           }
         })
