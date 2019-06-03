@@ -15,10 +15,10 @@
 <script>
 export default {
   name: 'EditPlot',
-  props: ['plot'],
+  props: ['file'],
   data () {
     return {
-      newName: this.plot.name
+      newName: this.file.fileName
     }
   }
 }
