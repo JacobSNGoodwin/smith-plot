@@ -86,9 +86,9 @@ export default {
     openModifyDialog (file) {
       this.$store.commit('setFileToModify', file)
     },
-    togglePlotVisibility (plotToToggle, event) {
+    togglePlotVisibility (plotId, event) {
       const plotInfo = {
-        ...plotToToggle,
+        plotId,
         value: event
       }
       this.$store.commit('setPlotVisibility', plotInfo)

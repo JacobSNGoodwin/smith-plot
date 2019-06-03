@@ -69,12 +69,7 @@ export default new Vuex.Store({
       })
     },
     setPlotVisibility (state, plotInfo) {
-      const fileIndexToUpdate = state.fileList.findIndex(
-        file => file.id === plotInfo.id
-      )
-
-      state.fileList[fileIndexToUpdate].sPlots[plotInfo.index].visible =
-        plotInfo.value
+      state.plots[plotInfo.plotId].visible = plotInfo.value
     },
     startLoading (state) {
       state.loadingFiles = true
