@@ -83,8 +83,8 @@ export default {
         this.$store.dispatch('loadFiles', { files, fileRef })
       }
     },
-    openModifyDialog (file) {
-      this.$store.commit('setFileToModify', file)
+    openModifyDialog (fileId) {
+      this.$store.commit('setFileToModify', fileId)
     },
     togglePlotVisibility (plotId, event) {
       const plotInfo = {

@@ -48,8 +48,8 @@ export default new Vuex.Store({
     setError (state, error) {
       state.error = error
     },
-    setFileToModify (state, file) {
-      state.fileToModify = file
+    setFileToModify (state, fileId) {
+      state.fileToModify = fileId
     },
     setPlotColor (state, plotInfo) {
       state.plots[plotInfo.plotId].color = plotInfo.value
