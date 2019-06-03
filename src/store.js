@@ -171,7 +171,7 @@ export default new Vuex.Store({
       state.fileList.forEach(fileId => {
         state.files[fileId].plotList.forEach(plotId => {
           if (state.plots[plotId].visible) {
-            enabledPlots.push(state.plots[plotId])
+            enabledPlots.push({ plotId, ...state.plots[plotId] })
           }
         })
       })

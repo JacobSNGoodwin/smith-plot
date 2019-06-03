@@ -175,8 +175,8 @@ const getImagPath = xL => {
 
 // d3 line generator
 const getSmithPlotLine = plot => {
-  const sRe = plot.sParams.sRe
-  const sIm = plot.sParams.sIm
+  const sRe = plot.sRe
+  const sIm = plot.sIm
 
   const radialLine = d3
     .lineRadial()

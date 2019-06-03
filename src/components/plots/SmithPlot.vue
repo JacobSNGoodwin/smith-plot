@@ -13,8 +13,8 @@
         </g>
 
         <transition-group :transform="smithTranslate" name="fade" tag="g">
-          <g v-for="(plot, index) in plots" :key="plot.plotId">
-            <path class="smithTraces" :d="smithLines[index]" :stroke="plot.color"></path>
+          <g v-for="plot in plots" :key="plot.plotId">
+            <path class="smithTraces" :d="getSmithPath(plot)" :stroke="plot.color"></path>
             <circle
               v-for="(freq, index) in plot.freq"
               :key="freq"
@@ -81,12 +81,18 @@ export default {
   },
   methods: {
     getDataPoint (plot, index) {
-      return getSmithCoordinate(plot.sParams.sRe[index], plot.sParams.sIm[index])
+      return getSmithCoordinate(plot.sRe[index], plot.sIm[index])
+    },
+    getStrokeFill (color) {
+      return this.showDataPoints ? color : 'transparent'
+    },
+    hideTooltip (event) {
+      this.tooltipVisible = false
     },
     showTooltip (plot, index, event) {
       const freq = plot.freq[index]
-      const sRe = plot.sParams.sRe[index]
-      const sIm = plot.sParams.sIm[index]
+      const sRe = plot.sRe[index]
+      const sIm = plot.sIm[index]
 
       // for displaying complex number as a string
       let sSign = '+'
@@ -117,13 +123,9 @@ export default {
       this.tooltipY = event.clientY
       this.tooltipVisible = true
     },
-    getStrokeFill (color) {
-      return this.showDataPoints ? color : 'transparent'
-    },
-    hideTooltip (event) {
-      this.tooltipVisible = false
+    getSmithPath (plot) {
+      return getSmithPlotLine(plot)
     }
-
   },
   computed: {
     svgBox () {
@@ -141,9 +143,6 @@ export default {
     },
     smithTranslate () {
       return `translate(${this.margin + this.viewPort / 2}, ${this.margin + this.viewPort / 2})`
-    },
-    smithLines () {
-      return this.plots.map(plot => getSmithPlotLine(plot))
     },
     dataPointRadius () {
       return this.showDataPoints ? 5 : 10
@@ -196,7 +195,7 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .35s
+  transition: opacity .75s
 
 .fade-enter, .fade-leave-to
   opacity: 0
