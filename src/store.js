@@ -121,6 +121,7 @@ export default new Vuex.Store({
 
                   const plotData = {
                     label,
+                    fileName: network.fileName,
                     freq: network.data.freq,
                     sParams: network.data.s[i][j],
                     indeces: [i, j],
