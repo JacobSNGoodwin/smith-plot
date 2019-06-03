@@ -123,7 +123,7 @@ export default new Vuex.Store({
                     label,
                     fileName: network.fileName,
                     freq: network.data.freq,
-                    sParams: network.data.s[i][j],
+                    ...network.data.s[i][j],
                     indeces: [i, j],
                     visible: false,
                     unit: network.freqUnit, // duplicates of file may make access easier
@@ -166,23 +166,21 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    enabledPlotList (state) {
+    enabledPlots: state => {
       const enabledPlots = []
       state.fileList.forEach(fileId => {
         state.files[fileId].plotList.forEach(plotId => {
-          if (
-            (state.plots[plotId].visible && state.plotType === 'cartesian') ||
-            (state.plots[plotId].visible &&
-              state.plotType === 'smith' &&
-              !state.plots[plotId].disabledSmith)
-          ) {
-            enabledPlots.push(plotId)
+          if (state.plots[plotId].visible) {
+            enabledPlots.push(state.plots[plotId])
           }
         })
       })
 
       return enabledPlots
     },
+    // enabledSmithPlots: (state, getters) => {
+    //   return getters.enabledPlots.filter(plot => !plot.disabledSmith)
+    // }
     fileListByName: state => {
       return state.fileList.sort((a, b) => {
         if (

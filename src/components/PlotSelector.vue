@@ -13,10 +13,10 @@
         </v-tab>
 
         <v-tab-item value="smith">
-          <SmithPlot :plots="enabledPlots"/>
+          <SmithPlot :plots="enabledSmithPlots"/>
         </v-tab-item>
         <v-tab-item value="cartesian">
-          <CartesianPlot :plots="enabledPlots"/>
+          <!-- <CartesianPlot :plots="enabledPlots"/> -->
         </v-tab-item>
       </v-tabs>
     </v-flex>
@@ -25,12 +25,12 @@
 
 <script>
 import SmithPlot from '@/components/plots/SmithPlot.vue'
-import CartesianPlot from '@/components/plots/CartesianPlot.vue'
+// import CartesianPlot from '@/components/plots/CartesianPlot.vue'
 export default {
   name: 'PlotSelector',
   components: {
-    SmithPlot,
-    CartesianPlot
+    SmithPlot
+    // CartesianPlot
   },
   props: {
     enabledPlots: Array
@@ -38,6 +38,11 @@ export default {
   methods: {
     setPlotType (event) {
       this.$store.commit('setPlotType', event)
+    }
+  },
+  computed: {
+    enabledSmithPlots () {
+      return this.enabledPlots.filter(plot => !plot.disabledSmith)
     }
   }
 }

@@ -51,16 +51,8 @@ export default {
       'error'
     ]),
     ...mapGetters([
-      'enabledPlotList'
-    ]),
-    enabledPlots () {
-      return this.enabledPlotList.map(plotId => {
-        return {
-          plotId,
-          ...this.plots[plotId]
-        }
-      })
-    }
+      'enabledPlots'
+    ])
   }
 }
 </script>
