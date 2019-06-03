@@ -69,7 +69,7 @@
               :stroke="getStrokeFill(plot.color)"
               :fill="getStrokeFill(plot.color)"
               @mouseover="showTooltip(plot, index, d, $event)"
-              @mouseleave="hideTooltip"
+              @mouseout="hideTooltip"
             ></circle>
           </g>
         </g>

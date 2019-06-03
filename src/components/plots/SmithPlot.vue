@@ -24,7 +24,7 @@
               :stroke="getStrokeFill(plot.color)"
               :fill="getStrokeFill(plot.color)"
               @mouseover="showTooltip(plot, index, $event)"
-              @mouseleave="hideTooltip"
+              @mouseout="hideTooltip"
             ></circle>
           </g>
         </transition-group>
