@@ -24,10 +24,13 @@ export default new Vuex.Store({
   },
   mutations: {
     addPlot (state, plot) {
-      state.plots[plot.plotId] = plot.plotData
+      // use Vue.set to make sure object properties are reactive
+      // could also use spread operator, but seems slower (need testing)
+      Vue.set(state.plots, plot.plotId, plot.plotData)
     },
     addFile (state, file) {
-      state.files[file.fileId] = file.fileData
+      // use Vue.set to make sure object properties are reactive
+      Vue.set(state.files, file.fileId, file.fileData)
       state.fileList.push(file.fileId)
     },
     clearError (state) {
