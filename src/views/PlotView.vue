@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <PlotSelector :enabledPlots="enabledPlotList"/>
+    <PlotSelector :enabledPlots="enabledPlots"/>
     <!-- update:returnValue - handle state when clicking backdrop outside of dialog -->
     <v-dialog :value="fileToModify" max-width="500px" @update:returnValue="clearSelectedFile">
       <EditFile
@@ -46,12 +46,21 @@ export default {
   computed: {
     ...mapState([
       'fileToModify',
+      'plots',
       'files',
       'error'
     ]),
     ...mapGetters([
       'enabledPlotList'
-    ])
+    ]),
+    enabledPlots () {
+      return this.enabledPlotList.map(plotId => {
+        return {
+          plotId,
+          ...this.plots[plotId]
+        }
+      })
+    }
   }
 }
 </script>
