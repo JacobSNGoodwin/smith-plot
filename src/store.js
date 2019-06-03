@@ -36,13 +36,16 @@ export default new Vuex.Store({
     clearError (state) {
       state.error = null
     },
-    deleteFile (state, plotToDelete) {
-      // remove from plot list
-      // remove from plots (plot data)
+    deleteFile (state, fileId) {
+      // first delete all plots key/values related to this file
+      state.files[fileId].plotList.forEach(plotId => {
+        delete state.plots[plotId]
+      })
+      // delete fileId from fileList and key/value from files
       state.fileList = state.fileList.filter(
-        plot => plot.id !== plotToDelete.id
+        storeFileId => fileId !== storeFileId
       )
-      delete state.plots[plotToDelete.id]
+      delete state.files[fileId]
       state.fileToModify = null
     },
     setError (state, error) {
@@ -78,13 +81,7 @@ export default new Vuex.Store({
         state.navDrawer = val
       }
     },
-    updatePlotName (state, plotData) {
-      const plotIndex = state.fileList.findIndex(
-        plot => plot.id === plotData.id
-      )
-      state.fileList[plotIndex].name = plotData.name
-      state.fileToModify = null
-    }
+    updateFileName (state, fileData) {}
   },
   actions: {
     loadFiles ({ commit }, payload) {

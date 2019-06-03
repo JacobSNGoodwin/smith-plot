@@ -6,8 +6,8 @@
       <EditFile
         v-if="fileToModify"
         @close-dialog="clearSelectedFile"
-        @delete-plot="deleteFile"
-        @update-plot-name="updatePlotName"
+        @delete-file="deleteFile"
+        @update-file-name="updateFileName"
         :file="files[fileToModify]"
       />
     </v-dialog>
@@ -39,8 +39,8 @@ export default {
     deleteFile () {
       this.$store.commit('deleteFile', this.fileToModify)
     },
-    updatePlotName (newName) {
-      this.$store.commit('updatePlotName', { id: this.fileToModify.id, name: newName })
+    updateFileName (newName) {
+      this.$store.commit('updateFileName', { id: this.fileToModify.id, name: newName })
     }
   },
   computed: {
