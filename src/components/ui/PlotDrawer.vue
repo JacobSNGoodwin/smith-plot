@@ -69,11 +69,11 @@ export default {
     ColorPicker
   },
   methods: {
-    disablePlotsInFile (file) {
-      this.$store.commit('setAllPlotsVisibility', { id: file.id, value: false })
+    disablePlotsInFile (fileId) {
+      this.$store.commit('setAllPlotsVisibility', { fileId, value: false })
     },
-    enablePlotsInFile (file) {
-      this.$store.commit('setAllPlotsVisibility', { id: file.id, value: true })
+    enablePlotsInFile (fileId) {
+      this.$store.commit('setAllPlotsVisibility', { fileId, value: true })
     },
     getFiles (event, fileRef) {
       const files = event.target.files
