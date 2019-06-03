@@ -71,8 +71,14 @@ export default new Vuex.Store({
     startLoading (state) {
       state.loadingFiles = true
     },
+    startLoadingPlots (state) {
+      state.loadingAllPlots = true
+    },
     stopLoading (state) {
       state.loadingFiles = false
+    },
+    stopLoadingPlots (state) {
+      state.loadingAllPlots = false
     },
     toggleNavDrawer (state, val) {
       if (val === null) {
@@ -178,9 +184,6 @@ export default new Vuex.Store({
 
       return enabledPlots
     },
-    // enabledSmithPlots: (state, getters) => {
-    //   return getters.enabledPlots.filter(plot => !plot.disabledSmith)
-    // }
     fileListByName: state => {
       return state.fileList.sort((a, b) => {
         if (
