@@ -175,19 +175,24 @@ const getImagPath = xL => {
 
 // d3 line generator
 const getSmithPlotLine = plot => {
+  const sRe = plot.sParams.sRe
+  const sIm = plot.sParams.sIm
+
   const radialLine = d3
     .lineRadial()
-    .radius(s => r(Math.sqrt(s.re * s.re + s.im * s.im)))
-    .angle(s => a2(math.atan2(s.im, s.re)))
+    .radius((s, index) =>
+      r(Math.sqrt(sRe[index] * sRe[index] + sIm[index] * sIm[index]))
+    )
+    .angle((s, index) => a2(math.atan2(sIm[index], sRe[index])))
     .curve(d3.curveNatural)
 
-  return radialLine(plot.s)
+  return radialLine(sRe)
 }
 
-const getSmithCoordinate = sComplex => {
+const getSmithCoordinate = (sRe, sIm) => {
   return {
-    cx: x2(sComplex.re),
-    cy: y2(sComplex.im)
+    cx: x2(sRe),
+    cy: y2(sIm)
   }
 }
 

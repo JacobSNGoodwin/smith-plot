@@ -13,7 +13,7 @@
         </g>
 
         <transition-group :transform="smithTranslate" name="fade" tag="g">
-          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
+          <g v-for="(plot, index) in plots" :key="plot.plotId">
             <path class="smithTraces" :d="smithLines[index]" :stroke="plot.color"></path>
             <circle
               v-for="(freq, index) in plot.freq"
@@ -52,6 +52,7 @@
 
 <script>
 import * as chroma from 'chroma-js'
+import math from 'mathjs'
 import { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate, gammaToZLoad } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
@@ -80,20 +81,22 @@ export default {
   },
   methods: {
     getDataPoint (plot, index) {
-      return getSmithCoordinate(plot.s[index])
+      return getSmithCoordinate(plot.sParams.sRe[index], plot.sParams.sIm[index])
     },
     showTooltip (plot, index, event) {
       const freq = plot.freq[index]
-      const s = plot.s[index]
+      const sRe = plot.sParams.sRe[index]
+      const sIm = plot.sParams.sIm[index]
 
+      // for displaying complex number as a string
       let sSign = '+'
-      let sImag = s.im
-      if (s.im < 0) {
+      let sImag = sIm
+      if (sIm < 0) {
         sSign = '-'
-        sImag = -1 * s.im
+        sImag = -1 * sIm
       }
 
-      const z = gammaToZLoad(plot.s[index], plot.z0)
+      const z = gammaToZLoad(math.complex(sRe, sIm), plot.z0)
 
       let zSign = '+'
       let zImag = z.im
@@ -105,7 +108,7 @@ export default {
       this.tooltipData.color = plot.color
       this.tooltipData.z0 = plot.z0
       this.tooltipData.freq = `${freq.toFixed(4)} ${plot.unit}`
-      this.tooltipData.s = `${s.re.toFixed(4)} ${sSign} ${sImag.toFixed(4)}i`
+      this.tooltipData.s = `${sRe.toFixed(4)} ${sSign} ${sImag.toFixed(4)}i`
       this.tooltipData.z = `${z.re.toFixed(4)} ${zSign} ${zImag.toFixed(4)}i \u03A9`
 
       this.tooltipData.title = `${plot.fileName} - ${plot.label}`
@@ -193,7 +196,7 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .35s
+  transition: opacity 0.35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
