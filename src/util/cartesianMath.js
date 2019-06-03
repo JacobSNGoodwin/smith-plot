@@ -105,8 +105,8 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     // need to find more efficient way to do this before hand in data store
     for (let i = 0; i < plot.freq.length; i++) {
       pathData.push({
-        x: plot.freq[i],
-        y: plot.sParams[selectedPlotType][i]
+        x: plot.freq[i] * unitMap.get(plot.unit), // scale to Hz
+        y: plot[selectedPlotType][i]
       })
     }
 
@@ -167,9 +167,13 @@ const getLimits = (plots, selectedPlotType) => {
 
   plots.forEach(plot => {
     // get min/max of Sparam based on plotType
-    extentY.push(plot.sParams[minProperty], plot.sParams[maxProperty])
+    extentY.push(plot[minProperty], plot[maxProperty])
     // frequencies are ordered, so min is first el and max is last el
-    extentX.push(plot.freq[0], plot.freq[plot.freq.length - 1])
+    // for plot scaale all freqz in Hz
+    extentX.push(
+      plot.freq[0] * unitMap.get(plot.unit),
+      plot.freq[plot.freq.length - 1] * unitMap.get(plot.unit)
+    )
   })
 
   return {
@@ -180,10 +184,7 @@ const getLimits = (plots, selectedPlotType) => {
   }
 }
 
-const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
-  return frequencies.map(
-    frequency => frequency * (unitMap.get(inputUnit) / unitMap.get(outputUnit))
-  )
-}
+const normalizeFreq = (freq, outputUnit, inputUnit) =>
+  (freq * unitMap.get(inputUnit)) / unitMap.get(outputUnit)
 
 export { getPlotData, normalizeFreq }

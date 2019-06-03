@@ -55,7 +55,7 @@
               :transform="`translate(${tick.offset}, 0)`"
             >
               <line v-if="tick.offset" y2="10"></line>
-              <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
+              <text class="tickLabel xLabel" x="0" dy="35">{{getFreqInLocalUnit(tick.label)}}</text>
             </g>
           </g>
           <g v-for="(plot, index) in plots" :key="plot.plotId">
@@ -95,7 +95,7 @@
 
 <script>
 import * as chroma from 'chroma-js'
-import { getPlotData } from '../../util/cartesianMath'
+import { getPlotData, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -160,8 +160,12 @@ export default {
     getStrokeFill (color) {
       return this.showDataPoints ? color : 'transparent'
     },
+    getFreqInLocalUnit (freqHz) {
+      return normalizeFreq(freqHz, this.axesSettings.plotFreqUnit, 'HZ').toFixed(2)
+    },
     showTooltip (plot, index, dataPoint, event) {
-      const freq = dataPoint.x
+      const freq = normalizeFreq(dataPoint.x, this.axesSettings.plotFreqUnit, 'HZ')
+
       const s = dataPoint.y
 
       this.tooltipData.color = plot.color
