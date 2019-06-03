@@ -49,12 +49,7 @@ export default new Vuex.Store({
       state.fileToModify = file
     },
     setPlotColor (state, plotInfo) {
-      const fileIndexToUpdate = state.fileList.findIndex(
-        file => file.id === plotInfo.id
-      )
-
-      state.fileList[fileIndexToUpdate].sPlots[plotInfo.index].color =
-        plotInfo.value
+      state.plots[plotInfo.plotId].color = plotInfo.value
     },
     setPlotType (state, plotType) {
       state.plotType = plotType
@@ -175,7 +170,9 @@ export default new Vuex.Store({
       const enabledPlots = []
 
       state.fileList.forEach(fileId => {
+        console.log(fileId)
         state.files[fileId].plotList.forEach(plotId => {
+          console.log(plotId)
           if (state.plots[plotId].visible) {
             enabledPlots.push(plotId)
           }

@@ -93,9 +93,9 @@ export default {
       }
       this.$store.commit('setPlotVisibility', plotInfo)
     },
-    updateColor (plotToUpdate, hexColor) {
+    updateColor (plotId, hexColor) {
       const plotInfo = {
-        ...plotToUpdate,
+        plotId,
         value: hexColor
       }
       this.$store.commit('setPlotColor', plotInfo)
