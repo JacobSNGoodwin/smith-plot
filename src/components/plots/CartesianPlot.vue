@@ -28,43 +28,45 @@
     <div class="cartesianContainer">
       <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
         <g class="cartesianGroup" :transform="groupTranslate">
-          <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
-            <path class="yAxis" :d="plotData.yAxisPath"></path>
-            <path v-if="plotData.zeroPath" class="zeroAxis" :d="plotData.zeroPath"></path>
+          <g class="axes">
+            <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
+              <path class="yAxis" :d="computedAxes.yAxisPath"></path>
+              <path v-if="computedAxes.zeroPath" class="zeroAxis" :d="computedAxes.zeroPath"></path>
+              <g
+                v-for="tick in computedAxes.ticksY"
+                :key="tick.label"
+                :transform="`translate(0, ${tick.offset})`"
+              >
+                <line x2="-10"></line>
+                <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
+              </g>
+            </g>
             <g
-              v-for="tick in plotData.ticksY"
-              :key="tick.label"
-              :transform="`translate(0, ${tick.offset})`"
+              class="axisGroup"
+              :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
             >
-              <line x2="-10"></line>
-              <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
+              <path class="xAxis" :d="computedAxes.xAxisPath"></path>
+              <text
+                class="tickLabel xUnit"
+                :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
+              >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
+              <g
+                v-for="tick in computedAxes.ticksX"
+                :key="tick.label"
+                :transform="`translate(${tick.offset}, 0)`"
+              >
+                <line v-if="tick.offset" y2="10"></line>
+                <text class="tickLabel xLabel" x="0" dy="35">{{getFreqInLocalUnit(tick.label)}}</text>
+              </g>
             </g>
           </g>
-          <g
-            class="axisGroup"
-            :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
-          >
-            <path class="xAxis" :d="plotData.xAxisPath"></path>
-            <text
-              class="tickLabel xUnit"
-              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
-            >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
-            <g
-              v-for="tick in plotData.ticksX"
-              :key="tick.label"
-              :transform="`translate(${tick.offset}, 0)`"
-            >
-              <line v-if="tick.offset" y2="10"></line>
-              <text class="tickLabel xLabel" x="0" dy="35">{{getFreqInLocalUnit(tick.label)}}</text>
-            </g>
-          </g>
-          <g v-for="(plot, index) in plots" :key="plot.plotId">
-            <path class="cartTraces" :d="plotData.plotPaths[index].path" :stroke="plot.color"></path>
+          <g v-for="(plot) in plots" :key="plot.key">
+            <path class="cartTraces" :d="getPlotPath(plot).path" :stroke="plot.color"></path>
             <circle
-              v-for="d in plotData.plotPaths[index].pathData"
+              v-for="d in getPlotPath(plot).pathData"
               :key="d.x"
-              :cx="plotData.xScale(d.x)"
-              :cy="plotData.yScale(d.y)"
+              :cx="computedAxes.xScale(d.x)"
+              :cy="computedAxes.yScale(d.y)"
               :r="dataPointRadius"
               :stroke="getStrokeFill(plot.color)"
               :fill="getStrokeFill(plot.color)"
@@ -75,7 +77,7 @@
         </g>
       </svg>
     </div>
-    <v-tooltip
+    <!-- <v-tooltip
       :value="tooltipVisible"
       :position-x="tooltipX"
       :position-y="tooltipY"
@@ -89,13 +91,13 @@
         <div class="body-2">freq: {{tooltipData.freq}}</div>
         <div class="body-2">{{selectedPlotType}}: {{tooltipData.s}}</div>
       </v-layout>
-    </v-tooltip>
+    </v-tooltip>-->
   </v-card>
 </template>
 
 <script>
 import * as chroma from 'chroma-js'
-import { getPlotData, normalizeFreq } from '../../util/cartesianMath'
+import { getAxes, getPathFromPlot, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -157,11 +159,14 @@ export default {
     }
   },
   methods: {
-    getStrokeFill (color) {
-      return this.showDataPoints ? color : 'transparent'
-    },
     getFreqInLocalUnit (freqHz) {
       return normalizeFreq(freqHz, this.axesSettings.plotFreqUnit, 'HZ').toFixed(2)
+    },
+    getPlotPath (plot) {
+      return getPathFromPlot(plot, this.selectedPlotType, this.computedAxes.xScale, this.computedAxes.yScale)
+    },
+    getStrokeFill (color) {
+      return this.showDataPoints ? color : 'transparent'
     },
     showTooltip (plot, index, dataPoint, event) {
       const freq = normalizeFreq(dataPoint.x, this.axesSettings.plotFreqUnit, 'HZ')
@@ -191,8 +196,8 @@ export default {
       const totalHeight = this.viewPort.y + 2 * this.margin
       return `0 0 ${totalWidth} ${totalHeight}`
     },
-    plotData () {
-      return getPlotData(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
+    computedAxes () {
+      return getAxes(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
     },
     dataPointRadius () {
       return this.showDataPoints ? 5 : 10

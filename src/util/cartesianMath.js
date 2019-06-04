@@ -10,7 +10,7 @@ const unitMap = new Map([
   ['PHZ', 1e15]
 ])
 
-const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
+const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
   // create linear scales based on max dimensions
 
   const limits = getLimits(plots, selectedPlotType)
@@ -91,38 +91,39 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     zeroPath = path0.toString()
   }
 
-  // get plot paths while we're at it since we have all the dadgummed info we dun need
-  // plotPaths will contain an array of path strings
-  const lineGenerator = d3
-    .line()
-    .x(d => xScale(d.x))
-    .y(d => yScale(d.y))
-    .curve(d3.curveMonotoneX)
-
-  const plotPaths = plots.map(plot => {
-    const pathData = []
-
-    // need to find more efficient way to do this before hand in data store
-    for (let i = 0; i < plot.freq.length; i++) {
-      pathData.push({
-        x: plot.freq[i] * unitMap.get(plot.unit), // scale to Hz
-        y: plot[selectedPlotType][i]
-      })
-    }
-
-    const path = lineGenerator(pathData)
-    return { path, pathData }
-  })
-
   return {
     yAxisPath: yAxisPath.toString(), // path of the yAxis
     xAxisPath: xAxisPath.toString(),
     ticksY,
     ticksX,
     zeroPath,
-    plotPaths,
     yScale,
     xScale
+  }
+}
+
+const getPathFromPlot = (plot, selectedPlotType, xScale, yScale) => {
+  // returns a path string from a single plot
+  const lineGenerator = d3
+    .line()
+    .x(d => xScale(d.x))
+    .y(d => yScale(d.y))
+    .curve(d3.curveMonotoneX)
+
+  const pathData = []
+
+  // need to find more efficient way to do this before hand in data store
+  for (let i = 0; i < plot.freq.length; i++) {
+    pathData.push({
+      x: plot.freq[i] * unitMap.get(plot.unit), // scale to Hz
+      y: plot[selectedPlotType][i]
+    })
+  }
+
+  const path = lineGenerator(pathData)
+  return {
+    path,
+    pathData
   }
 }
 
@@ -187,4 +188,4 @@ const getLimits = (plots, selectedPlotType) => {
 const normalizeFreq = (freq, outputUnit, inputUnit) =>
   (freq * unitMap.get(inputUnit)) / unitMap.get(outputUnit)
 
-export { getPlotData, normalizeFreq }
+export { getAxes, getPathFromPlot, normalizeFreq }
