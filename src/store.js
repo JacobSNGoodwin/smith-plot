@@ -102,7 +102,7 @@ export default new Vuex.Store({
       let readCount = 0
       const fileList = payload.files
 
-      const fileSizeLimit = 50 * 1024 // temporarily set to 50kB
+      const fileSizeLimit = 2000 * 1024 // temporarily set to 50kB
       const largeFileList = []
 
       for (let i = 0; i < fileList.length; i++) {
