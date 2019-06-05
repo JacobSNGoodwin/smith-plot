@@ -30,6 +30,14 @@
         ref="cartesianSvg"
       >
         <g class="cartesianGroup" :transform="groupTranslate">
+          <clipPath id="clipPlots">
+            <rect
+              :x="axesSettings.insetLeft"
+              :y="axesSettings.insetTop"
+              :width="viewPort.x-axesSettings.insetLeft-axesSettings.insetRight"
+              :height="viewPort.y-axesSettings.insetTop-axesSettings.insetBottom"
+            ></rect>
+          </clipPath>
           <g class="axes">
             <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
               <path class="yAxis" :d="computedAxes.yAxisPath"></path>
