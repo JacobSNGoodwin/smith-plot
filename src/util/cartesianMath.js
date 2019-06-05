@@ -60,11 +60,11 @@ const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
   }
 
   if (axesSettings.xMin || axesSettings.xMin === 0) {
-    xMinLimit = axesSettings.xMin
+    xMinLimit = axesSettings.xMin * unitMap.get(axesSettings.plotFreqUnit)
   }
 
   if (axesSettings.xMax || axesSettings.xMax === 0) {
-    xMaxLimit = axesSettings.xMax
+    xMaxLimit = axesSettings.xMax * unitMap.get(axesSettings.plotFreqUnit)
   }
 
   if (axesSettings.xTicks) {
