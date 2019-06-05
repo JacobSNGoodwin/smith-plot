@@ -201,7 +201,7 @@ const getNearestPointFromComplex = (sReMouse, sImMouse, sReArray, sImArray) => {
   let bestIndex = 0
   let bestDistance = Number.MAX_VALUE
 
-  for (let i = 0; i < sReArray.length - 1; i++) {
+  for (let i = 0; i < sReArray.length; i++) {
     const diffRe = sReArray[i] - sReMouse
     const diffIm = sImArray[i] - sImMouse
 
