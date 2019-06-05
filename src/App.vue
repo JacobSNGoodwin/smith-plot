@@ -4,8 +4,10 @@
     <PlotDrawer/>
     <v-content>
       <PlotView/>
+      <v-container>
+        <Footer/>
+      </v-container>
     </v-content>
-    <Footer/>
   </v-app>
 </template>
 
