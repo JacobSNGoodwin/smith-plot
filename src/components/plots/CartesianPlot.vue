@@ -32,10 +32,10 @@
         <g class="cartesianGroup" :transform="groupTranslate">
           <clipPath id="clipPlots">
             <rect
-              :x="axesSettings.insetLeft"
-              :y="axesSettings.insetTop"
-              :width="viewPort.x-axesSettings.insetLeft-axesSettings.insetRight"
-              :height="viewPort.y-axesSettings.insetTop-axesSettings.insetBottom"
+              :x="axesSettings.insetLeft-5"
+              :y="axesSettings.insetTop-5"
+              :width="viewPort.x-axesSettings.insetLeft-axesSettings.insetRight+10"
+              :height="viewPort.y-axesSettings.insetTop-axesSettings.insetBottom+10"
             ></rect>
           </clipPath>
           <g class="axes">
@@ -370,7 +370,7 @@ export default {
   padding: 0 1em
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .35s
+  transition: opacity 0.35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
