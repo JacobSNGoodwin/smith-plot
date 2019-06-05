@@ -102,7 +102,7 @@
       </svg>
     </div>
     <v-layout justify-center row wrap mx-4>
-      <v-flex sm3 xs6 px-1>
+      <v-flex md2 sm3 xs6 px-1>
         <v-text-field
           class="numberField"
           label="Min Freq"
@@ -112,7 +112,7 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <v-flex sm3 xs6 px-1>
+      <v-flex md2 sm3 xs6 px-1>
         <v-text-field
           class="numberField"
           label="Max Freq"
@@ -122,7 +122,7 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <v-flex sm3 xs6 px-1>
+      <v-flex md2 sm3 xs6 px-1>
         <v-text-field
           class="numberField"
           label="Min Y"
@@ -132,7 +132,7 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <v-flex sm3 xs6 px-1>
+      <v-flex md2 sm3 xs6 px-1>
         <v-text-field
           class="numberField"
           label="Max Y"
@@ -142,10 +142,10 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <v-flex sm3 xs6 px-1>
+      <v-flex md2 sm3 xs6 px-1>
         <v-text-field
           class="numberField"
-          label="ticks x"
+          label="Ticks x"
           outline
           type="number"
           hint="Please enter a positive value"
@@ -153,10 +153,10 @@
           clearable
         ></v-text-field>
       </v-flex>
-      <v-flex sm3 xs6 px-1>
+      <v-flex md2 sm3 xs6 px-1>
         <v-text-field
           class="numberField"
-          label="ticks y"
+          label="Ticks y"
           outline
           type="number"
           hint="Please enter a positive value"
