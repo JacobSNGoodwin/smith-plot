@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
-    <v-layout row justify-center>
-      <v-flex sm3 xs6>
+    <v-layout row wrap justify-center>
+      <v-flex sm3 xs12>
         <v-select
           class="selectPlot"
           v-model="selectedPlotType"
@@ -11,7 +11,7 @@
           label="Plot Type"
         ></v-select>
       </v-flex>
-      <v-flex sm3 xs6>
+      <v-flex sm3 xs12>
         <v-select
           class="selectPlot"
           v-model="axesSettings.plotFreqUnit"
@@ -92,6 +92,48 @@
         </g>
       </svg>
     </div>
+    <v-layout justify-center row wrap mx-4>
+      <v-flex sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Min Freq"
+          outline
+          v-model="axesSettings.xMin"
+          type="number"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Max Freq"
+          outline
+          type="number"
+          v-model="axesSettings.xMax"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Min Y"
+          outline
+          type="number"
+          v-model="axesSettings.yMin"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Max Y"
+          outline
+          type="number"
+          v-model="axesSettings.yMax"
+          clearable
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
     <v-tooltip
       :value="tooltipVisible"
       :position-x="tooltipX"
@@ -141,11 +183,11 @@ export default {
       ],
       selectedPlotType: 'sRe',
       axesSettings: {
-        xmin: 0,
-        xmax: 1E9,
+        xMin: '',
+        xMax: null,
         xTicks: 5,
-        ymin: -100,
-        ymax: 100,
+        yMin: null,
+        yMax: null,
         yTicks: 5,
         plotFreqUnit: 'GHZ', // default unit of GHz
         insetTop: 10, // inset of axes for group
@@ -297,8 +339,18 @@ export default {
   padding: 0 1em
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity 0.35s
+  transition: opacity .35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
+
+.numberField input::-webkit-inner-spin-button, .numberField input::-webkit-outer-spin-button
+  -webkit-appearance: none
+  margin: 0
+
+.numberField input[type='number']
+  -moz-appearance: textfield
+  -webkit-appearance: none
+  appearance: none
+  margin: 0
 </style>
