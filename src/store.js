@@ -89,6 +89,9 @@ export default new Vuex.Store({
     },
     updateFileName (state, fileData) {
       state.files[fileData.fileId].fileName = fileData.name
+      state.files[fileData.fileId].plotList.forEach(plotId => {
+        state.plots[plotId].fileName = fileData.name
+      })
       state.fileToModify = null
     }
   },
