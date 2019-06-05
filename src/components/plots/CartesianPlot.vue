@@ -68,9 +68,19 @@
               :d="getPlotPath(plot).path"
               :stroke="plot.color"
               @mouseover="showTooltip(plot, $event)"
+              @mousemove="showTooltip(plot, $event)"
               @mouseout="hideTooltip"
             ></path>
           </g>
+          <circle
+            v-if="tooltipVisible"
+            class="hoverCircle"
+            :cx="hoverCircle.x"
+            :cy="hoverCircle.y"
+            r="10"
+            :fill="tooltipData.color"
+            pointer-events="none"
+          ></circle>
         </g>
       </svg>
     </div>
@@ -143,6 +153,10 @@ export default {
         'THZ': 'THz',
         'PHZ': 'PHz'
       },
+      hoverCircle: {
+        x: null,
+        y: null
+      },
       tooltipX: null,
       tooltipY: null,
       tooltipVisible: false,
@@ -180,8 +194,12 @@ export default {
 
       this.tooltipData.title = `${plot.fileName} - ${plot.label}`
 
+      this.hoverCircle.x = this.computedAxes.xScale(normalizeFreq(freq, 'HZ', this.axesSettings.plotFreqUnit))
+      this.hoverCircle.y = this.computedAxes.yScale(s)
+
       this.tooltipX = event.clientX
       this.tooltipY = event.clientY
+
       this.tooltipVisible = true
     },
     hideTooltip (event) {
