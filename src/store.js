@@ -102,7 +102,16 @@ export default new Vuex.Store({
       let readCount = 0
       const fileList = payload.files
 
+      const fileSizeLimit = 50 * 1024 // temporarily set to 50kB
+      const largeFileList = []
+
       for (let i = 0; i < fileList.length; i++) {
+        // check file length - only read in if it meets length requirement
+        if (fileList[i].size > fileSizeLimit) {
+          largeFileList.push(fileList[i].name)
+          continue
+        }
+
         // use file inside of closure to assure we read every file one by one
         ;(function (file) {
           const fileId = uuidv1()
@@ -172,6 +181,21 @@ export default new Vuex.Store({
           reader.readAsText(file, 'UTF-8')
         })(fileList[i])
       }
+      // show files that exceed file size limit
+      if (largeFileList.length > 0) {
+        const fileListString = largeFileList.join(', ')
+        const message =
+          'The following files exceed the size limit of ' +
+          fileSizeLimit +
+          ' bytes: ' +
+          fileListString +
+          '.'
+        commit('setError', {
+          userMessage: message,
+          error: new Error('Some files exceed size limit')
+        })
+      }
+      commit('stopLoading')
     }
   },
   getters: {
