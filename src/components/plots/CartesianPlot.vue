@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
     <v-layout row wrap justify-center>
-      <v-flex sm3 xs12>
+      <v-flex md3 sm4 xs12>
         <v-select
           class="selectPlot"
           v-model="selectedPlotType"
@@ -133,6 +133,26 @@
           clearable
         ></v-text-field>
       </v-flex>
+      <v-flex sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="ticks x"
+          outline
+          type="number"
+          v-model="axesSettings.xTicks"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="ticks y"
+          outline
+          type="number"
+          v-model="axesSettings.yTicks"
+          clearable
+        ></v-text-field>
+      </v-flex>
     </v-layout>
     <v-tooltip
       :value="tooltipVisible"
@@ -185,10 +205,10 @@ export default {
       axesSettings: {
         xMin: '',
         xMax: null,
-        xTicks: 5,
+        xTicks: null,
         yMin: null,
         yMax: null,
-        yTicks: 5,
+        yTicks: null,
         plotFreqUnit: 'GHZ', // default unit of GHz
         insetTop: 10, // inset of axes for group
         insetBottom: 70,
