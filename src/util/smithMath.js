@@ -123,11 +123,11 @@ const a2 = d3
   .scaleLinear()
   .domain([0, 2 * Math.PI])
   .range([+Math.PI / 2, -2 * Math.PI + Math.PI / 2])
-const x2 = d3
+const smithXScale = d3
   .scaleLinear()
   .domain([-1, 1])
   .range([-500, 500])
-const y2 = d3
+const smithYScale = d3
   .scaleLinear()
   .domain([-1, 1])
   .range([500, -500])
@@ -175,20 +175,43 @@ const getImagPath = xL => {
 
 // d3 line generator
 const getSmithPlotLine = plot => {
+  const sRe = plot.sRe
+  const sIm = plot.sIm
+
   const radialLine = d3
     .lineRadial()
-    .radius(s => r(Math.sqrt(s.re * s.re + s.im * s.im)))
-    .angle(s => a2(math.atan2(s.im, s.re)))
+    .radius((s, index) =>
+      r(Math.sqrt(sRe[index] * sRe[index] + sIm[index] * sIm[index]))
+    )
+    .angle((s, index) => a2(math.atan2(sIm[index], sRe[index])))
     .curve(d3.curveNatural)
 
-  return radialLine(plot.s)
+  return radialLine(sRe)
 }
 
-const getSmithCoordinate = sComplex => {
+const getSmithCoordinate = (sRe, sIm) => {
   return {
-    cx: x2(sComplex.re),
-    cy: y2(sComplex.im)
+    cx: smithXScale(sRe),
+    cy: smithYScale(sIm)
   }
+}
+
+const getNearestPointFromComplex = (sReMouse, sImMouse, sReArray, sImArray) => {
+  // data is not ordered, so we'll just live with O(n)... sad times
+  let bestIndex = 0
+  let bestDistance = Number.MAX_VALUE
+
+  for (let i = 0; i < sReArray.length; i++) {
+    const diffRe = sReArray[i] - sReMouse
+    const diffIm = sImArray[i] - sImMouse
+
+    const distance = math.sqrt(diffRe * diffRe + diffIm * diffIm)
+    if (distance < bestDistance) {
+      bestDistance = distance
+      bestIndex = i
+    }
+  }
+  return bestIndex
 }
 
 export {
@@ -196,5 +219,8 @@ export {
   getImagPath,
   getSmithPlotLine,
   getSmithCoordinate,
-  gammaToZLoad
+  getNearestPointFromComplex,
+  gammaToZLoad,
+  smithXScale,
+  smithYScale
 }

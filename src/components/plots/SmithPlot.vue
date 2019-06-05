@@ -1,10 +1,7 @@
 <template>
   <v-card flat>
-    <v-layout column align-center>
-      <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
-    </v-layout>
     <div class="smithContainer">
-      <svg class="smithSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
+      <svg class="smithSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet" ref="smithSvg">
         <g class="realCircles" :transform="groupTranslate">
           <path v-for="path in realPaths" :key="path" :d="path"></path>
         </g>
@@ -13,21 +10,27 @@
         </g>
 
         <transition-group :transform="smithTranslate" name="fade" tag="g">
-          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
-            <path class="smithTraces" :d="smithLines[index]" :stroke="plot.color"></path>
-            <circle
-              v-for="(freq, index) in plot.freq"
-              :key="freq"
-              :cx="getDataPoint(plot, index).cx"
-              :cy="getDataPoint(plot, index).cy"
-              :r="dataPointRadius"
-              :stroke="getStrokeFill(plot.color)"
-              :fill="getStrokeFill(plot.color)"
-              @mouseover="showTooltip(plot, index, $event)"
+          <g v-for="plot in plots" :key="plot.plotId">
+            <path
+              class="smithTraces"
+              :d="getSmithPath(plot)"
+              :stroke="plot.color"
+              @mouseover="showTooltip(plot, $event)"
+              @mousemove="showTooltip(plot, $event)"
               @mouseout="hideTooltip"
-            ></circle>
+            ></path>
           </g>
         </transition-group>
+        <circle
+          v-if="tooltipVisible"
+          :transform="smithTranslate"
+          class="hoverCircle"
+          :cx="hoverCircle.x"
+          :cy="hoverCircle.y"
+          r="10"
+          :fill="tooltipData.color"
+          pointer-events="none"
+        ></circle>
       </svg>
     </div>
     <v-tooltip
@@ -52,7 +55,16 @@
 
 <script>
 import * as chroma from 'chroma-js'
-import { getRealPath, getImagPath, getSmithPlotLine, getSmithCoordinate, gammaToZLoad } from '../../util/smithMath'
+import math from 'mathjs'
+import {
+  gammaToZLoad,
+  getRealPath,
+  getImagPath,
+  getNearestPointFromComplex,
+  getSmithPlotLine,
+  getSmithCoordinate,
+  smithXScale,
+  smithYScale } from '../../util/smithMath'
 export default {
   name: 'SmithPlot',
   props: {
@@ -75,25 +87,48 @@ export default {
         title: null,
         color: null
       },
+      hoverCircle: {
+        x: null,
+        y: null
+      },
       showDataPoints: false
     }
   },
   methods: {
     getDataPoint (plot, index) {
-      return getSmithCoordinate(plot.s[index])
+      return getSmithCoordinate(plot.sRe[index], plot.sIm[index])
     },
-    showTooltip (plot, index, event) {
-      const freq = plot.freq[index]
-      const s = plot.s[index]
+    getStrokeFill (color) {
+      return this.showDataPoints ? color : 'transparent'
+    },
+    hideTooltip (event) {
+      this.tooltipVisible = false
+    },
+    showTooltip (plot, event) {
+      const pt = this.$refs.smithSvg.createSVGPoint()
+      pt.x = event.clientX
+      pt.y = event.clientY
 
+      const svgCoords = pt.matrixTransform(event.target.getScreenCTM().inverse())
+
+      const sReMouse = smithXScale.invert(svgCoords.x)
+      const sImMouse = smithYScale.invert(svgCoords.y)
+
+      const nearestIndex = getNearestPointFromComplex(sReMouse, sImMouse, plot.sRe, plot.sIm)
+
+      const sIm = plot.sIm[nearestIndex]
+      const sRe = plot.sRe[nearestIndex]
+      const freq = plot.freq[nearestIndex]
+
+      // for displaying complex number as a string
       let sSign = '+'
-      let sImag = s.im
-      if (s.im < 0) {
+      let sImag = sIm
+      if (sIm < 0) {
         sSign = '-'
-        sImag = -1 * s.im
+        sImag = -1 * sIm
       }
 
-      const z = gammaToZLoad(plot.s[index], plot.z0)
+      const z = gammaToZLoad(math.complex(sRe, sIm), plot.z0)
 
       let zSign = '+'
       let zImag = z.im
@@ -105,22 +140,21 @@ export default {
       this.tooltipData.color = plot.color
       this.tooltipData.z0 = plot.z0
       this.tooltipData.freq = `${freq.toFixed(4)} ${plot.unit}`
-      this.tooltipData.s = `${s.re.toFixed(4)} ${sSign} ${sImag.toFixed(4)}i`
+      this.tooltipData.s = `${sRe.toFixed(4)} ${sSign} ${sImag.toFixed(4)}i`
       this.tooltipData.z = `${z.re.toFixed(4)} ${zSign} ${zImag.toFixed(4)}i \u03A9`
 
       this.tooltipData.title = `${plot.fileName} - ${plot.label}`
+
+      this.hoverCircle.x = smithXScale(sRe)
+      this.hoverCircle.y = smithYScale(sIm)
 
       this.tooltipX = event.clientX
       this.tooltipY = event.clientY
       this.tooltipVisible = true
     },
-    getStrokeFill (color) {
-      return this.showDataPoints ? color : 'transparent'
-    },
-    hideTooltip (event) {
-      this.tooltipVisible = false
+    getSmithPath (plot) {
+      return getSmithPlotLine(plot)
     }
-
   },
   computed: {
     svgBox () {
@@ -138,9 +172,6 @@ export default {
     },
     smithTranslate () {
       return `translate(${this.margin + this.viewPort / 2}, ${this.margin + this.viewPort / 2})`
-    },
-    smithLines () {
-      return this.plots.map(plot => getSmithPlotLine(plot))
     },
     dataPointRadius () {
       return this.showDataPoints ? 5 : 10
@@ -189,16 +220,13 @@ export default {
   fill: none
 
 .smithTraces
-  stroke-width: 5
+  stroke-width: 10
   fill: none
+  stroke-linecap: square
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .35s
+  transition: opacity 0.35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
-
-.switch
-  div
-    margin: auto
 </style>

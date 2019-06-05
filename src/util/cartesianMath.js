@@ -1,4 +1,3 @@
-import math from 'mathjs'
 import * as d3 from 'd3'
 
 // Map for quick unit conversion
@@ -11,59 +10,15 @@ const unitMap = new Map([
   ['PHZ', 1e15]
 ])
 
-const getSComponents = sParamsRealImag => {
-  const sRe = []
-  const sIm = []
-  const sDb = []
-  const sMag = []
-  const sAngle = []
-  const sDeg = []
-
-  sParamsRealImag.forEach(sParam => {
-    const mag = math.sqrt(sParam.re * sParam.re + sParam.im * sParam.im)
-    const angle = math.atan2(sParam.im, sParam.re)
-    sRe.push(sParam.re)
-    sIm.push(sParam.im)
-    sMag.push(mag)
-    sDb.push(20 * math.log10(mag))
-    sAngle.push(angle)
-    sDeg.push((angle * 180) / Math.PI)
-  })
-
-  return {
-    sRe,
-    sIm,
-    sMag,
-    sDb,
-    sAngle,
-    sDeg
-  }
-}
-
-const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
+const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
   // create linear scales based on max dimensions
-  const plotsAllTypes = plots.map(plot => {
-    return {
-      ...getSComponents(plot.s),
-      freq: normalizeFreq(plot.freq, axesSettings.plotFreqUnit, plot.unit)
-    }
-  })
-  const limits = getLimits(plotsAllTypes, selectedPlotType)
+
+  const limits = getLimits(plots, selectedPlotType)
   const yMin = axesSettings.insetTop
   const yMax = viewPort.y - axesSettings.insetBottom
 
-  const yScale = d3
-    .scaleLinear()
-    .domain([limits.yMin, limits.yMax])
-    .range([yMax, yMin])
-
   const xMin = axesSettings.insetLeft
   const xMax = viewPort.x - axesSettings.insetRight
-
-  const xScale = d3
-    .scaleLinear()
-    .domain([limits.xMin, limits.xMax])
-    .range([xMin, xMax])
 
   // a path representing the y axis
   const yAxisPath = d3.path()
@@ -74,21 +29,32 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
   xAxisPath.moveTo(xMin, 0)
   xAxisPath.lineTo(xMax, 0)
 
-  // zero path will be used for a dashed line at y = 0 if plot contains y = 0
-  let zeroPath = null
-
-  if (plotsAllTypes.length <= 0) {
+  // check if not plots, just retrun axes
+  if (plots.length <= 0) {
     return {
       yAxisPath: yAxisPath.toString(),
       xAxisPath: xAxisPath.toString(),
       ticksY: null,
       ticksX: null,
-      zeroPath,
+      zeroPath: null,
       plotPaths: null,
-      yScale,
-      xScale
+      yScale: null,
+      xScale: null
     }
   }
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([limits.yMin, limits.yMax])
+    .range([yMax, yMin])
+
+  const xScale = d3
+    .scaleLinear()
+    .domain([limits.xMin, limits.xMax])
+    .range([xMin, xMax])
+
+  // zero path will be used for a dashed line at y = 0 if plot contains y = 0
+  let zeroPath = null
 
   // compute positions of tick marks for both axes
   const ticksY = []
@@ -125,47 +91,90 @@ const getPlotData = (plots, selectedPlotType, viewPort, axesSettings) => {
     zeroPath = path0.toString()
   }
 
-  // get plot paths while we're at it since we have all the dadgummed info we dun need
-  // plotPaths will contain an array of path strings
-  const lineGenerator = d3
-    .line()
-    .x(d => xScale(d.x))
-    .y(d => yScale(d.y))
-    .curve(d3.curveMonotoneX)
-
-  const plotPaths = plotsAllTypes.map(plot => {
-    const pathData = []
-
-    // need to find more efficient way to do this before hand in data store
-    for (let i = 0; i < plot.freq.length; i++) {
-      pathData.push({
-        x: plot.freq[i],
-        y: plot[selectedPlotType][i]
-      })
-    }
-
-    const path = lineGenerator(pathData)
-    return { path, pathData }
-  })
-
   return {
     yAxisPath: yAxisPath.toString(), // path of the yAxis
     xAxisPath: xAxisPath.toString(),
     ticksY,
     ticksX,
     zeroPath,
-    plotPaths,
     yScale,
     xScale
   }
 }
 
+const getPathFromPlot = (plot, selectedPlotType, xScale, yScale) => {
+  // returns a path string from a single plot
+  const lineGenerator = d3
+    .line()
+    .x(d => xScale(d.x))
+    .y(d => yScale(d.y))
+    .curve(d3.curveMonotoneX)
+
+  const pathData = []
+
+  // need to find more efficient way to do this before hand in data store
+  for (let i = 0; i < plot.freq.length; i++) {
+    pathData.push({
+      x: plot.freq[i] * unitMap.get(plot.unit), // scale to Hz
+      y: plot[selectedPlotType][i]
+    })
+  }
+
+  const path = lineGenerator(pathData)
+  return {
+    path,
+    pathData
+  }
+}
+
 const getLimits = (plots, selectedPlotType) => {
+  // extents hold a minima and maxima of all plots passed to function
   const extentY = []
   const extentX = []
+
+  let minProperty
+  let maxProperty
+
+  switch (selectedPlotType) {
+    case 'sRe':
+      minProperty = 'sReMin'
+      maxProperty = 'sReMax'
+      break
+    case 'sIm':
+      minProperty = 'sImMin'
+      maxProperty = 'sImMax'
+      break
+    case 'sMag':
+      minProperty = 'sMagMin'
+      maxProperty = 'sMagMax'
+      break
+    case 'sDb':
+      minProperty = 'sDbMin'
+      maxProperty = 'sDbMax'
+      break
+    case 'sAngle':
+      minProperty = 'sAngleMin'
+      maxProperty = 'sAngleMax'
+      break
+    case 'sDeg':
+      minProperty = 'sDegMin'
+      maxProperty = 'sDegMax'
+      break
+    default:
+      minProperty = 'sReMin'
+      maxProperty = 'sReMax'
+      break
+  }
+
   plots.forEach(plot => {
-    extentY.push(...d3.extent(plot[selectedPlotType]))
-    extentX.push(...d3.extent(plot.freq))
+    // get min/max of Sparam based on plotType
+    extentY.push(plot[minProperty], plot[maxProperty])
+    // frequencies are ordered, so min is first el and max is last el
+    // for plot scaale all freqz in Hz
+    extentX.push(
+      plot.freq[0] * unitMap.get(plot.unit),
+      plot.freq[plot.freq.length - 1] * unitMap.get(plot.unit)
+    )
   })
 
   return {
@@ -176,10 +185,24 @@ const getLimits = (plots, selectedPlotType) => {
   }
 }
 
-const normalizeFreq = (frequencies, outputUnit, inputUnit) => {
-  return frequencies.map(
-    frequency => frequency * (unitMap.get(inputUnit) / unitMap.get(outputUnit))
-  )
+// returns the index for the frequency nearest to a mouseover event in CartesianPlot.vue
+const getNearestPointFromFreq = (approxFreq, freqArray, freqUnit) => {
+  const freq = approxFreq / unitMap.get(freqUnit)
+  const i = d3.bisectLeft(freqArray, freq)
+  const freq0 = freqArray[i - 1]
+  const freq1 = freqArray[i]
+
+  // if checks are for end points where the other point is out of bounds
+  if (!freq0) {
+    return i
+  } else if (!freq1) {
+    return i - 1
+  } else {
+    return freq - freq0 < freq1 - freq ? i - 1 : i
+  }
 }
 
-export { getSComponents, getPlotData, normalizeFreq }
+const normalizeFreq = (freq, outputUnit, inputUnit) =>
+  (freq * unitMap.get(inputUnit)) / unitMap.get(outputUnit)
+
+export { getAxes, getNearestPointFromFreq, getPathFromPlot, normalizeFreq }

@@ -14,6 +14,7 @@ const colorGen = colorGenerator()
 export default new Vuex.Store({
   state: {
     fileList: [],
+    files: {},
     plots: {},
     loadingFiles: false,
     navDrawer: true,
@@ -23,64 +24,61 @@ export default new Vuex.Store({
   },
   mutations: {
     addPlot (state, plot) {
-      state.plots[plot.id] = {
-        ...plot.data
-      }
+      // use Vue.set to make sure object properties are reactive
+      // could also use spread operator, but seems slower (need testing)
+      Vue.set(state.plots, plot.plotId, plot.plotData)
     },
-    addToFileList (state, plotInfo) {
-      state.fileList.push(plotInfo)
+    addFile (state, file) {
+      // use Vue.set to make sure object properties are reactive
+      Vue.set(state.files, file.fileId, file.fileData)
+      state.fileList.push(file.fileId)
     },
     clearError (state) {
       state.error = null
     },
-    deleteFile (state, plotToDelete) {
-      // remove from plot list
-      // remove from plots (plot data)
+    deleteFile (state, fileId) {
+      // first delete all plots key/values related to this file
+      state.files[fileId].plotList.forEach(plotId => {
+        delete state.plots[plotId]
+      })
+      // delete fileId from fileList and key/value from files
       state.fileList = state.fileList.filter(
-        plot => plot.id !== plotToDelete.id
+        storeFileId => fileId !== storeFileId
       )
-      delete state.plots[plotToDelete.id]
+      delete state.files[fileId]
       state.fileToModify = null
     },
     setError (state, error) {
       state.error = error
     },
-    setFileToModify (state, file) {
-      state.fileToModify = file
+    setFileToModify (state, fileId) {
+      state.fileToModify = fileId
     },
     setPlotColor (state, plotInfo) {
-      const fileIndexToUpdate = state.fileList.findIndex(
-        file => file.id === plotInfo.id
-      )
-
-      state.fileList[fileIndexToUpdate].sPlots[plotInfo.index].color =
-        plotInfo.value
+      state.plots[plotInfo.plotId].color = plotInfo.value
     },
     setPlotType (state, plotType) {
       state.plotType = plotType
     },
-    setAllPlotsVisibility (state, fileVisibility) {
-      const fileIndexToUpdate = state.fileList.findIndex(
-        file => file.id === fileVisibility.id
-      )
-
-      state.fileList[fileIndexToUpdate].sPlots.forEach(plot => {
-        plot.visible = fileVisibility.value
+    setAllPlotsVisibility (state, file) {
+      state.files[file.fileId].plotList.map(plotId => {
+        state.plots[plotId].visible = file.value
       })
     },
     setPlotVisibility (state, plotInfo) {
-      const fileIndexToUpdate = state.fileList.findIndex(
-        file => file.id === plotInfo.id
-      )
-
-      state.fileList[fileIndexToUpdate].sPlots[plotInfo.index].visible =
-        plotInfo.value
+      state.plots[plotInfo.plotId].visible = plotInfo.value
     },
     startLoading (state) {
       state.loadingFiles = true
     },
+    startLoadingPlots (state) {
+      state.loadingAllPlots = true
+    },
     stopLoading (state) {
       state.loadingFiles = false
+    },
+    stopLoadingPlots (state) {
+      state.loadingAllPlots = false
     },
     toggleNavDrawer (state, val) {
       if (val === null) {
@@ -89,11 +87,11 @@ export default new Vuex.Store({
         state.navDrawer = val
       }
     },
-    updatePlotName (state, plotData) {
-      const plotIndex = state.fileList.findIndex(
-        plot => plot.id === plotData.id
-      )
-      state.fileList[plotIndex].name = plotData.name
+    updateFileName (state, fileData) {
+      state.files[fileData.fileId].fileName = fileData.name
+      state.files[fileData.fileId].plotList.forEach(plotId => {
+        state.plots[plotId].fileName = fileData.name
+      })
       state.fileToModify = null
     }
   },
@@ -107,40 +105,50 @@ export default new Vuex.Store({
       for (let i = 0; i < fileList.length; i++) {
         // use file inside of closure to assure we read every file one by one
         ;(function (file) {
-          const name = file.name
-          const id = uuidv1()
+          const fileId = uuidv1()
           const reader = new FileReader()
 
           reader.onload = function (e) {
             try {
               const network = new Network(e.target.result, file.name)
-              const plotData = {
-                data: network.data,
+
+              // data to be added to file object
+              const fileData = {
+                fileName: network.fileName,
                 unit: network.freqUnit,
                 z0: network.z0,
-                n: network.nPorts
+                n: network.nPorts,
+                plotList: []
               }
 
-              // fileList will also contains a list of S-parameters for the file
-              // and a visibility for each
-              const sPlots = []
-              for (let i = 0; i < plotData.n; i++) {
-                for (let j = 0; j < plotData.n; j++) {
+              // create plotList inside of fileData, add plot to plots map (object)
+              for (let i = 0; i < fileData.n; i++) {
+                for (let j = 0; j < fileData.n; j++) {
+                  const plotId = uuidv1()
                   const label = `s${i + 1},${j + 1}`
-                  sPlots.push({
+                  fileData.plotList.push(plotId)
+
+                  const plotData = {
                     label,
+                    fileName: network.fileName,
+                    freq: network.data.freq,
+                    ...network.data.s[i][j],
                     indeces: [i, j],
                     visible: false,
+                    unit: network.freqUnit, // duplicates of file may make access easier
+                    z0: network.z0,
+                    n: network.nPorts,
                     disabledSmith: i !== j, // state to enable/plot on Smith Chart,
                     color: colorGen.next().value
-                  })
+                  }
+
+                  // add plot to state.plots
+                  commit('addPlot', { plotId, plotData })
                 }
               }
 
-              // commit plots first so that they're available for getters
-              // that iterate of the fileList
-              commit('addPlot', { id, data: plotData })
-              commit('addToFileList', { id, name, sPlots })
+              // now that all plots have been added to state.plots, add file to state
+              commit('addFile', { fileId, fileData })
 
               readCount++
 
@@ -167,38 +175,31 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    enabledPlots (state, getters) {
-      const files = getters.filesByName
-
-      const allPlots = []
-
-      files.forEach(file => {
-        file.sPlots.forEach(plot => {
-          const plotData = {
-            ...plot,
-            fileId: file.id,
-            fileName: file.name,
-            freq: state.plots[file.id].data.freq,
-            s: state.plots[file.id].data.s[plot.indeces[0]][plot.indeces[1]],
-            n: state.plots[file.id].n,
-            unit: state.plots[file.id].unit,
-            z0: state.plots[file.id].z0
-          }
-          if (plot.visible) {
-            allPlots.push(plotData)
+    enabledPlots: state => {
+      const enabledPlots = []
+      state.fileList.forEach(fileId => {
+        state.files[fileId].plotList.forEach(plotId => {
+          if (state.plots[plotId].visible) {
+            enabledPlots.push({ plotId, ...state.plots[plotId] })
           }
         })
       })
 
-      return allPlots
+      return enabledPlots
     },
-    filesByName: state => {
+    fileListByName: state => {
       return state.fileList.sort((a, b) => {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+        if (
+          state.files[a].fileName.toLowerCase() <
+          state.files[b].fileName.toLowerCase()
+        ) {
           return -1
         }
 
-        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+        if (
+          state.files[a].fileName.toLowerCase() >
+          state.files[b].fileName.toLowerCase()
+        ) {
           return 1
         }
 

@@ -16,39 +16,39 @@
       <v-list-tile>
         <v-list-tile-title class="title">Plots</v-list-tile-title>
       </v-list-tile>
-      <v-list-group v-for="file in filesByName" :key="file.id">
+      <v-list-group v-for="fileId in fileListByName" :key="fileId">
         <template v-slot:activator>
           <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title>{{ file.name }}</v-list-tile-title>
+              <v-list-tile-title>{{ files[fileId].fileName }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>
         <v-list-tile>
           <v-layout justify-space-around>
-            <v-btn fab small outline color="info" @click.stop="enablePlotsInFile(file)">
+            <v-btn fab small outline color="info" @click.stop="enablePlotsInFile(fileId)">
               <v-icon>mdi-check-box-multiple-outline</v-icon>
             </v-btn>
-            <v-btn fab small outline color="error" @click.stop="disablePlotsInFile(file)">
+            <v-btn fab small outline color="error" @click.stop="disablePlotsInFile(fileId)">
               <v-icon>mdi-minus-box-outline</v-icon>
             </v-btn>
-            <v-btn fab small outline color="success" @click.stop="openModifyDialog(file)">
+            <v-btn fab small outline color="success" @click.stop="openModifyDialog(fileId)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </v-layout>
         </v-list-tile>
-        <v-list-tile v-for="(plot, index) in file.sPlots" :key="plot.label">
+        <v-list-tile v-for="plotId in files[fileId].plotList" :key="plotId">
           <v-layout align-center>
             <v-checkbox
-              :disabled="(plotType === 'smith' && plot.disabledSmith)"
-              :color="plot.color"
-              :value="plot.visible"
-              @change="togglePlotVisibility({index, id: file.id}, $event)"
-              :label="plot.label"
+              :disabled="(plotType === 'smith' && plots[plotId].disabledSmith)"
+              :color="plots[plotId].color"
+              :value="plots[plotId].visible"
+              @change="togglePlotVisibility(plotId, $event)"
+              :label="plots[plotId].label"
             ></v-checkbox>
             <ColorPicker
-              :currentColor="plot.color"
-              @color-change="updateColor({index, id: file.id}, $event)"
+              :currentColor="plots[plotId].color"
+              @color-change="updateColor(plotId, $event)"
             />
           </v-layout>
         </v-list-tile>
@@ -69,11 +69,11 @@ export default {
     ColorPicker
   },
   methods: {
-    disablePlotsInFile (file) {
-      this.$store.commit('setAllPlotsVisibility', { id: file.id, value: false })
+    disablePlotsInFile (fileId) {
+      this.$store.commit('setAllPlotsVisibility', { fileId, value: false })
     },
-    enablePlotsInFile (file) {
-      this.$store.commit('setAllPlotsVisibility', { id: file.id, value: true })
+    enablePlotsInFile (fileId) {
+      this.$store.commit('setAllPlotsVisibility', { fileId, value: true })
     },
     getFiles (event, fileRef) {
       const files = event.target.files
@@ -83,19 +83,19 @@ export default {
         this.$store.dispatch('loadFiles', { files, fileRef })
       }
     },
-    openModifyDialog (file) {
-      this.$store.commit('setFileToModify', file)
+    openModifyDialog (fileId) {
+      this.$store.commit('setFileToModify', fileId)
     },
-    togglePlotVisibility (plotToToggle, event) {
+    togglePlotVisibility (plotId, event) {
       const plotInfo = {
-        ...plotToToggle,
+        plotId,
         value: event
       }
       this.$store.commit('setPlotVisibility', plotInfo)
     },
-    updateColor (plotToUpdate, hexColor) {
+    updateColor (plotId, hexColor) {
       const plotInfo = {
-        ...plotToUpdate,
+        plotId,
         value: hexColor
       }
       this.$store.commit('setPlotColor', plotInfo)
@@ -115,10 +115,12 @@ export default {
       }
     },
     ...mapGetters([
-      'filesByName'
+      'fileListByName'
     ]),
     ...mapState([
+      'files',
       'loadingFiles',
+      'plots',
       'plotType'
     ])
   }

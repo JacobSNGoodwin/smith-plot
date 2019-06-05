@@ -13,7 +13,7 @@
         </v-tab>
 
         <v-tab-item value="smith">
-          <SmithPlot :plots="smithPlots"/>
+          <SmithPlot :plots="enabledSmithPlots"/>
         </v-tab-item>
         <v-tab-item value="cartesian">
           <CartesianPlot :plots="enabledPlots"/>
@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    smithPlots () {
+    enabledSmithPlots () {
       return this.enabledPlots.filter(plot => !plot.disabledSmith)
     }
   }

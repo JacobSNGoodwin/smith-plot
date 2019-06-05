@@ -1,8 +1,5 @@
 <template>
   <v-card flat>
-    <v-layout column align-center>
-      <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
-    </v-layout>
     <v-layout row justify-center>
       <v-flex sm3 xs6>
         <v-select
@@ -26,52 +23,72 @@
       </v-flex>
     </v-layout>
     <div class="cartesianContainer">
-      <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
+      <svg
+        class="cartesianSvg"
+        :viewBox="svgBox"
+        preserveApectRation="xMidYMid meet"
+        ref="cartesianSvg"
+      >
         <g class="cartesianGroup" :transform="groupTranslate">
-          <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
-            <path class="yAxis" :d="plotData.yAxisPath"></path>
-            <path v-if="plotData.zeroPath" class="zeroAxis" :d="plotData.zeroPath"></path>
+          <g class="axes">
+            <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
+              <path class="yAxis" :d="computedAxes.yAxisPath"></path>
+              <transition name="fade">
+                <path v-if="computedAxes.zeroPath" class="zeroAxis" :d="computedAxes.zeroPath"></path>
+              </transition>
+              <transition-group name="fade" tag="g">
+                <g
+                  v-for="tick in computedAxes.ticksY"
+                  :key="tick.label"
+                  :transform="`translate(0, ${tick.offset})`"
+                >
+                  <line x2="-10"></line>
+                  <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
+                </g>
+              </transition-group>
+            </g>
             <g
-              v-for="tick in plotData.ticksY"
-              :key="tick.label"
-              :transform="`translate(0, ${tick.offset})`"
+              class="axisGroup"
+              :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
             >
-              <line x2="-10"></line>
-              <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
+              <path class="xAxis" :d="computedAxes.xAxisPath"></path>
+              <text
+                class="tickLabel xUnit"
+                :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
+              >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
+              <transition-group name="fade" tag="g">
+                <g
+                  v-for="tick in computedAxes.ticksX"
+                  :key="tick.label"
+                  :transform="`translate(${tick.offset}, 0)`"
+                >
+                  <line v-if="tick.offset" y2="10"></line>
+                  <text class="tickLabel xLabel" x="0" dy="35">{{getFreqInLocalUnit(tick.label)}}</text>
+                </g>
+              </transition-group>
             </g>
           </g>
-          <g
-            class="axisGroup"
-            :transform="`translate(0, ${this.viewPort.y - this.axesSettings.insetBottom})`"
-          >
-            <path class="xAxis" :d="plotData.xAxisPath"></path>
-            <text
-              class="tickLabel xUnit"
-              :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
-            >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
-            <g
-              v-for="tick in plotData.ticksX"
-              :key="tick.label"
-              :transform="`translate(${tick.offset}, 0)`"
-            >
-              <line v-if="tick.offset" y2="10"></line>
-              <text class="tickLabel xLabel" x="0" dy="35">{{tick.label.toFixed(2)}}</text>
+          <transition-group name="fade" tag="g">
+            <g v-for="plot in plots" :key="plot.plotId">
+              <path
+                class="cartTraces"
+                :d="getPlotPath(plot).path"
+                :stroke="plot.color"
+                @mouseover="showTooltip(plot, $event)"
+                @mousemove="showTooltip(plot, $event)"
+                @mouseout="hideTooltip"
+              ></path>
             </g>
-          </g>
-          <g v-for="(plot, index) in plots" :key="plot.fileId+plot.label">
-            <path class="cartTraces" :d="plotData.plotPaths[index].path" :stroke="plot.color"></path>
-            <circle
-              v-for="d in plotData.plotPaths[index].pathData"
-              :key="d.x"
-              :cx="plotData.xScale(d.x)"
-              :cy="plotData.yScale(d.y)"
-              :r="dataPointRadius"
-              :stroke="getStrokeFill(plot.color)"
-              :fill="getStrokeFill(plot.color)"
-              @mouseover="showTooltip(plot, index, d, $event)"
-              @mouseout="hideTooltip"
-            ></circle>
-          </g>
+          </transition-group>
+          <circle
+            v-if="tooltipVisible"
+            class="hoverCircle"
+            :cx="hoverCircle.x"
+            :cy="hoverCircle.y"
+            r="10"
+            :fill="tooltipData.color"
+            pointer-events="none"
+          ></circle>
         </g>
       </svg>
     </div>
@@ -95,7 +112,7 @@
 
 <script>
 import * as chroma from 'chroma-js'
-import { getPlotData } from '../../util/cartesianMath'
+import { getAxes, getNearestPointFromFreq, getPathFromPlot, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -144,6 +161,10 @@ export default {
         'THZ': 'THz',
         'PHZ': 'PHz'
       },
+      hoverCircle: {
+        x: null,
+        y: null
+      },
       tooltipX: null,
       tooltipY: null,
       tooltipVisible: false,
@@ -152,17 +173,28 @@ export default {
         s: null,
         title: null,
         color: null
-      },
-      showDataPoints: false
+      }
     }
   },
   methods: {
-    getStrokeFill (color) {
-      return this.showDataPoints ? color : 'transparent'
+    getFreqInLocalUnit (freqHz) {
+      return normalizeFreq(freqHz, this.axesSettings.plotFreqUnit, 'HZ').toFixed(2)
     },
-    showTooltip (plot, index, dataPoint, event) {
-      const freq = dataPoint.x
-      const s = dataPoint.y
+    getPlotPath (plot) {
+      return getPathFromPlot(plot, this.selectedPlotType, this.computedAxes.xScale, this.computedAxes.yScale)
+    },
+    showTooltip (plot, event) {
+      const pt = this.$refs.cartesianSvg.createSVGPoint()
+      pt.x = event.clientX
+      pt.y = event.clientY
+
+      const svgCoords = pt.matrixTransform(event.target.getScreenCTM().inverse())
+      const freqAtMouseOver = this.computedAxes.xScale.invert(svgCoords.x)
+
+      const nearestIndex = getNearestPointFromFreq(freqAtMouseOver, plot.freq, plot.unit)
+
+      const s = plot[this.selectedPlotType][nearestIndex]
+      const freq = normalizeFreq(plot.freq[nearestIndex], this.axesSettings.plotFreqUnit, plot.unit)
 
       this.tooltipData.color = plot.color
       this.tooltipData.freq = `${freq.toFixed(4)} ${this.axesSettings.plotFreqUnit}`
@@ -170,8 +202,12 @@ export default {
 
       this.tooltipData.title = `${plot.fileName} - ${plot.label}`
 
+      this.hoverCircle.x = this.computedAxes.xScale(normalizeFreq(freq, 'HZ', this.axesSettings.plotFreqUnit))
+      this.hoverCircle.y = this.computedAxes.yScale(s)
+
       this.tooltipX = event.clientX
       this.tooltipY = event.clientY
+
       this.tooltipVisible = true
     },
     hideTooltip (event) {
@@ -187,11 +223,8 @@ export default {
       const totalHeight = this.viewPort.y + 2 * this.margin
       return `0 0 ${totalWidth} ${totalHeight}`
     },
-    plotData () {
-      return getPlotData(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
-    },
-    dataPointRadius () {
-      return this.showDataPoints ? 5 : 10
+    computedAxes () {
+      return getAxes(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
     },
     fontStyle () {
       if (this.tooltipData.color === null) {
@@ -228,7 +261,8 @@ export default {
 
 .cartTraces
   fill: none
-  stroke-width: 5
+  stroke-width: 7
+  stroke-linecap: square
 
 .selectPlot
   margin-top: 1.5em
@@ -261,4 +295,10 @@ export default {
 
 .selectPlot
   padding: 0 1em
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity 0.35s
+
+.fade-enter, .fade-leave-to
+  opacity: 0
 </style>
