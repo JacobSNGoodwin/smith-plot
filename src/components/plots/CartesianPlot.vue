@@ -98,7 +98,7 @@
           class="numberField"
           label="Min Freq"
           outline
-          v-model="axesSettings.xMin"
+          v-model.number="axesSettings.xMin"
           type="number"
           clearable
         ></v-text-field>
@@ -109,7 +109,7 @@
           label="Max Freq"
           outline
           type="number"
-          v-model="axesSettings.xMax"
+          v-model.number="axesSettings.xMax"
           clearable
         ></v-text-field>
       </v-flex>
@@ -119,7 +119,7 @@
           label="Min Y"
           outline
           type="number"
-          v-model="axesSettings.yMin"
+          v-model.number="axesSettings.yMin"
           clearable
         ></v-text-field>
       </v-flex>
@@ -129,7 +129,7 @@
           label="Max Y"
           outline
           type="number"
-          v-model="axesSettings.yMax"
+          v-model.number="axesSettings.yMax"
           clearable
         ></v-text-field>
       </v-flex>
@@ -139,7 +139,8 @@
           label="ticks x"
           outline
           type="number"
-          v-model="axesSettings.xTicks"
+          hint="Please enter a positive value"
+          v-model.number="axesSettings.xTicks"
           clearable
         ></v-text-field>
       </v-flex>
@@ -149,7 +150,8 @@
           label="ticks y"
           outline
           type="number"
-          v-model="axesSettings.yTicks"
+          hint="Please enter a positive value"
+          v-model.number="axesSettings.yTicks"
           clearable
         ></v-text-field>
       </v-flex>

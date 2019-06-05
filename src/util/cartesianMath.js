@@ -51,6 +51,30 @@ const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
   let numXTicks = 5
   let numYTicks = 5
 
+  if (axesSettings.yMin || axesSettings.yMin === 0) {
+    yMinLimit = axesSettings.yMin
+  }
+
+  if (axesSettings.yMax || axesSettings.yMax === 0) {
+    yMaxLimit = axesSettings.yMax
+  }
+
+  if (axesSettings.xMin || axesSettings.xMin === 0) {
+    xMinLimit = axesSettings.xMin
+  }
+
+  if (axesSettings.xMax || axesSettings.xMax === 0) {
+    xMaxLimit = axesSettings.xMax
+  }
+
+  if (axesSettings.xTicks) {
+    numXTicks = axesSettings.xTicks
+  }
+
+  if (axesSettings.yTicks) {
+    numYTicks = axesSettings.yTicks
+  }
+
   const yScale = d3
     .scaleLinear()
     .domain([yMinLimit, yMaxLimit])
