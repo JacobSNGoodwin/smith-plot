@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
-    <v-layout row justify-center>
-      <v-flex sm3 xs6>
+    <v-layout row wrap justify-center>
+      <v-flex md3 sm4 xs12>
         <v-select
           class="selectPlot"
           v-model="selectedPlotType"
@@ -11,7 +11,7 @@
           label="Plot Type"
         ></v-select>
       </v-flex>
-      <v-flex sm3 xs6>
+      <v-flex sm3 xs12>
         <v-select
           class="selectPlot"
           v-model="axesSettings.plotFreqUnit"
@@ -30,6 +30,14 @@
         ref="cartesianSvg"
       >
         <g class="cartesianGroup" :transform="groupTranslate">
+          <clipPath id="clipPlots">
+            <rect
+              :x="axesSettings.insetLeft-3"
+              :y="axesSettings.insetTop-3"
+              :width="viewPort.x-axesSettings.insetLeft-axesSettings.insetRight+6"
+              :height="viewPort.y-axesSettings.insetTop-axesSettings.insetBottom+6"
+            ></rect>
+          </clipPath>
           <g class="axes">
             <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
               <path class="yAxis" :d="computedAxes.yAxisPath"></path>
@@ -77,6 +85,7 @@
                 @mouseover="showTooltip(plot, $event)"
                 @mousemove="showTooltip(plot, $event)"
                 @mouseout="hideTooltip"
+                clip-path="url(#clipPlots)"
               ></path>
             </g>
           </transition-group>
@@ -92,6 +101,70 @@
         </g>
       </svg>
     </div>
+    <v-layout justify-center row wrap mx-4>
+      <v-flex md2 sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Min Freq"
+          outline
+          v-model.number="axesSettings.xMin"
+          type="number"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex md2 sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Max Freq"
+          outline
+          type="number"
+          v-model.number="axesSettings.xMax"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex md2 sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Min Y"
+          outline
+          type="number"
+          v-model.number="axesSettings.yMin"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex md2 sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Max Y"
+          outline
+          type="number"
+          v-model.number="axesSettings.yMax"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex md2 sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Ticks x"
+          outline
+          type="number"
+          hint="Please enter a positive value"
+          v-model.number="axesSettings.xTicks"
+          clearable
+        ></v-text-field>
+      </v-flex>
+      <v-flex md2 sm3 xs6 px-1>
+        <v-text-field
+          class="numberField"
+          label="Ticks y"
+          outline
+          type="number"
+          hint="Please enter a positive value"
+          v-model.number="axesSettings.yTicks"
+          clearable
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
     <v-tooltip
       :value="tooltipVisible"
       :position-x="tooltipX"
@@ -141,12 +214,12 @@ export default {
       ],
       selectedPlotType: 'sRe',
       axesSettings: {
-        xmin: 0,
-        xmax: 1E9,
-        xTicks: 5,
-        ymin: -100,
-        ymax: 100,
-        yTicks: 5,
+        xMin: '',
+        xMax: null,
+        xTicks: null,
+        yMin: null,
+        yMax: null,
+        yTicks: null,
         plotFreqUnit: 'GHZ', // default unit of GHz
         insetTop: 10, // inset of axes for group
         insetBottom: 70,
@@ -301,4 +374,14 @@ export default {
 
 .fade-enter, .fade-leave-to
   opacity: 0
+
+.numberField input::-webkit-inner-spin-button, .numberField input::-webkit-outer-spin-button
+  -webkit-appearance: none
+  margin: 0
+
+.numberField input[type='number']
+  -moz-appearance: textfield
+  -webkit-appearance: none
+  appearance: none
+  margin: 0
 </style>

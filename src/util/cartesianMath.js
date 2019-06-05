@@ -11,9 +11,7 @@ const unitMap = new Map([
 ])
 
 const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
-  // create linear scales based on max dimensions
-
-  const limits = getLimits(plots, selectedPlotType)
+  // get svg extends to define axes
   const yMin = axesSettings.insetTop
   const yMax = viewPort.y - axesSettings.insetBottom
 
@@ -43,14 +41,48 @@ const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
     }
   }
 
+  // get axes and tick values
+  const limits = getLimits(plots, selectedPlotType) // from plot extents
+
+  let yMinLimit = limits.yMin
+  let yMaxLimit = limits.yMax
+  let xMinLimit = limits.xMin
+  let xMaxLimit = limits.xMax
+  let numXTicks = 5
+  let numYTicks = 5
+
+  if (axesSettings.yMin || axesSettings.yMin === 0) {
+    yMinLimit = axesSettings.yMin
+  }
+
+  if (axesSettings.yMax || axesSettings.yMax === 0) {
+    yMaxLimit = axesSettings.yMax
+  }
+
+  if (axesSettings.xMin || axesSettings.xMin === 0) {
+    xMinLimit = axesSettings.xMin * unitMap.get(axesSettings.plotFreqUnit)
+  }
+
+  if (axesSettings.xMax || axesSettings.xMax === 0) {
+    xMaxLimit = axesSettings.xMax * unitMap.get(axesSettings.plotFreqUnit)
+  }
+
+  if (axesSettings.xTicks) {
+    numXTicks = axesSettings.xTicks
+  }
+
+  if (axesSettings.yTicks) {
+    numYTicks = axesSettings.yTicks
+  }
+
   const yScale = d3
     .scaleLinear()
-    .domain([limits.yMin, limits.yMax])
+    .domain([yMinLimit, yMaxLimit])
     .range([yMax, yMin])
 
   const xScale = d3
     .scaleLinear()
-    .domain([limits.xMin, limits.xMax])
+    .domain([xMinLimit, xMaxLimit])
     .range([xMin, xMax])
 
   // zero path will be used for a dashed line at y = 0 if plot contains y = 0
@@ -59,9 +91,8 @@ const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
   // compute positions of tick marks for both axes
   const ticksY = []
 
-  for (let i = 0; i <= axesSettings.yTicks; i++) {
-    const labelHeight =
-      limits.yMin + (limits.yMax - limits.yMin) * (i / axesSettings.yTicks)
+  for (let i = 0; i <= numYTicks; i++) {
+    const labelHeight = yMinLimit + (yMaxLimit - yMinLimit) * (i / numYTicks)
     ticksY.push({
       label: labelHeight,
       offset: yScale(labelHeight)
@@ -70,9 +101,8 @@ const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
 
   const ticksX = []
 
-  for (let i = 0; i <= axesSettings.yTicks; i++) {
-    const labelOffset =
-      limits.xMin + (limits.xMax - limits.xMin) * (i / axesSettings.xTicks)
+  for (let i = 0; i <= numXTicks; i++) {
+    const labelOffset = xMinLimit + (xMaxLimit - xMinLimit) * (i / numXTicks)
     ticksX.push({
       label: labelOffset,
       offset: xScale(labelOffset)
@@ -80,7 +110,7 @@ const getAxes = (plots, selectedPlotType, viewPort, axesSettings) => {
   }
 
   // add data for a dashed line horizontal line at 0 if scale goes from negative to positive
-  if (limits.yMin < 0 && limits.yMax > 0) {
+  if (yMinLimit < 0 && yMaxLimit > 0) {
     const path0 = d3.path()
     path0.moveTo(0, yScale(0))
     path0.lineTo(
