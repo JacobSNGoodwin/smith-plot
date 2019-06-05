@@ -33,15 +33,19 @@
           <g class="axes">
             <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
               <path class="yAxis" :d="computedAxes.yAxisPath"></path>
-              <path v-if="computedAxes.zeroPath" class="zeroAxis" :d="computedAxes.zeroPath"></path>
-              <g
-                v-for="tick in computedAxes.ticksY"
-                :key="tick.label"
-                :transform="`translate(0, ${tick.offset})`"
-              >
-                <line x2="-10"></line>
-                <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
-              </g>
+              <transition name="fade">
+                <path v-if="computedAxes.zeroPath" class="zeroAxis" :d="computedAxes.zeroPath"></path>
+              </transition>
+              <transition-group name="fade" tag="g">
+                <g
+                  v-for="tick in computedAxes.ticksY"
+                  :key="tick.label"
+                  :transform="`translate(0, ${tick.offset})`"
+                >
+                  <line x2="-10"></line>
+                  <text class="tickLabel yLabel" x="-16" dy="6">{{tick.label.toFixed(2)}}</text>
+                </g>
+              </transition-group>
             </g>
             <g
               class="axisGroup"
@@ -52,26 +56,30 @@
                 class="tickLabel xUnit"
                 :transform="`translate(${this.viewPort.x / 2}, ${axesSettings.insetBottom + 10})`"
               >{{freqUnitLabel[axesSettings.plotFreqUnit]}}</text>
-              <g
-                v-for="tick in computedAxes.ticksX"
-                :key="tick.label"
-                :transform="`translate(${tick.offset}, 0)`"
-              >
-                <line v-if="tick.offset" y2="10"></line>
-                <text class="tickLabel xLabel" x="0" dy="35">{{getFreqInLocalUnit(tick.label)}}</text>
-              </g>
+              <transition-group name="fade" tag="g">
+                <g
+                  v-for="tick in computedAxes.ticksX"
+                  :key="tick.label"
+                  :transform="`translate(${tick.offset}, 0)`"
+                >
+                  <line v-if="tick.offset" y2="10"></line>
+                  <text class="tickLabel xLabel" x="0" dy="35">{{getFreqInLocalUnit(tick.label)}}</text>
+                </g>
+              </transition-group>
             </g>
           </g>
-          <g v-for="plot in plots" :key="plot.key">
-            <path
-              class="cartTraces"
-              :d="getPlotPath(plot).path"
-              :stroke="plot.color"
-              @mouseover="showTooltip(plot, $event)"
-              @mousemove="showTooltip(plot, $event)"
-              @mouseout="hideTooltip"
-            ></path>
-          </g>
+          <transition-group name="fade" tag="g">
+            <g v-for="plot in plots" :key="plot.plotId">
+              <path
+                class="cartTraces"
+                :d="getPlotPath(plot).path"
+                :stroke="plot.color"
+                @mouseover="showTooltip(plot, $event)"
+                @mousemove="showTooltip(plot, $event)"
+                @mouseout="hideTooltip"
+              ></path>
+            </g>
+          </transition-group>
           <circle
             v-if="tooltipVisible"
             class="hoverCircle"
@@ -287,4 +295,10 @@ export default {
 
 .selectPlot
   padding: 0 1em
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity 0.35s
+
+.fade-enter, .fade-leave-to
+  opacity: 0
 </style>

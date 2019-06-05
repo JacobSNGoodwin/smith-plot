@@ -12,35 +12,18 @@
           <path v-for="path in imagPaths" :key="path" :d="path"></path>
         </g>
 
-        <!-- <transition-group :transform="smithTranslate" name="fade" tag="g"> -->
-        <g v-for="plot in plots" :key="plot.plotId" :transform="smithTranslate">
-          <path
-            class="smithTraces"
-            :d="getSmithPath(plot)"
-            :stroke="plot.color"
-            @mouseover="getCoordinate($event)"
-          ></path>
-        </g>
-        <!-- </transition-group> -->
+        <transition-group :transform="smithTranslate" name="fade" tag="g">
+          <g v-for="plot in plots" :key="plot.plotId">
+            <path
+              class="smithTraces"
+              :d="getSmithPath(plot)"
+              :stroke="plot.color"
+              @mouseover="getCoordinate($event)"
+            ></path>
+          </g>
+        </transition-group>
       </svg>
     </div>
-    <!-- <v-tooltip
-      :value="tooltipVisible"
-      :position-x="tooltipX"
-      :position-y="tooltipY"
-      :color="tooltipData.color"
-      absolute
-      light
-      bottom
-    >
-      <v-layout :style="fontStyle" justify-center column>
-        <div class="subheading font-weight-bold">{{tooltipData.title}}</div>
-        <div class="body-2">Zref: {{tooltipData.z0}}</div>
-        <div class="body-2">freq: {{tooltipData.freq}}</div>
-        <div class="body-2">S: {{tooltipData.s}}</div>
-        <div class="body-2">Z: {{tooltipData.z}}</div>
-      </v-layout>
-    </v-tooltip>-->
   </v-card>
 </template>
 
@@ -199,12 +182,8 @@ export default {
   fill: none
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity .75s
+  transition: opacity 0.35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
-
-.switch
-  div
-    margin: auto
 </style>
