@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer right fixed clipped app v-model="drawer" disable-resize-watcher>
+  <v-navigation-drawer app floating right clipped v-model="drawer" disable-resize-watcher>
     <v-layout justify-center>
       <FileButton
         class="FileButton"
