@@ -14,23 +14,17 @@
 
         <!-- <transition-group :transform="smithTranslate" name="fade" tag="g"> -->
         <g v-for="plot in plots" :key="plot.plotId" :transform="smithTranslate">
-          <path class="smithTraces" :d="getSmithPath(plot)" :stroke="plot.color"></path>
-          <circle
-            v-for="(freq, index) in plot.freq"
-            :key="freq"
-            :cx="getDataPoint(plot, index).cx"
-            :cy="getDataPoint(plot, index).cy"
-            :r="dataPointRadius"
-            :stroke="getStrokeFill(plot.color)"
-            :fill="getStrokeFill(plot.color)"
-            @mouseover="showTooltip(plot, index, $event)"
-            @mouseout="hideTooltip"
-          ></circle>
+          <path
+            class="smithTraces"
+            :d="getSmithPath(plot)"
+            :stroke="plot.color"
+            @mouseover="getCoordinate($event)"
+          ></path>
         </g>
         <!-- </transition-group> -->
       </svg>
     </div>
-    <v-tooltip
+    <!-- <v-tooltip
       :value="tooltipVisible"
       :position-x="tooltipX"
       :position-y="tooltipY"
@@ -46,7 +40,7 @@
         <div class="body-2">S: {{tooltipData.s}}</div>
         <div class="body-2">Z: {{tooltipData.z}}</div>
       </v-layout>
-    </v-tooltip>
+    </v-tooltip>-->
   </v-card>
 </template>
 
@@ -80,6 +74,16 @@ export default {
     }
   },
   methods: {
+    getCoordinate (event) {
+      const svg = document.querySelector('.smithSvg')
+      console.log(svg)
+      console.log(event.target)
+      // const pt = svg.createSVGPoint()
+      // pt.x = event.clientX
+      // pt.y = event.clientY
+
+      // console.log(pt.matrixTransform(svg.getScreenCTM().inverse()))
+    },
     getDataPoint (plot, index) {
       return getSmithCoordinate(plot.sRe[index], plot.sIm[index])
     },

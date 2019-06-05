@@ -26,7 +26,12 @@
       </v-flex>
     </v-layout>
     <div class="cartesianContainer">
-      <svg class="cartesianSvg" :viewBox="svgBox" preserveApectRation="xMidYMid meet">
+      <svg
+        class="cartesianSvg"
+        :viewBox="svgBox"
+        preserveApectRation="xMidYMid meet"
+        ref="cartesianSvg"
+      >
         <g class="cartesianGroup" :transform="groupTranslate">
           <g class="axes">
             <g class="axisGroup" :transform="`translate(${this.axesSettings.insetLeft}, 0)`">
@@ -60,24 +65,20 @@
               </g>
             </g>
           </g>
-          <g v-for="(plot) in plots" :key="plot.key">
-            <path class="cartTraces" :d="getPlotPath(plot).path" :stroke="plot.color"></path>
-            <circle
-              v-for="d in getPlotPath(plot).pathData"
-              :key="d.x"
-              :cx="computedAxes.xScale(d.x)"
-              :cy="computedAxes.yScale(d.y)"
-              :r="dataPointRadius"
-              :stroke="getStrokeFill(plot.color)"
-              :fill="getStrokeFill(plot.color)"
-              @mouseover="showTooltip(plot, index, d, $event)"
+          <g v-for="plot in plots" :key="plot.key">
+            <path
+              class="cartTraces"
+              :d="getPlotPath(plot).path"
+              :stroke="plot.color"
+              @mouseover="showTooltip(plot, $event)"
+              @mousemove="showTooltip(plot, $event)"
               @mouseout="hideTooltip"
-            ></circle>
+            ></path>
           </g>
         </g>
       </svg>
     </div>
-    <!-- <v-tooltip
+    <v-tooltip
       :value="tooltipVisible"
       :position-x="tooltipX"
       :position-y="tooltipY"
@@ -91,7 +92,7 @@
         <div class="body-2">freq: {{tooltipData.freq}}</div>
         <div class="body-2">{{selectedPlotType}}: {{tooltipData.s}}</div>
       </v-layout>
-    </v-tooltip>-->
+    </v-tooltip>
   </v-card>
 </template>
 
@@ -159,6 +160,13 @@ export default {
     }
   },
   methods: {
+    getCoordinate (event) {
+      const pt = this.$refs.cartesianSvg.createSVGPoint()
+      pt.x = event.clientX
+      pt.y = event.clientY
+
+      console.log(pt.matrixTransform(event.target.getScreenCTM().inverse()))
+    },
     getFreqInLocalUnit (freqHz) {
       return normalizeFreq(freqHz, this.axesSettings.plotFreqUnit, 'HZ').toFixed(2)
     },
@@ -168,10 +176,15 @@ export default {
     getStrokeFill (color) {
       return this.showDataPoints ? color : 'transparent'
     },
-    showTooltip (plot, index, dataPoint, event) {
-      const freq = normalizeFreq(dataPoint.x, this.axesSettings.plotFreqUnit, 'HZ')
+    showTooltip (plot, event) {
+      const pt = this.$refs.cartesianSvg.createSVGPoint()
+      pt.x = event.clientX
+      pt.y = event.clientY
 
-      const s = dataPoint.y
+      const svgCoords = pt.matrixTransform(event.target.getScreenCTM().inverse())
+
+      const s = this.computedAxes.yScale.invert(svgCoords.y)
+      const freq = normalizeFreq(this.computedAxes.xScale.invert(svgCoords.x), this.axesSettings.plotFreqUnit, 'HZ')
 
       this.tooltipData.color = plot.color
       this.tooltipData.freq = `${freq.toFixed(4)} ${this.axesSettings.plotFreqUnit}`
