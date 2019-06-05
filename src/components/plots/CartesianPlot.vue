@@ -85,6 +85,7 @@
                 @mouseover="showTooltip(plot, $event)"
                 @mousemove="showTooltip(plot, $event)"
                 @mouseout="hideTooltip"
+                clip-path="url(#clipPlots)"
               ></path>
             </g>
           </transition-group>
