@@ -32,10 +32,10 @@
         <g class="cartesianGroup" :transform="groupTranslate">
           <clipPath id="clipPlots">
             <rect
-              :x="axesSettings.insetLeft-5"
-              :y="axesSettings.insetTop-5"
-              :width="viewPort.x-axesSettings.insetLeft-axesSettings.insetRight+10"
-              :height="viewPort.y-axesSettings.insetTop-axesSettings.insetBottom+10"
+              :x="axesSettings.insetLeft-3"
+              :y="axesSettings.insetTop-3"
+              :width="viewPort.x-axesSettings.insetLeft-axesSettings.insetRight+6"
+              :height="viewPort.y-axesSettings.insetTop-axesSettings.insetBottom+6"
             ></rect>
           </clipPath>
           <g class="axes">
