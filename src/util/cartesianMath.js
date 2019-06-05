@@ -185,7 +185,24 @@ const getLimits = (plots, selectedPlotType) => {
   }
 }
 
+// returns the index for the frequency nearest to a mouseover event in CartesianPlot.vue
+const getNearestPointFromFreq = (approxFreq, freqArray, freqUnit) => {
+  const freq = approxFreq / unitMap.get(freqUnit)
+  const i = d3.bisectLeft(freqArray, freq)
+  const freq0 = freqArray[i - 1]
+  const freq1 = freqArray[i]
+
+  // if checks are for end points where the other point is out of bounds
+  if (!freq0) {
+    return i
+  } else if (!freq1) {
+    return i - 1
+  } else {
+    return freq - freq0 < freq1 - freq ? i - 1 : i
+  }
+}
+
 const normalizeFreq = (freq, outputUnit, inputUnit) =>
   (freq * unitMap.get(inputUnit)) / unitMap.get(outputUnit)
 
-export { getAxes, getPathFromPlot, normalizeFreq }
+export { getAxes, getNearestPointFromFreq, getPathFromPlot, normalizeFreq }

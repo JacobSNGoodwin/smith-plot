@@ -1,8 +1,5 @@
 <template>
   <v-card flat>
-    <v-layout column align-center>
-      <v-switch class="switch" v-model="showDataPoints" label="Show Datapoints?"></v-switch>
-    </v-layout>
     <v-layout row justify-center>
       <v-flex sm3 xs6>
         <v-select
@@ -71,7 +68,6 @@
               :d="getPlotPath(plot).path"
               :stroke="plot.color"
               @mouseover="showTooltip(plot, $event)"
-              @mousemove="showTooltip(plot, $event)"
               @mouseout="hideTooltip"
             ></path>
           </g>
@@ -98,7 +94,7 @@
 
 <script>
 import * as chroma from 'chroma-js'
-import { getAxes, getPathFromPlot, normalizeFreq } from '../../util/cartesianMath'
+import { getAxes, getNearestPointFromFreq, getPathFromPlot, normalizeFreq } from '../../util/cartesianMath'
 export default {
   name: 'CartesianPlot',
   props: {
@@ -155,26 +151,15 @@ export default {
         s: null,
         title: null,
         color: null
-      },
-      showDataPoints: false
+      }
     }
   },
   methods: {
-    getCoordinate (event) {
-      const pt = this.$refs.cartesianSvg.createSVGPoint()
-      pt.x = event.clientX
-      pt.y = event.clientY
-
-      console.log(pt.matrixTransform(event.target.getScreenCTM().inverse()))
-    },
     getFreqInLocalUnit (freqHz) {
       return normalizeFreq(freqHz, this.axesSettings.plotFreqUnit, 'HZ').toFixed(2)
     },
     getPlotPath (plot) {
       return getPathFromPlot(plot, this.selectedPlotType, this.computedAxes.xScale, this.computedAxes.yScale)
-    },
-    getStrokeFill (color) {
-      return this.showDataPoints ? color : 'transparent'
     },
     showTooltip (plot, event) {
       const pt = this.$refs.cartesianSvg.createSVGPoint()
@@ -182,9 +167,12 @@ export default {
       pt.y = event.clientY
 
       const svgCoords = pt.matrixTransform(event.target.getScreenCTM().inverse())
+      const freqAtMouseOver = this.computedAxes.xScale.invert(svgCoords.x)
 
-      const s = this.computedAxes.yScale.invert(svgCoords.y)
-      const freq = normalizeFreq(this.computedAxes.xScale.invert(svgCoords.x), this.axesSettings.plotFreqUnit, 'HZ')
+      const nearestIndex = getNearestPointFromFreq(freqAtMouseOver, plot.freq, plot.unit)
+
+      const s = plot[this.selectedPlotType][nearestIndex]
+      const freq = normalizeFreq(plot.freq[nearestIndex], this.axesSettings.plotFreqUnit, plot.unit)
 
       this.tooltipData.color = plot.color
       this.tooltipData.freq = `${freq.toFixed(4)} ${this.axesSettings.plotFreqUnit}`
@@ -211,9 +199,6 @@ export default {
     },
     computedAxes () {
       return getAxes(this.plots, this.selectedPlotType, this.viewPort, this.axesSettings)
-    },
-    dataPointRadius () {
-      return this.showDataPoints ? 5 : 10
     },
     fontStyle () {
       if (this.tooltipData.color === null) {
@@ -250,7 +235,8 @@ export default {
 
 .cartTraces
   fill: none
-  stroke-width: 5
+  stroke-width: 7
+  stroke-linecap: square
 
 .selectPlot
   margin-top: 1.5em
