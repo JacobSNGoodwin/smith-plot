@@ -209,8 +209,7 @@ export default {
       freqUnits: [
         { name: 'KHz', val: 'KHZ' },
         { name: 'MHz', val: 'MHZ' },
-        { name: 'GHz', val: 'GHZ' },
-        { name: 'THz', val: 'THZ' }
+        { name: 'GHz', val: 'GHZ' }
       ],
       selectedPlotType: 'sRe',
       axesSettings: {
@@ -370,7 +369,7 @@ export default {
   padding: 0 1em
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity 0.35s
+  transition: opacity .35s
 
 .fade-enter, .fade-leave-to
   opacity: 0
