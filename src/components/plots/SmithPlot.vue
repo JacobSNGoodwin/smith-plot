@@ -73,7 +73,7 @@ export default {
   data () {
     return {
       viewPort: 1000,
-      margin: 25,
+      margin: 15,
       realLineValues: [0, 0.2, 0.5, 1, 2, 5, 10],
       imagLineValues: [-10, -5, -2, -1, -0.5, -0.2, 0, 0.2, 0.5, 1, 2, 5, 10],
       tooltipX: null,
@@ -204,7 +204,7 @@ export default {
 .smithContainer
   max-width: 600px
   margin: auto
-  padding: 2em 0
+  padding: 1em 0
 
 .smithSvg
   shape-rendering: geometricPrecision
@@ -225,7 +225,7 @@ export default {
   stroke-linecap: square
 
 .fade-enter-active, .fade-leave-active
-  transition: opacity 0.35s
+  transition: opacity .35s
 
 .fade-enter, .fade-leave-to
   opacity: 0

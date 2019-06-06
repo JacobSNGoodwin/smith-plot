@@ -197,7 +197,7 @@ export default {
         x: 1200,
         y: 550
       },
-      margin: 25,
+      margin: 15,
       plotTypes: [
         { name: 'Real', val: 'sRe' },
         { name: 'Imaginary', val: 'sIm' },
