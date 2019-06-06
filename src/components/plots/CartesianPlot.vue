@@ -195,7 +195,7 @@ export default {
     return {
       viewPort: {
         x: 1200,
-        y: 600
+        y: 550
       },
       margin: 25,
       plotTypes: [
