@@ -2,6 +2,8 @@
 
 Single Page Application for plotting Touchstone Files on Smith Charts and on Cartesian Coordinates
 
+![Smith Plot Demo](./SmithPlot.png)
+
 ## Current Support as of version 1.0.0
 
 - Plot Touchstone version 1.0 files. 
